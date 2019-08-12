@@ -3,6 +3,10 @@ uuid = "311a05b2-6137-4a5a-b473-18580a3d38b5"
 authors = ["Johnny Chen"]
 version = "0.1.0"
 
+[deps]
+Mustache = "ffc61752-8dc7-55ee-8c37-f3e9cdd09e70"
+ReferenceTests = "324d217c-45ce-50fc-942e-d289b448e8cf"
+
 [compat]
 julia = "1"
 
