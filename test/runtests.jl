@@ -12,3 +12,5 @@ using ReferenceTests
     @test_reference "references/generate_section.txt" generate(page.sections[1])
     @test_reference "references/generate_page.txt" generate(page)
 end
+
+nothing

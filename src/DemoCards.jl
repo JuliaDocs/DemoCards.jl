@@ -17,7 +17,7 @@ const demo_card_template = mt"""
 <div class="card-img">
 ```
 
-[![svd](assets/demos/{{name}}.jpg)](@ref {{name}})
+[![svd](assets/demos/{{name}}.png)](@ref {{name}})
 
 ```@raw html
 </div>
@@ -131,7 +131,7 @@ end
 generate(io::IO, page::DemoPage) =
     write(io, generate(page))
 generate(page::DemoPage) =
-    page.head * generate(page.sections) * page.foot
+    "# $(page.title)\n\n" * page.head * generate(page.sections) * page.foot
 
 # TODO: make a grid of cards instead of directly join them
 generate(cards::AbstractVector{DemoCard}) =

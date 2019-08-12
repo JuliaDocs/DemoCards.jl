@@ -1,3 +1,5 @@
+# Demos
+
 # section_1
 ```@raw html
 <div class="cards">
@@ -8,7 +10,7 @@
 <div class="card-img">
 ```
 
-[![svd](assets/demos/demo_1.jpg)](@ref demo_1)
+[![svd](assets/demos/demo_1.png)](@ref demo_1)
 
 ```@raw html
 </div>
@@ -30,7 +32,7 @@
 <div class="card-img">
 ```
 
-[![svd](assets/demos/demo_2.jpg)](@ref demo_2)
+[![svd](assets/demos/demo_2.png)](@ref demo_2)
 
 ```@raw html
 </div>
@@ -58,7 +60,7 @@
 <div class="card-img">
 ```
 
-[![svd](assets/demos/demo_3.jpg)](@ref demo_3)
+[![svd](assets/demos/demo_3.png)](@ref demo_3)
 
 ```@raw html
 </div>
@@ -80,7 +82,7 @@
 <div class="card-img">
 ```
 
-[![svd](assets/demos/demo_4.jpg)](@ref demo_4)
+[![svd](assets/demos/demo_4.png)](@ref demo_4)
 
 ```@raw html
 </div>
@@ -107,7 +109,7 @@
 <div class="card-img">
 ```
 
-[![svd](assets/demos/demo_5.jpg)](@ref demo_5)
+[![svd](assets/demos/demo_5.png)](@ref demo_5)
 
 ```@raw html
 </div>
@@ -129,7 +131,7 @@
 <div class="card-img">
 ```
 
-[![svd](assets/demos/demo_6.jpg)](@ref demo_6)
+[![svd](assets/demos/demo_6.png)](@ref demo_6)
 
 ```@raw html
 </div>
