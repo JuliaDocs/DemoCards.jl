@@ -4,6 +4,8 @@ using Mustache
 
 import Base: show
 
+include("compat.jl")
+
 const indent_spaces = "  "
 const demo_card_template = mt"""
 ```@raw html

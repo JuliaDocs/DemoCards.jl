@@ -3,7 +3,7 @@ using Test
 using ReferenceTests
 
 @testset "DemoCards.jl" begin
-    demo_root = "test/demos"
+    demo_root = "demos"
     page = DemoPage(demo_root)
 
     # .md format isn't supported by FileIO
