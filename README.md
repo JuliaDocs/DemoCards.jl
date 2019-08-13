@@ -8,3 +8,9 @@
 [![Codecov](https://codecov.io/gh/johnnychen94/DemoCards.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/johnnychen94/DemoCards.jl)
 
 This package is used to *dynamically* generate a demo page and integrate with [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl).
+
+
+## FAQs
+
+* demo templates shouldn't be in the same folder of demo root dir
+* `{{sections}}` is a preserved keyword in page template.
