@@ -28,8 +28,10 @@ function generate(file::String, page::DemoPage)
         generate(f, page::DemoPage)
     end
 end
-generate(io::IO, page::DemoPage) =
+function generate(io::IO, page::DemoPage)
+    save_covers(page)
     write(io, generate(page))
+end
 function generate(page::DemoPage)
     # TODO: Important: we need to render section by section
     items = Dict("sections" => generate(page.sections))
@@ -55,9 +57,18 @@ function generate(card::DemoCard)
         "name" => lowercase(card.title),
         "title" => card.title
     )
+    Mustache.render(demo_card_template, items)
+end
+
+
+save_covers(page::DemoPage) = save_covers.(page.sections)
+function save_covers(sec::DemoSection)
+    save_covers.(sec.subsections)
+    save_covers.(sec.cards)
+end
+function save_covers(card::DemoCard)
     # TODO: we need to remove the *absolute* path "docs/src/demofiles"
+    mkpath("docs/src/demopages/covers/")
     cover_path = "docs/src/demopages/covers/" * lowercase(card.title) * ".png"
     save(cover_path, card.cover)
-
-    Mustache.render(demo_card_template, items)
 end
