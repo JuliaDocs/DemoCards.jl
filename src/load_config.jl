@@ -26,41 +26,6 @@ Specify the title of section and page. TODO: explain the default behaviors.
 Specify the path to template file used to generate `DemoPage`. The content of
 template file must contains a `{{sections}}` placeholder.
 
-# Example
-
-The following shows a simple example of the folder structure.
-
-There's a `config.json` in `demos` with contents, it specifies the section order
-of `demos` that `basic` section is placed before `advanced` section. For other
-`key` items, it uses the default configuration.
-
-For `basic`, `advanced`, `part1` and `part2` sections, it uses the default
-configuration.
-
-```text
-demos
-├── advanced
-│   ├── demo_5.md
-│   └── demo_6.md
-├── basic
-│   ├── part1
-│   │   ├── demo_1.md
-│   │   └── demo_2.md
-│   └── part2
-│       ├── demo_3.md
-│       └── demo_4.md
-└── config.json
-```
-
-```json
-{
-    "order": [
-        "basic",
-        "advanced"
-    ]
-}
-```
-
 """
 function load_config(x::T, key) where T <: Union{DemoSection,DemoPage}
     # although everytime we parse the whole config file when we read the key,
@@ -81,7 +46,11 @@ function load_config(x::T, key) where T <: Union{DemoSection,DemoPage}
     elseif key == "template" && T <: DemoPage
         haskey(config, key) || return get_default_template(x)
 
-        template = read(config[key], String)
+        template_file = config[key]
+        template_path = joinpath(x.root, template_file)
+        endswith(template_path, ".md") || throw("template $(template_file) should be .md file")
+        template = read(template_path, String)
+
         validate_page_template(template, x)
         return template
     else

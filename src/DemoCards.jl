@@ -1,6 +1,5 @@
 module DemoCards
 
-using Printf
 using Mustache
 using ImageCore
 using FileIO
