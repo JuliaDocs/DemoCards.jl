@@ -1,5 +1,6 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
 
 [compat]
 Documenter = "~0.23"

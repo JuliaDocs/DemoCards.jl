@@ -6,6 +6,8 @@ format = Documenter.HTML(edit_branch = "master",
 demo_root = joinpath("docs", "src")
 generate_root = joinpath(demo_root, "demopages")
 
+mkpath(generate_root)
+
 generate(joinpath(generate_root,"simplest_demos.md"),
          DemoPage(joinpath(demo_root, "simplest_demos")))
 generate(joinpath(generate_root,"demos_with_template.md"),

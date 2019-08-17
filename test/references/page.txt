@@ -1,6 +1,6 @@
-DemoPage("demos"):
+DemoPage("demos_1"):
 
-# demos
+# demos_1
   ## section_1
     demo_1.md
     demo_2.md
