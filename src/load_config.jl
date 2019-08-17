@@ -1,5 +1,5 @@
 const config_filename = "config.json"
-const fallback_cover = Gray.(ones(128, 128))
+const fallback_cover = RGB.(Gray.(ones(128, 128)))
 
 """
     load_config(page::DemoPage, key)
@@ -86,7 +86,7 @@ get_default_order(page::DemoPage) =
 function get_default_template(page::DemoPage)
     header = "# $(page.title)\n\n"
     # TODO: by doing this we loss the control on section-level template
-    content = "{{sections}}" # render by Mustache
+    content = "{{{sections}}}" # render by Mustache
     footer = ""
     return header * content * footer
 end

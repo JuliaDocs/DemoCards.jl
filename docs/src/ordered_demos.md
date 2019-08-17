@@ -51,6 +51,6 @@ Now you can see the ordered results:
 
 ---
 
-{{sections}}
+{{{sections}}}
 
 ---

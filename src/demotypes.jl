@@ -120,8 +120,11 @@ function DemoPage(root::String)::DemoPage
     section_paths = joinpath.(root, load_config(page, "order"))
     ordered_sections = map(DemoSection, section_paths) # TODO: technically, we don't need to regenerate sections here
 
-    template = load_config(page, "template")
     title = load_config(page, "title")
+    page = DemoPage(root, ordered_sections, "", title)
+
+    # default template requires a title
+    template = load_config(page, "template")
     DemoPage(root, ordered_sections, template, title)
 end
 

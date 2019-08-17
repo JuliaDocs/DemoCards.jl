@@ -8,7 +8,7 @@ const demo_card_template = mt"""
 <div class="card-img">
 ```
 
-[![svd](assets/demos/{{name}}.png)](@ref {{name}})
+[![svd](covers/{{name}}.png)](@ref {{name}})
 
 ```@raw html
 </div>
@@ -30,8 +30,11 @@ function generate(file::String, page::DemoPage)
 end
 generate(io::IO, page::DemoPage) =
     write(io, generate(page))
-generate(page::DemoPage) =
-    "# $(page.title)\n\n" * page.head * generate(page.sections) * page.foot
+function generate(page::DemoPage)
+    # TODO: Important: we need to render section by section
+    items = Dict("sections" => generate(page.sections))
+    Mustache.render(page.template, items)
+end
 
 # TODO: make a grid of cards instead of directly join them
 generate(cards::AbstractVector{DemoCard}) =
@@ -41,15 +44,20 @@ generate(secs::AbstractVector{DemoSection}; level=1) =
     reduce(*, map(x->generate(x;level=level), secs); init="")
 
 function generate(sec::DemoSection; level=1)
-    head = repeat("#", level) * " $(sec.title)\n"
+    head = repeat("#", level) * " $(get_name(sec))\n"
     foot = "\n\n---\n\n"
     # either cards or subsections are empty
     head * generate(sec.cards) * generate(sec.subsections; level=level+1) * foot
 end
 
 function generate(card::DemoCard)
-    Mustache.render(demo_card_template, Dict(
-        "name" => card.title,
+    items = Dict(
+        "name" => lowercase(card.title),
         "title" => card.title
-    ))
+    )
+    # TODO: we need to remove the *absolute* path "docs/src/demofiles"
+    cover_path = "docs/src/demopages/covers/" * lowercase(card.title) * ".png"
+    save(cover_path, card.cover)
+
+    Mustache.render(demo_card_template, items)
 end

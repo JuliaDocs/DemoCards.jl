@@ -20,12 +20,10 @@ demo_with_template/
 }
 ```
 
-Any markdown files can be a template of demo cards with only one requirement: *there should be one and only one `{{SECTIONS}}`(lowercase it!) in your file.*
-
 In this way, you can still write the content of your demo page without caring about how the demos are rendered.
 
 ---
 
-{{sections}}
+{{{sections}}}
 
 ---
