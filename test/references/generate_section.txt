@@ -8,14 +8,14 @@
 <div class="card-img">
 ```
 
-[![svd](assets/demos/demo_1.png)](@ref demo_1)
+[![svd](covers/demo_1.png)](@ref demo_1)
 
 ```@raw html
 </div>
 <div class="card-text">
 ```
 
-[demo_1](@ref demo_1)
+[Demo_1](@ref demo_1)
 ```@raw html
 </div>
 </div>
@@ -30,14 +30,14 @@
 <div class="card-img">
 ```
 
-[![svd](assets/demos/demo_2.png)](@ref demo_2)
+[![svd](covers/demo_2.png)](@ref demo_2)
 
 ```@raw html
 </div>
 <div class="card-text">
 ```
 
-[demo_2](@ref demo_2)
+[Demo_2](@ref demo_2)
 ```@raw html
 </div>
 </div>

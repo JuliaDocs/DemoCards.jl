@@ -1,4 +1,4 @@
-# Demos
+# demos
 
 # section_1
 ```@raw html
@@ -10,14 +10,14 @@
 <div class="card-img">
 ```
 
-[![svd](assets/demos/demo_1.png)](@ref demo_1)
+[![svd](covers/demo_1.png)](@ref demo_1)
 
 ```@raw html
 </div>
 <div class="card-text">
 ```
 
-[demo_1](@ref demo_1)
+[Demo_1](@ref demo_1)
 ```@raw html
 </div>
 </div>
@@ -32,14 +32,14 @@
 <div class="card-img">
 ```
 
-[![svd](assets/demos/demo_2.png)](@ref demo_2)
+[![svd](covers/demo_2.png)](@ref demo_2)
 
 ```@raw html
 </div>
 <div class="card-text">
 ```
 
-[demo_2](@ref demo_2)
+[Demo_2](@ref demo_2)
 ```@raw html
 </div>
 </div>
@@ -60,14 +60,14 @@
 <div class="card-img">
 ```
 
-[![svd](assets/demos/demo_3.png)](@ref demo_3)
+[![svd](covers/demo_3.png)](@ref demo_3)
 
 ```@raw html
 </div>
 <div class="card-text">
 ```
 
-[demo_3](@ref demo_3)
+[Demo_3](@ref demo_3)
 ```@raw html
 </div>
 </div>
@@ -82,14 +82,14 @@
 <div class="card-img">
 ```
 
-[![svd](assets/demos/demo_4.png)](@ref demo_4)
+[![svd](covers/demo_4.png)](@ref demo_4)
 
 ```@raw html
 </div>
 <div class="card-text">
 ```
 
-[demo_4](@ref demo_4)
+[Demo_4](@ref demo_4)
 ```@raw html
 </div>
 </div>
@@ -109,14 +109,14 @@
 <div class="card-img">
 ```
 
-[![svd](assets/demos/demo_5.png)](@ref demo_5)
+[![svd](covers/demo_5.png)](@ref demo_5)
 
 ```@raw html
 </div>
 <div class="card-text">
 ```
 
-[demo_5](@ref demo_5)
+[Demo_5](@ref demo_5)
 ```@raw html
 </div>
 </div>
@@ -131,14 +131,14 @@
 <div class="card-img">
 ```
 
-[![svd](assets/demos/demo_6.png)](@ref demo_6)
+[![svd](covers/demo_6.png)](@ref demo_6)
 
 ```@raw html
 </div>
 <div class="card-text">
 ```
 
-[demo_6](@ref demo_6)
+[Demo_6](@ref demo_6)
 ```@raw html
 </div>
 </div>

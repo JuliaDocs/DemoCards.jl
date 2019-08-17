@@ -1,11 +1,13 @@
-# Demos
+DemoPage("demos"):
+
+# demos
   ## section_1
-    demo_1
-    demo_2
+    demo_1.md
+    demo_2.md
   ## section_2
     ### section_2_1
-      demo_3
-      demo_4
+      demo_3.md
+      demo_4.md
     ### section_2_2
-      demo_5
-      demo_6
+      demo_5.md
+      demo_6.md
