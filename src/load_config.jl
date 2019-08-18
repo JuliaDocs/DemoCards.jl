@@ -41,7 +41,12 @@ function load_config(x::T, key) where T <: Union{DemoSection,DemoPage}
         validate_order(order, x)
         return order
     elseif key == "title" && T <: DemoPage
-        return getkey(config, key, get_default_title(x))
+        haskey(config, key) || return get_default_title(x)
+
+        if haskey(config, "template")
+            @warn("config item \"title\" in $(path) is suppressed by \"template\"")
+        end
+        return config[key]
     elseif key == "template" && T <: DemoPage
         haskey(config, key) || return get_default_template(x)
 

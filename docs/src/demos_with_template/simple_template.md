@@ -1,4 +1,4 @@
-# Demos
+# Configure your demo page
 
 Most demos contains a `config.json` file that specify the relative path to the template, for example:
 
