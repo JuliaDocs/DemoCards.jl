@@ -1,10 +1,18 @@
-const demo_card_template = mt"""
+const card_section_template = mt"""
 ```@raw html
-<div class="cards">
+<div class="card-section">
 ```
 
+{{{cards}}}
+
 ```@raw html
-<div class="card-200">
+</div>
+```
+"""
+
+const card_template = mt"""
+```@raw html
+<div class="card">
 <div class="card-img">
 ```
 
@@ -38,7 +46,6 @@ function generate(page::DemoPage)
     Mustache.render(page.template, items)
 end
 
-# TODO: make a grid of cards instead of directly join them
 generate(cards::AbstractVector{DemoCard}) =
     reduce(*, map(generate, cards); init="")
 
@@ -46,10 +53,16 @@ generate(secs::AbstractVector{DemoSection}; level=1) =
     reduce(*, map(x->generate(x;level=level), secs); init="")
 
 function generate(sec::DemoSection; level=1)
-    head = repeat("#", level) * " $(get_name(sec))\n"
-    foot = "\n\n---\n\n"
+    header = repeat("#", level) * " $(get_name(sec))\n"
+    footer = "\n\n---\n\n"
     # either cards or subsections are empty
-    head * generate(sec.cards) * generate(sec.subsections; level=level+1) * foot
+    if isempty(sec.cards)
+        body = generate(sec.subsections; level=level+1)
+    else
+        items = Dict("cards" => generate(sec.cards))
+        body = Mustache.render(card_section_template, items)
+    end
+    header * body * footer
 end
 
 function generate(card::DemoCard)
@@ -57,7 +70,7 @@ function generate(card::DemoCard)
         "name" => lowercase(card.title),
         "title" => card.title
     )
-    Mustache.render(demo_card_template, items)
+    Mustache.render(card_template, items)
 end
 
 
