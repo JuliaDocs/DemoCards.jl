@@ -31,7 +31,7 @@ There're two `config.json` files here: `ordered_demos/config.json` and `ordered_
 ```text
 # ordered_demos/config.json
 {
-    "template": "../ordered_demos.md",
+    "template": "ordered_demos.md",
     "order": [
         "basic",
         "advanced"

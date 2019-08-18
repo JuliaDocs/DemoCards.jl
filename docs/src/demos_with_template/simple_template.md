@@ -16,7 +16,7 @@ demo_with_template/
 ```text
 # demo_with_template/config.json
 {
-    "template": "../simple_template.md"
+    "template": "simple_template.md"
 }
 ```
 
