@@ -28,6 +28,7 @@ function demofile(path::String)::AbstractDemoFile
     end
 end
 
+
 """
     DemoCard(demo, [cover], [title])
 
@@ -64,7 +65,6 @@ function DemoCard(demo::AbstractDemoFile)::DemoCard
 end
 
 
-
 struct DemoSection
     root::String
     cards::Vector{DemoCard}
@@ -79,11 +79,14 @@ function DemoSection(root::String)::DemoSection
     card_paths = filter(x->isfile(x) && !endswith(x, config_filename), path)
     section_paths = filter(isdir, path)
 
-    if !xor(isempty(card_paths), isempty(section_paths))
-        throw("a demo section only holds either cards or subsections")
+    if isempty(card_paths) && isempty(section_paths)
+        throw("emtpy section folder $(root)")
+    elseif !xor(isempty(card_paths), isempty(section_paths))
+        throw("section folder $(root) should only hold either cards or subsections")
     end
 
-    # first consturct an incomplete section, and then load the config
+    # first consturct an incomplete section
+    # then load the config and reconstruct a new one
     section = DemoSection(root,
                           map(DemoCard, card_paths),
                           map(DemoSection, section_paths))
@@ -100,6 +103,7 @@ function DemoSection(root::String)::DemoSection
     DemoSection(root, cards, subsections)
 end
 
+
 struct DemoPage
     root::String
     sections::Vector{DemoSection}
@@ -114,7 +118,8 @@ function DemoPage(root::String)::DemoPage
     sections = map(DemoSection, section_paths)
 
 
-    # first consturct an incomplete page, and then load the config
+    # first consturct an incomplete page
+    # then load the config and reconstruct a new one
     page = DemoPage(root, sections, "", "")
 
     section_paths = joinpath.(root, load_config(page, "order"))

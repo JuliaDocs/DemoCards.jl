@@ -1,4 +1,3 @@
-const config_filename = "config.json"
 const fallback_cover = RGB.(Gray.(ones(128, 128)))
 
 """

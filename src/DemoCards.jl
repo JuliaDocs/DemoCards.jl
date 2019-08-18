@@ -5,6 +5,8 @@ using ImageCore
 using FileIO
 using JSON
 
+const config_filename = "config.json"
+
 include("compat.jl")
 include("demotypes.jl")
 include("utils.jl")
