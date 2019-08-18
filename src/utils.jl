@@ -1,5 +1,9 @@
 function validate_file(path, filetype = :text)
     isfile(path) || throw("$(path) is not a valid file")
+    check_ext(path, filetype)
+end
+
+function check_ext(path, filetype = :text)
     _, ext = splitext(path)
     if filetype == :text
         return true

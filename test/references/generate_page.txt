@@ -2,11 +2,11 @@
 
 # section_1
 ```@raw html
-<div class="cards">
+<div class="card-section">
 ```
 
 ```@raw html
-<div class="card-200">
+<div class="card">
 <div class="card-img">
 ```
 
@@ -24,11 +24,7 @@
 ```
 
 ```@raw html
-<div class="cards">
-```
-
-```@raw html
-<div class="card-200">
+<div class="card">
 <div class="card-img">
 ```
 
@@ -47,16 +43,18 @@
 
 
 
----
+```@raw html
+</div>
+```
 
 # section_2
 ## section_2_1
 ```@raw html
-<div class="cards">
+<div class="card-section">
 ```
 
 ```@raw html
-<div class="card-200">
+<div class="card">
 <div class="card-img">
 ```
 
@@ -74,11 +72,7 @@
 ```
 
 ```@raw html
-<div class="cards">
-```
-
-```@raw html
-<div class="card-200">
+<div class="card">
 <div class="card-img">
 ```
 
@@ -97,15 +91,17 @@
 
 
 
----
+```@raw html
+</div>
+```
 
 ## section_2_2
 ```@raw html
-<div class="cards">
+<div class="card-section">
 ```
 
 ```@raw html
-<div class="card-200">
+<div class="card">
 <div class="card-img">
 ```
 
@@ -123,11 +119,7 @@
 ```
 
 ```@raw html
-<div class="cards">
-```
-
-```@raw html
-<div class="card-200">
+<div class="card">
 <div class="card-img">
 ```
 
@@ -146,9 +138,8 @@
 
 
 
----
+```@raw html
+</div>
+```
 
-
-
----
 

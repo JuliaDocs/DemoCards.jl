@@ -15,7 +15,7 @@ include("show.jl")
 include("generate.jl")
 
 export DemoCard, DemoSection, DemoPage,
-       generate
+       generate, makedemos
 
 
 """

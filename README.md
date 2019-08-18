@@ -12,5 +12,5 @@ This package is used to *dynamically* generate a demo page and integrate with [D
 
 ## FAQs
 
-* demo templates shouldn't be in the same folder of demo root dir
-* `{{sections}}` is a preserved keyword in page template.
+* demo pages and cover images will be generated in `docs/src/demopages`, please add it to your `.gitignore`.
+* `{{{sections}}}` is a preserved keyword in page template.

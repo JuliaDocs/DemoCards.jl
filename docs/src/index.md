@@ -23,4 +23,4 @@ and the rules are simple:
 * each subfolder stands for a section/subsection,
 * each `.md` file is a complete demo.
 
-This package generates the [simplest demos](@ref simplest_demos) for you.
+This package generates the [simplest demopage](@ref simplest_demopage) for you.

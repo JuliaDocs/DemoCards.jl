@@ -52,7 +52,7 @@ function load_config(x::T, key) where T <: Union{DemoSection,DemoPage}
 
         template_file = config[key]
         template_path = joinpath(x.root, template_file)
-        endswith(template_path, ".md") || throw("template $(template_file) should be .md file")
+        check_ext(template_path, :markdown)
         template = read(template_path, String)
 
         validate_page_template(template, x)

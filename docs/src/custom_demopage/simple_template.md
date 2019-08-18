@@ -27,3 +27,5 @@ In this way, you can still write the content of your demo page without caring ab
 {{{sections}}}
 
 ---
+
+The next demopage shows how you can custom the section orders and card orders.
