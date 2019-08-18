@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Custom demo orders · DemoCards</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/documenter.css" rel="stylesheet" type="text/css"/><link href="../../assets/style.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>DemoCards</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../">Home</a></li><li><a class="toctext" href="../simplest_demopage/">Simplest demepage</a></li><li><a class="toctext" href="../custom_demopage/">Custom demopage</a></li><li class="current"><a class="toctext" href>Custom demo orders</a><ul class="internal"><li class="toplevel"><a class="toctext" href="#basic-1">basic</a></li><li><a class="toctext" href="#part1-1">part1</a></li><li><a class="toctext" href="#part2-1">part2</a></li><li class="toplevel"><a class="toctext" href="#advanced-1">advanced</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li><a href>Custom demo orders</a></li></ul><a class="edit-page" href="https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/src/demopages/custom_demo_orders/index.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Custom demo orders</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="Demos-1" href="#Demos-1">Demos</a></h1><p>By default, all sections, subsections and demo cards are sorted and rendered in an case-insensitive alphabetic order. This make it extremely easy to start writing demo contents.</p><p>However, there&#39;re many cases this is not good enough.This page shows how you can partially specify the order of sections and demo cards.</p><p>Here&#39;s the folder structure of this page:</p><pre><code class="language-text">ordered_demos
+├── advanced
+│   ├── demo_5.md
+│   └── demo_6.md
+├── basic
+│   ├── part1
+│   │   ├── demo_1.md
+│   │   └── demo_2.md
+│   └── part2
+│       ├── config.json
+│       ├── demo_3.md
+│       └── demo_4.md
+└── config.json</code></pre><p>There&#39;re two <code>config.json</code> files here: <code>ordered_demos/config.json</code> and <code>ordered_demos/basic/part2/config.json</code>.</p><ul><li>The first config file specifies the section orders of <em>this</em> page - the <code>basic</code> section is put ahead of <code>advanced</code> section.</li><li>The second config file specifies the card orders in <code>basic.part2</code> subsection - card <code>demo_4.md</code> is put ahead of card <code>demo_5.md</code>.</li></ul><pre><code class="language-text"># ordered_demos/config.json
+{
+    &quot;template&quot;: &quot;ordered_demos.md&quot;,
+    &quot;order&quot;: [
+        &quot;basic&quot;,
+        &quot;advanced&quot;
+    ]
+}
+
+# ordered_demos/basic/part2/config.json
+{
+    &quot;order&quot;: [
+        &quot;demo_4.md&quot;,
+        &quot;demo_3.md&quot;
+    ]
+}</code></pre><p>Now you can see the ordered results:</p><hr/><h1><a class="nav-anchor" id="basic-1" href="#basic-1">basic</a></h1><h2><a class="nav-anchor" id="part1-1" href="#part1-1">part1</a></h2><div class="card-section"><div class="card">
+<div class="card-img"><p><a href="../../custom_demo_orders/basic/part1/demo_21/#demo_21-1"><img src="covers/demo_21.png" alt="svd"/></a></p></div>
+<div class="card-text"><p><a href="../../custom_demo_orders/basic/part1/demo_21/#demo_21-1">Demo_21</a></p></div>
+</div><div class="card">
+<div class="card-img"><p><a href="../../custom_demo_orders/basic/part1/demo_22/#demo_22-1"><img src="covers/demo_22.png" alt="svd"/></a></p></div>
+<div class="card-text"><p><a href="../../custom_demo_orders/basic/part1/demo_22/#demo_22-1">Demo_22</a></p></div>
+</div></div><h2><a class="nav-anchor" id="part2-1" href="#part2-1">part2</a></h2><div class="card-section"><div class="card">
+<div class="card-img"><p><a href="../../custom_demo_orders/basic/part2/demo_24/#demo_24-1"><img src="covers/demo_24.png" alt="svd"/></a></p></div>
+<div class="card-text"><p><a href="../../custom_demo_orders/basic/part2/demo_24/#demo_24-1">Demo_24</a></p></div>
+</div><div class="card">
+<div class="card-img"><p><a href="../../custom_demo_orders/basic/part2/demo_23/#demo_23-1"><img src="covers/demo_23.png" alt="svd"/></a></p></div>
+<div class="card-text"><p><a href="../../custom_demo_orders/basic/part2/demo_23/#demo_23-1">Demo_23</a></p></div>
+</div></div><h1><a class="nav-anchor" id="advanced-1" href="#advanced-1">advanced</a></h1><div class="card-section"><div class="card">
+<div class="card-img"><p><a href="../../custom_demo_orders/advanced/demo_25/#demo_25-1"><img src="covers/demo_25.png" alt="svd"/></a></p></div>
+<div class="card-text"><p><a href="../../custom_demo_orders/advanced/demo_25/#demo_25-1">Demo_25</a></p></div>
+</div><div class="card">
+<div class="card-img"><p><a href="../../custom_demo_orders/advanced/demo_26/#demo_26-1"><img src="covers/demo_26.png" alt="svd"/></a></p></div>
+<div class="card-text"><p><a href="../../custom_demo_orders/advanced/demo_26/#demo_26-1">Demo_26</a></p></div>
+</div></div><hr/><footer><hr/><a class="previous" href="../custom_demopage/"><span class="direction">Previous</span><span class="title">Custom demopage</span></a></footer></article></body></html>

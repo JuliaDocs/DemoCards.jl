@@ -1,0 +1,7 @@
+{
+    "template": "ordered_demos.md",
+    "order": [
+        "basic",
+        "advanced"
+    ]
+}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Custom demopage · DemoCards</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link href="../../assets/documenter.css" rel="stylesheet" type="text/css"/><link href="../../assets/style.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>DemoCards</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../../">Home</a></li><li><a class="toctext" href="../simplest_demopage/">Simplest demepage</a></li><li class="current"><a class="toctext" href>Custom demopage</a><ul class="internal"><li class="toplevel"><a class="toctext" href="#advanced-1">advanced</a></li><li class="toplevel"><a class="toctext" href="#basic-1">basic</a></li></ul></li><li><a class="toctext" href="../custom_demo_orders/">Custom demo orders</a></li></ul></nav><article id="docs"><header><nav><ul><li><a href>Custom demopage</a></li></ul><a class="edit-page" href="https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/src/demopages/custom_demopage/index.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Custom demopage</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="Configure-your-demo-page-1" href="#Configure-your-demo-page-1">Configure your demo page</a></h1><p>Most demos contains a <code>config.json</code> file that specify the relative path to the template, for example:</p><pre><code class="language-text">demo_with_template/
+├── advanced
+│   ├── demo_3.md
+│   └── demo_4.md
+├── basic
+│   ├── demo_1.md
+│   └── demo_2.md
+└── config.json</code></pre><pre><code class="language-text"># demo_with_template/config.json
+{
+    &quot;template&quot;: &quot;simple_template.md&quot;
+}</code></pre><p>In this way, you can still write the content of your demo page without caring about how the demos are rendered.</p><hr/><h1><a class="nav-anchor" id="advanced-1" href="#advanced-1">advanced</a></h1><div class="card-section"><div class="card">
+<div class="card-img"><p><a href="../../custom_demopage/advanced/demo_13/#demo_13-1"><img src="covers/demo_13.png" alt="svd"/></a></p></div>
+<div class="card-text"><p><a href="../../custom_demopage/advanced/demo_13/#demo_13-1">Demo_13</a></p></div>
+</div><div class="card">
+<div class="card-img"><p><a href="../../custom_demopage/advanced/demo_14/#demo_14-1"><img src="covers/demo_14.png" alt="svd"/></a></p></div>
+<div class="card-text"><p><a href="../../custom_demopage/advanced/demo_14/#demo_14-1">Demo_14</a></p></div>
+</div></div><h1><a class="nav-anchor" id="basic-1" href="#basic-1">basic</a></h1><div class="card-section"><div class="card">
+<div class="card-img"><p><a href="../../custom_demopage/basic/demo_11/#demo_11-1"><img src="covers/demo_11.png" alt="svd"/></a></p></div>
+<div class="card-text"><p><a href="../../custom_demopage/basic/demo_11/#demo_11-1">Demo_11</a></p></div>
+</div><div class="card">
+<div class="card-img"><p><a href="../../custom_demopage/basic/demo_12/#demo_12-1"><img src="covers/demo_12.png" alt="svd"/></a></p></div>
+<div class="card-text"><p><a href="../../custom_demopage/basic/demo_12/#demo_12-1">Demo_12</a></p></div>
+</div></div><hr/><p>The next demopage shows how you can custom the section orders and card orders.</p><footer><hr/><a class="previous" href="../simplest_demopage/"><span class="direction">Previous</span><span class="title">Simplest demepage</span></a><a class="next" href="../custom_demo_orders/"><span class="direction">Next</span><span class="title">Custom demo orders</span></a></footer></article></body></html>
