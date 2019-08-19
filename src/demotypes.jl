@@ -1,9 +1,3 @@
-const markdown_exts = [".md",]
-
-# we don't load the demo contents for AbstractDemoCard here since
-# we directly pass it to Documenter or Literate
-abstract type AbstractDemoCard end
-
 """ recognize and generate a demofile"""
 function democard(path::String)::AbstractDemoCard
     validate_file(path)
@@ -11,41 +5,8 @@ function democard(path::String)::AbstractDemoCard
     if ext in markdown_exts
         return MarkdownDemoCard(path)
     else
-        @warn("unrecognized file format $(ext)")
+        throw("unrecognized democard format $(path)")
     end
-end
-
-
-"""
-    DemoCard(demo, [cover], [title])
-
-A demo card consists of `demo`, cover image `cover` and card description `title`.
-
-* `demo` can be an `AbstractDemoCard` object, or a complete path to demo file
-* `cover` can be a image object(e.g., `Array{RGB, 2}`) or a path to image file
-* `title`::String is the one-line description under the cover image. By default it's the filename of `demo` (without extension).
-"""
-struct MarkdownDemoCard <: AbstractDemoCard
-    path::String
-    # storing image content helps generate a better cover page
-    cover::Array{<:Colorant, 2}
-    title::String
-
-    function MarkdownDemoCard(path::String,
-                              cover::AbstractArray{<:Colorant, 2},
-                              title::String)
-        # TODO: we can beautify cover image here
-        new(path, RGB.(cover), title)
-    end
-end
-
-function MarkdownDemoCard(path::String)::MarkdownDemoCard
-    # first consturct an incomplete democard, and then load the config
-    card = MarkdownDemoCard(path, fallback_cover, "")
-
-    cover = load_config(card, "cover")
-    title = load_config(card, "title")
-    MarkdownDemoCard(path, cover, title)
 end
 
 

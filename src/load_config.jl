@@ -1,5 +1,3 @@
-const fallback_cover = RGB.(Gray.(ones(128, 128)))
-
 """
     load_config(page::DemoPage, key)
     load_config(section::DemoSection, key)
@@ -62,16 +60,6 @@ function load_config(x::T, key) where T <: Union{DemoSection,DemoPage}
     end
 end
 
-function load_config(card::MarkdownDemoCard, key)
-    if key == "title"
-        get_default_title(card)
-    elseif key == "cover"
-        get_default_cover(card)
-    else
-        throw("Unrecognized key $(key) for DemoCard")
-    end
-end
-
 ### default config behaviors
 
 """return case-insensitive alphabetic order"""
@@ -91,11 +79,6 @@ function get_default_template(page::DemoPage)
 end
 
 get_default_title(x::Union{DemoSection,DemoPage}) = get_name(x)
-function get_default_title(card::MarkdownDemoCard)
-    uppercasefirst(splitext(get_name(card))[1])
-end
-
-get_default_cover(demofile::MarkdownDemoCard) = fallback_cover
 
 function validate_order(order::AbstractArray, x::Union{DemoPage, DemoSection})
     default_order = get_default_order(x)
