@@ -1,5 +1,5 @@
 {
-    "template": "../test_template.md",
+    "template": "test_template.md",
     "order": [
         "basic",
         "advanced"
