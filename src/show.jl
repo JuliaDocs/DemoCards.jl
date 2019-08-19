@@ -2,7 +2,7 @@ import Base: show
 
 const indent_spaces = "  "
 
-function show(io::IO, card::DemoCard)
+function show(io::IO, card::AbstractDemoCard)
     println(io, get_name(card))
 end
 

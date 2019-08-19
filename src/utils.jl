@@ -16,5 +16,4 @@ end
 
 """return the dirname or filename"""
 get_name(x::Union{DemoPage,DemoSection}) = splitpath(x.root)[end]
-get_name(x::DemoCard) = get_name(x.demo)
-get_name(x::AbstractDemoFile) = splitpath(x.path)[end]
+get_name(x::AbstractDemoCard) = splitpath(x.path)[end]

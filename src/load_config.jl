@@ -62,19 +62,14 @@ function load_config(x::T, key) where T <: Union{DemoSection,DemoPage}
     end
 end
 
-# config of DemoCard is parsed out from the demofile
-load_config(card::DemoCard, key) = load_config(card.demo, key)
-function load_config(demofile::MarkdownDemo, key)
+function load_config(card::MarkdownDemoCard, key)
     if key == "title"
-        get_default_title(demofile)
+        get_default_title(card)
     elseif key == "cover"
-        get_default_cover(demofile)
+        get_default_cover(card)
     else
         throw("Unrecognized key $(key) for DemoCard")
     end
-end
-function load_config(demofile::JuliaDemo)
-    throw("NotImplementedError")
 end
 
 ### default config behaviors
@@ -96,23 +91,11 @@ function get_default_template(page::DemoPage)
 end
 
 get_default_title(x::Union{DemoSection,DemoPage}) = get_name(x)
-get_default_title(card::DemoCard) = get_default_title(card.demo)
-function get_default_title(demofile::MarkdownDemo)
-    uppercasefirst(splitext(get_name(demofile))[1])
-end
-function get_default_title(demofile::JuliaDemo)
-    uppercasefirst(splitext(get_name(demofile))[1])
+function get_default_title(card::MarkdownDemoCard)
+    uppercasefirst(splitext(get_name(card))[1])
 end
 
-
-get_default_cover(demofile::MarkdownDemo) = fallback_cover
-function get_default_cover(demofile::JuliaDemo)
-    # 1. if it's explicitly specified, load it
-    # 2. otherwise, check if last result of demofile is an image
-    #   2.1 if it is, make it as the cover
-    #   2.2 otherwise, use fallback_cover
-    fallback_cover
-end
+get_default_cover(demofile::MarkdownDemoCard) = fallback_cover
 
 function validate_order(order::AbstractArray, x::Union{DemoPage, DemoSection})
     default_order = get_default_order(x)

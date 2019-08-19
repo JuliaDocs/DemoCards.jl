@@ -14,7 +14,7 @@ include("load_config.jl")
 include("show.jl")
 include("generate.jl")
 
-export DemoCard, DemoSection, DemoPage,
+export MarkdownDemoCard, DemoSection, DemoPage,
        generate, makedemos
 
 

@@ -64,7 +64,7 @@ function generate(page::DemoPage)
     Mustache.render(page.template, items)
 end
 
-generate(cards::AbstractVector{DemoCard}) =
+generate(cards::AbstractVector{<:AbstractDemoCard}) =
     reduce(*, map(generate, cards); init="")
 
 generate(secs::AbstractVector{DemoSection}; level=1) =
@@ -83,7 +83,7 @@ function generate(sec::DemoSection; level=1)
     header * body * footer
 end
 
-function generate(card::DemoCard)
+function generate(card::AbstractDemoCard)
     items = Dict(
         "name" => lowercase(card.title),
         "title" => card.title
@@ -98,7 +98,7 @@ function save_covers(path::String, sec::DemoSection)
     save_covers.(path, sec.subsections)
     save_covers.(path, sec.cards)
 end
-function save_covers(path::String, card::DemoCard)
+function save_covers(path::String, card::AbstractDemoCard)
     ext = ".png" # consistent to card_template
     cover_path = joinpath(path, lowercase(card.title) * ext)
 

@@ -1,28 +1,15 @@
 const markdown_exts = [".md",]
-const julia_exts = [".jl",]
 
-# we don't load the demo contents for AbstractDemoFile here since
+# we don't load the demo contents for AbstractDemoCard here since
 # we directly pass it to Documenter or Literate
-abstract type AbstractDemoFile end
-
-""" demo written as markdown file, directly pass to Documenter"""
-struct MarkdownDemo <: AbstractDemoFile
-    path::String
-end
-
-""" demo written as julia file, preprocessed by Literate first"""
-struct JuliaDemo <:AbstractDemoFile
-    path::String
-end
+abstract type AbstractDemoCard end
 
 """ recognize and generate a demofile"""
-function demofile(path::String)::AbstractDemoFile
+function democard(path::String)::AbstractDemoCard
     validate_file(path)
     _, ext = splitext(path)
     if ext in markdown_exts
-        return MarkdownDemo(path)
-    elseif ext in julia_exts
-        return JuliaDemo(path)
+        return MarkdownDemoCard(path)
     else
         @warn("unrecognized file format $(ext)")
     end
@@ -34,40 +21,37 @@ end
 
 A demo card consists of `demo`, cover image `cover` and card description `title`.
 
-* `demo` can be an `AbstractDemoFile` object, or a complete path to demo file
+* `demo` can be an `AbstractDemoCard` object, or a complete path to demo file
 * `cover` can be a image object(e.g., `Array{RGB, 2}`) or a path to image file
 * `title`::String is the one-line description under the cover image. By default it's the filename of `demo` (without extension).
 """
-struct DemoCard{T<:AbstractDemoFile}
-    demo::T
+struct MarkdownDemoCard <: AbstractDemoCard
+    path::String
     # storing image content helps generate a better cover page
     cover::Array{<:Colorant, 2}
     title::String
 
-    function DemoCard{T}(demo::T,
-                      cover::AbstractArray{<:Colorant, 2},
-                      title) where T<:AbstractDemoFile
+    function MarkdownDemoCard(path::String,
+                              cover::AbstractArray{<:Colorant, 2},
+                              title::String)
         # TODO: we can beautify cover image here
-        new(demo, RGB.(cover), title)
+        new(path, RGB.(cover), title)
     end
 end
-DemoCard(demo::T, cover, title) where T<:AbstractDemoFile =
-    DemoCard{T}(demo, cover, title)
 
-DemoCard(demo_path::String) = DemoCard(demofile(demo_path))
-function DemoCard(demo::AbstractDemoFile)::DemoCard
+function MarkdownDemoCard(path::String)::MarkdownDemoCard
     # first consturct an incomplete democard, and then load the config
-    card = DemoCard(demo, fallback_cover, "")
+    card = MarkdownDemoCard(path, fallback_cover, "")
 
     cover = load_config(card, "cover")
     title = load_config(card, "title")
-    DemoCard(demo, cover, title)
+    MarkdownDemoCard(path, cover, title)
 end
 
 
 struct DemoSection
     root::String
-    cards::Vector{DemoCard}
+    cards::Vector # can be Any[]
     subsections::Vector{DemoSection}
     # we don't need a title field, that is defined by the page template
 end
@@ -88,12 +72,12 @@ function DemoSection(root::String)::DemoSection
     # first consturct an incomplete section
     # then load the config and reconstruct a new one
     section = DemoSection(root,
-                          map(DemoCard, card_paths),
+                          map(democard, card_paths),
                           map(DemoSection, section_paths))
 
     ordered_paths = joinpath.(root, load_config(section, "order"))
     if !isempty(section.cards)
-        cards = map(DemoCard, ordered_paths)
+        cards = map(democard, ordered_paths)
         subsections = []
     else
         cards = []
@@ -132,6 +116,3 @@ function DemoPage(root::String)::DemoPage
     template = load_config(page, "template")
     DemoPage(root, ordered_sections, template, title)
 end
-
-
-### helpers
