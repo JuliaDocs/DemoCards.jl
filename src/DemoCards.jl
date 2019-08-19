@@ -7,13 +7,13 @@ using JSON
 
 const config_filename = "config.json"
 
-abstract type AbstractDemoCard end
-
 include("compat.jl")
-include("markdown.jl")
-include("demotypes.jl")
+
+include("types/card.jl")
+include("types/section.jl")
+include("types/page.jl")
+
 include("utils.jl")
-include("load_config.jl")
 include("show.jl")
 include("generate.jl")
 

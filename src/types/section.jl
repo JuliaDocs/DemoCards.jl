@@ -1,15 +1,3 @@
-""" recognize and generate a demofile"""
-function democard(path::String)::AbstractDemoCard
-    validate_file(path)
-    _, ext = splitext(path)
-    if ext in markdown_exts
-        return MarkdownDemoCard(path)
-    else
-        throw("unrecognized democard format $(path)")
-    end
-end
-
-
 struct DemoSection
     root::String
     cards::Vector # can be Any[]
@@ -49,31 +37,25 @@ function DemoSection(root::String)::DemoSection
 end
 
 
-struct DemoPage
-    root::String
-    sections::Vector{DemoSection}
-    template::String
-    title::String
+function load_config(sec::DemoSection, key)
+    path = joinpath(sec.root, config_filename)
+    config = isfile(path) ? JSON.parsefile(path) : Dict()
+
+    if key == "order"
+        haskey(config, key) || return get_default_order(sec)
+
+        order = config[key]
+        validate_order(order, sec)
+        return order
+    else
+        throw("Unrecognized key $(key) for DemoSection")
+    end
 end
 
-function DemoPage(root::String)::DemoPage
-    isdir(root) || throw("page root should be a valid dir, instead it's $(root)")
-
-    section_paths = filter(isdir, joinpath.(root, readdir(root)))
-    sections = map(DemoSection, section_paths)
-
-
-    # first consturct an incomplete page
-    # then load the config and reconstruct a new one
-    page = DemoPage(root, sections, "", "")
-
-    section_paths = joinpath.(root, load_config(page, "order"))
-    ordered_sections = map(DemoSection, section_paths) # TODO: technically, we don't need to regenerate sections here
-
-    title = load_config(page, "title")
-    page = DemoPage(root, ordered_sections, "", title)
-
-    # default template requires a title
-    template = load_config(page, "template")
-    DemoPage(root, ordered_sections, template, title)
+"""return case-insensitive alphabetic order"""
+function get_default_order(sec::DemoSection)
+    order = isempty(sec.cards) ? get_name.(sec.subsections) : get_name.(sec.cards)
+    sort(order, by = x->lowercase(x))
 end
+
+get_name(sec::DemoSection) = splitpath(sec.root)[end]

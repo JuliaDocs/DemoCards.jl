@@ -14,6 +14,21 @@ function check_ext(path, filetype = :text)
     end
 end
 
-"""return the dirname or filename"""
-get_name(x::Union{DemoPage,DemoSection}) = splitpath(x.root)[end]
-get_name(x::AbstractDemoCard) = splitpath(x.path)[end]
+### common utils for DemoPage and DemoSection
+
+function validate_order(order::AbstractArray, x::Union{DemoPage, DemoSection})
+    default_order = get_default_order(x)
+    if intersect(order, default_order) == union(order, default_order)
+        return true
+    else
+        config_filepath = joinpath(x.root, config_filename)
+
+        entries = join(string.(setdiff(order, default_order)), "\n")
+        isempty(entries) || @warn("The following entries in $(config_filepath) are not used anymore:\n$(entries)")
+
+        entries = join(string.(setdiff(default_order, order)), "\n")
+        isempty(entries) || @warn("The following entries in $(config_filepath) are missing:\n$(entries)")
+
+        throw("incorrect order in $(config_filepath), please check the previous warning message.")
+    end
+end
