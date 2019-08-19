@@ -10,13 +10,21 @@
 }
 
 .card {
-    width: 210px;
-    margin: 20px;
+    margin: 10px 15px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
-    border-radius: 5px; /* 5px rounded corners */
+    border-radius: 5px;
 }
 
 .card-text {
-    padding: 15px;
+    padding: 0 15px;
+}
+
+.card-img {
+    width: 200px;
+    height: 200px;
+    padding: 5px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    border-radius: 5px;
 }
