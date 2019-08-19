@@ -1,5 +1,6 @@
 module DemoCards
 
+import Base: basename
 using Mustache
 using ImageCore
 using FileIO

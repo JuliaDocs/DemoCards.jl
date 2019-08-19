@@ -60,7 +60,7 @@ function load_config(page::DemoPage, key)
 end
 
 get_default_order(page::DemoPage) =
-    sort(get_name.(page.sections), by = x->lowercase(x))
+    sort(basename.(page.sections), by = x->lowercase(x))
 
 function get_default_template(page::DemoPage)
     header = "# $(page.title)\n\n"
@@ -70,9 +70,9 @@ function get_default_template(page::DemoPage)
     return header * content * footer
 end
 
-get_default_title(page::DemoPage) = get_name(page)
+get_default_title(page::DemoPage) = basename(page)
 
-get_name(page::DemoPage) = splitpath(page.root)[end]
+basename(page::DemoPage) = basename(page.root)
 
 function validate_page_template(template::String, page::DemoPage)
     # TODO: we need to check if there exists one and only one `{{sections}}` placeholder

@@ -54,8 +54,8 @@ end
 
 """return case-insensitive alphabetic order"""
 function get_default_order(sec::DemoSection)
-    order = isempty(sec.cards) ? get_name.(sec.subsections) : get_name.(sec.cards)
+    order = isempty(sec.cards) ? basename.(sec.subsections) : basename.(sec.cards)
     sort(order, by = x->lowercase(x))
 end
 
-get_name(sec::DemoSection) = splitpath(sec.root)[end]
+basename(sec::DemoSection) = basename(sec.root)

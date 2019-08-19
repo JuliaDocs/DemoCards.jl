@@ -20,6 +20,6 @@ function democard(path::String)::AbstractDemoCard
     end
 end
 
-get_name(x::AbstractDemoCard) = splitpath(x.path)[end]
+basename(x::AbstractDemoCard) = basename(x.path)
 
 include("markdown.jl")

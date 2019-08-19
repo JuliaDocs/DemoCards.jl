@@ -3,12 +3,12 @@ import Base: show
 const indent_spaces = "  "
 
 function show(io::IO, card::AbstractDemoCard)
-    println(io, get_name(card))
+    println(io, basename(card))
 end
 
 function show(io::IO, sec::DemoSection; level=1)
     print(io, repeat(indent_spaces, level-1))
-    println(io, repeat("#", level), " ", get_name(sec))
+    println(io, repeat("#", level), " ", basename(sec))
 
     # a section either holds cards or subsections
     # here it's a mere coincident to show cards first

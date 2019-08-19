@@ -3,7 +3,7 @@ function makedemos(source::String;
                    destination::String = "demopages")::String
     page = DemoPage(joinpath(root, source))
 
-    relative_root = joinpath(destination, get_name(page))
+    relative_root = joinpath(destination, basename(page))
     absolute_root = joinpath(root, relative_root)
 
     @info "SetupDemoCardsDirectory: setting up $(source) directory."
@@ -71,7 +71,7 @@ generate(secs::AbstractVector{DemoSection}; level=1) =
     reduce(*, map(x->generate(x;level=level), secs); init="")
 
 function generate(sec::DemoSection; level=1)
-    header = repeat("#", level) * " $(get_name(sec))\n"
+    header = repeat("#", level) * " $(basename(sec))\n"
     footer = "\n"
     # either cards or subsections are empty
     if isempty(sec.cards)

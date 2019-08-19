@@ -43,7 +43,7 @@ function load_config(card::MarkdownDemoCard, key)
 end
 
 function get_default_title(card::MarkdownDemoCard)
-    uppercasefirst(splitext(get_name(card))[1])
+    uppercasefirst(splitext(basename(card))[1])
 end
 
 get_default_cover(demofile::MarkdownDemoCard) =
