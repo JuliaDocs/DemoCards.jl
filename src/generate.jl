@@ -12,6 +12,7 @@ function makedemos(source::String;
     mkpath(joinpath(absolute_root, "covers"))
 
     save_cover(joinpath(absolute_root, "covers"), page)
+    save_markdown(absolute_root, page)
     generate(joinpath(absolute_root, "index.md"), page)
 
     # we can directly pass it to Documenter.makedocs
@@ -110,4 +111,36 @@ function save_cover(path::String, card::AbstractDemoCard)
     end
 
     save(cover_path, card.cover)
+end
+
+### save markdown files
+
+save_markdown(root::String, page::DemoPage) = save_markdown.(root, page.sections)
+function save_markdown(root::String, sec::DemoSection)
+    save_markdown.(joinpath(root, basename(sec.root)), sec.subsections)
+    save_markdown.(joinpath(root, basename(sec.root)), sec.cards)
+end
+
+"""
+    save_markdown(root::String, card::MarkdownDemoCard)
+
+process the original markdown file and save it.
+
+The processing pipeline is:
+
+1. strip the front matter
+2. insert a level-1 title and id
+"""
+function save_markdown(root::String, card::MarkdownDemoCard)
+    isdir(root) || mkpath(root)
+
+    markdown_path = joinpath(root, basename(card))
+
+    contents = split(read(card.path, String), "---\n")
+    body = length(contents) == 1 ? contents[1] : join(contents[3:end])
+
+    # @ref syntax: https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@ref-link-1
+    header = "# [$(card.title)](@id $(card.id))\n"
+
+    write(markdown_path, header, body)
 end
