@@ -20,7 +20,7 @@ Besides `path`, this struct has some other fields:
 You can pass additional information by adding a YAML front matter to the markdown file.
 Supported items are:
 
-* 🚧`cover`: relative path to the cover image. By default, it's the first image link in this file or an all-white image if there's no image link available.
+* `cover`: relative path to the cover image. If not specified, it will use the first available image link, or all-white image if there's no image links.
 * 🚧`description`: a multi-line description to this file, will be displayed when the demo card is hovered. By default it's empty string `""`.
 * `id`: specify the `id` tag for cross-references. By default it's infered from the filename, e.g., `simple_demo` from `simple demo.md`.
 * `title`: one-line description to this file, will be displayed under the cover image. By default, it's the name of the file (without extension).
@@ -55,15 +55,29 @@ function MarkdownDemoCard(path::String)::MarkdownDemoCard
     MarkdownDemoCard(path, cover, id, title)
 end
 
+# markdown image syntax: ![title](path)
+const regex_md_img = r"!\[[^\s]*\]\(([^\s]*)\)"
+
 function load_config(card::MarkdownDemoCard, key)
     config = parse(card)
 
     if key == "cover"
-        haskey(config, key) || return nothing
+        root = dirname(card.path)
+        if haskey(config, key)
+            cover_path = joinpath(root, config[key])
+            isfile(cover_path) || throw("$(cover_path) isn't a valid image file for cover.")
+            return cover_path
+        else
+            # load the first valid image path
+            # only markdown syntax is supported now
+            contents = read(card.path, String)
+            image_paths = map(eachmatch(regex_md_img, contents)) do m
+                joinpath(root, m.captures[1])
+            end
+            filter!(isfile, image_paths)
 
-        cover_path = config[key]
-        isfile(cover_path) || throw("$(cover_path) isn't a valid image file for cover.")
-        return cover_path
+            return isempty(image_paths) ? nothing : first(image_paths)
+        end
     elseif key == "id"
         haskey(config, key) || return get_default_id(card)
 

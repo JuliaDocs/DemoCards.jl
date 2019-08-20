@@ -64,7 +64,7 @@ function makedemos(source::String;
     @info "SetupDemoCardsDirectory: setting up $(source) directory."
     rm(absolute_root; force=true, recursive=true)
     mkpath(absolute_root)
-    mkpath(joinpath(absolute_root, "covers"))
+    mkpath(joinpath(absolute_root, "covers")) # consistent to card template
 
     save_cover(joinpath(absolute_root, "covers"), page)
     save_markdown(absolute_root, page)
@@ -153,6 +153,7 @@ end
 save_cover(path::String, page::DemoPage) = save_cover.(path, page.sections)
 function save_cover(path::String, sec::DemoSection)
     # TODO: we can perserve the folder structure when creating covers
+    #       this helps avoid name conflicts
     save_cover.(path, sec.subsections)
     save_cover.(path, sec.cards)
 end
@@ -172,19 +173,13 @@ function save_cover(path::String, card::AbstractDemoCard)
 
     cover = load_cover(card)
 
+    # saving all cover images to a fixed folder cover_path
+    # so that we don't need to manipulate the image path in template
     save(cover_path, cover)
 end
 
-function load_cover(card::MarkdownDemoCard)::AbstractArray{<:Colorant}
-    if !isnothing(card.cover)
-        return load(card.cover)
-    end
-
-    # TODO: we can load the first available image path as the cover image
-
-    # fallback
-    return Gray.(ones(128, 128))
-end
+load_cover(card::MarkdownDemoCard) =
+    isnothing(card.cover) ? Gray.(ones(128, 128)) : load(card.cover)
 
 ### save markdown files
 
