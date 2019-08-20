@@ -1,17 +1,44 @@
+# generally, Documenter.jl assumes markdown files ends with `.md`
 const markdown_exts = [".md",]
 
 """
-    MarkdownDemoCard(path [,cover] [,title])
+    struct MarkdownDemoCard <: AbstractDemoCard
+    MarkdownDemoCard(path::String)
 
-A demo card consists of cover image `cover` and card description `title`.
+Constructs a markdown-format demo card from existing markdown file `path`.
 
-* `demo` can be an `AbstractDemoCard` object, or a complete path to demo file
-* `cover` can be a image object(e.g., `Array{RGB, 2}`) or a path to image file
-* `title`::String is the one-line description under the cover image. By default it's the filename of `demo` (without extension).
+# Fields
+
+Besides `path`, this struct has some other fields:
+
+* `path`: path to the source markdown file
+* `cover`: cover image of the demo card
+* `title`: one-line description of the demo card
+
+# Configuration
+
+You can pass additional information by adding a YAML front matter to the markdown file.
+Supported items are:
+
+* 🚧`cover`: relative path to the cover image. By default, it's the first image link in this file or an all-white image if there's no image link available.
+* 🚧`description`: a multi-line description to this file, will be displayed when the demo card is hovered. By default it's empty string `""`.
+* 🚧`title`: one-line description to this file, will be displayed under the cover image. By default, it's the name of the file (without extension).
+
+An example of the front matter:
+
+```text
+---
+title: passing extra information
+cover: cover.png
+description: this demo shows how you can pass extra demo information to DemoCards package.
+---
+```
+
+See also: [`DemoSection`](@ref DemoCards.DemoSection), [`DemoPage`](@ref DemoCards.DemoPage)
 """
 struct MarkdownDemoCard <: AbstractDemoCard
     path::String
-    # storing image content helps generate a better cover page
+    # storing image content enables preprocessing on it
     cover::Array{<:Colorant, 2}
     title::String
 

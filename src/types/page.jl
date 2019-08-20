@@ -1,9 +1,93 @@
+"""
+    struct DemoPage <: Any
+    DemoPage(root::String)
+
+Constructs a demo page object.
+
+# Fields
+
+Besides the root path to the demo page folder `root`, this struct has some other fields:
+
+* `title`: page title
+* `template`: template content of the demo page.
+* `sections`: demo sections found in `root`
+
+# Configuration
+
+You can manage an extra `config.json` file to customize rendering of a demo page.
+Supported items are:
+
+* `order`: specify the sections order. By default, it's case-insensitive alphabetic order.
+* `template`: path to template filename. The content of the template file should has one and only one `{{{sections}}}`.
+* `title`: specify the title of this demo page. By default, it's the folder name of `root`. Will be override by `template`.
+
+The following is an example of `config.json`:
+
+```json
+{
+    "template": "template.md",
+    "order": [
+        "basic",
+        "advanced"
+    ]
+}
+```
+
+# Examples
+
+The following is the simplest folder structure of a `DemoPage`:
+
+```text
+demos
+└── basic
+    ├── demo_1.md
+    ├── demo_2.md
+    ├── demo_3.md
+    ├── demo_4.md
+    ├── demo_5.md
+    ├── demo_6.md
+    ├── demo_7.md
+    └── demo_8.md
+```
+
+!!! note
+
+    A `DemoPage` doesn't manage demo files directly, so here you'll need
+    a DemoSection `basic` to manage them.
+
+The following is a typical folder structure of a `DemoPage`:
+
+```text
+demos
+├── advanced
+│   ├── advanced_demo_1.md
+│   └── advanced_demo_2.md
+├── basic
+│   ├── part1
+│   │   ├── basic_demo_1_1.md
+│   │   └── basic_demo_1_2.md
+│   └── part2
+│       ├── config.json
+│       ├── basic_demo_2_1.md
+│       └── basic_demo_2_2.md
+├── config.json
+└── template.md
+```
+
+!!! warning
+
+    A section should only hold either subsections or demo files. A folder that has both subfolders and demo files (e.g., `*.md`) is invalid.
+
+See also: [`MarkdownDemoCard`](@ref DemoCards.MarkdownDemoCard), [`DemoSection`](@ref DemoCards.DemoSection)
+"""
 struct DemoPage
     root::String
     sections::Vector{DemoSection}
     template::String
     title::String
 end
+
+basename(page::DemoPage) = basename(page.root)
 
 function DemoPage(root::String)::DemoPage
     isdir(root) || throw("page root should be a valid dir, instead it's $(root)")
@@ -71,8 +155,6 @@ function get_default_template(page::DemoPage)
 end
 
 get_default_title(page::DemoPage) = basename(page)
-
-basename(page::DemoPage) = basename(page.root)
 
 function validate_page_template(template::String, page::DemoPage)
     # TODO: we need to check if there exists one and only one `{{sections}}` placeholder

@@ -1,9 +1,83 @@
+"""
+    struct DemoSection <: Any
+    DemoSection(root::String)
+
+Constructs a demo section that holds either nested subsections or demo cards.
+
+# Fields
+
+Besides the root path to the demo section folder `root`, this struct has some other fields:
+
+* `cards`: demo cards found in `root`
+* `subsections`: nested subsections found in `root`
+
+# Configuration
+
+You can manage an extra `config.json` file to customize rendering of a demo section.
+Supported items are:
+
+* `order`: specify the cards order or subsections order. By default, it's case-insensitive alphabetic order.
+* 🚧`title`: specify the title of this demo section. By default, it's the folder name of `root`.
+
+The following is an example of `config.json`:
+
+```json
+{
+    "title": "learn by examples"
+    "order": [
+        "quickstart.md",
+        "array.md"
+    ]
+}
+```
+
+!!! warning
+
+    You can't specify files or foldernames in other folders.
+
+# Examples
+
+The following is the simplest folder structure of a `DemoSection`:
+
+```text
+section
+├── demo_1.md
+├── demo_2.md
+├── demo_3.md
+├── demo_4.md
+├── demo_5.md
+├── demo_6.md
+├── demo_7.md
+└── demo_8.md
+```
+
+The following is a typical folder structure of a `DemoSection`:
+
+```text
+section
+├── config.json
+├── part1
+│   ├── demo_21.md
+│   └── demo_22.md
+└── part2
+    ├── config.json
+    ├── demo_23.md
+    └── demo_24.md
+```
+
+!!! warning
+
+    A section should only hold either subsections or demo files. A folder that has both subfolders and demo files (e.g., `*.md`) is invalid.
+
+See also: [`MarkdownDemoCard`](@ref DemoCards.MarkdownDemoCard), [`DemoPage`](@ref DemoCards.DemoPage)
+"""
 struct DemoSection
     root::String
-    cards::Vector # can be Any[]
+    cards::Vector # Why would `Vector{<:AbstractDemoCard}` fail here?
     subsections::Vector{DemoSection}
-    # we don't need a title field, that is defined by the page template
 end
+
+basename(sec::DemoSection) = basename(sec.root)
 
 function DemoSection(root::String)::DemoSection
     isdir(root) || throw("section root should be a valid dir, instead it's $(root)")
@@ -57,5 +131,3 @@ function get_default_order(sec::DemoSection)
     order = isempty(sec.cards) ? basename.(sec.subsections) : basename.(sec.cards)
     sort(order, by = x->lowercase(x))
 end
-
-basename(sec::DemoSection) = basename(sec.root)
