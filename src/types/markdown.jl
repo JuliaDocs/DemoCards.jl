@@ -22,6 +22,7 @@ Supported items are:
 
 * 🚧`cover`: relative path to the cover image. By default, it's the first image link in this file or an all-white image if there's no image link available.
 * 🚧`description`: a multi-line description to this file, will be displayed when the demo card is hovered. By default it's empty string `""`.
+* `id`: specify the `id` tag for cross-references. By default it's infered from the filename, e.g., `simple_demo` from `simple demo.md`.
 * `title`: one-line description to this file, will be displayed under the cover image. By default, it's the name of the file (without extension).
 
 An example of the front matter:
@@ -30,6 +31,7 @@ An example of the front matter:
 ---
 title: passing extra information
 cover: cover.png
+id: non_ambiguious_id
 description: this demo shows how you can pass extra demo information to DemoCards package.
 ---
 ```
@@ -40,23 +42,26 @@ struct MarkdownDemoCard <: AbstractDemoCard
     path::String
     # storing image content enables preprocessing on it
     cover::Array{<:Colorant, 2}
+    id::String
     title::String
 
     function MarkdownDemoCard(path::String,
                               cover::AbstractArray{<:Colorant, 2},
+                              id::String,
                               title::String)
         # TODO: we can beautify cover image here
-        new(path, RGB.(cover), title)
+        new(path, RGB.(cover), id, title)
     end
 end
 
 function MarkdownDemoCard(path::String)::MarkdownDemoCard
     # first consturct an incomplete democard, and then load the config
-    card = MarkdownDemoCard(path, RGB.(Gray.(ones(128, 128))), "")
+    card = MarkdownDemoCard(path, RGB.(Gray.(ones(128, 128))), "", "")
 
     cover = load_config(card, "cover")
+    id    = load_config(card, "id")
     title = load_config(card, "title")
-    MarkdownDemoCard(path, cover, title)
+    MarkdownDemoCard(path, cover, id, title)
 end
 
 function load_config(card::MarkdownDemoCard, key)
@@ -64,6 +69,12 @@ function load_config(card::MarkdownDemoCard, key)
 
     if key == "cover"
         get_default_cover(card)
+    elseif key == "id"
+        haskey(config, key) || return get_default_id(card)
+
+        id = config[key]
+        validate_id(id, card)
+        return id
     elseif key == "title"
         return get(config, key) do
             name_without_ext = splitext(basename(card))[1]
@@ -76,6 +87,11 @@ end
 
 get_default_cover(demofile::MarkdownDemoCard) =
     RGB.(Gray.(ones(128, 128)))
+
+function get_default_id(card::MarkdownDemoCard)
+    name_without_ext = splitext(basename(card))[1]
+    replace(lowercase(name_without_ext), ' ' => '_')
+end
 
 function parse(card::MarkdownDemoCard)
     # TODO: we don't actually need to read the whole file

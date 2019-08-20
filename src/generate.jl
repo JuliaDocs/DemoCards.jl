@@ -36,14 +36,14 @@ const card_template = mt"""
 <div class="card-img">
 ```
 
-[![svd](covers/{{name}}.png)](@ref {{name}})
+[![svd](covers/{{name}}.png)](@ref {{id}})
 
 ```@raw html
 </div>
 <div class="card-text">
 ```
 
-[{{title}}](@ref {{name}})
+[{{title}}](@ref {{id}})
 ```@raw html
 </div>
 </div>
@@ -85,7 +85,8 @@ end
 
 function generate(card::AbstractDemoCard)
     items = Dict(
-        "name" => lowercase(card.title),
+        "name" => splitext(basename(card))[1],
+        "id" => card.id,
         "title" => card.title
     )
     Mustache.render(card_template, items)
@@ -100,7 +101,7 @@ function save_covers(path::String, sec::DemoSection)
 end
 function save_covers(path::String, card::AbstractDemoCard)
     ext = ".png" # consistent to card_template
-    cover_path = joinpath(path, lowercase(card.title) * ext)
+    cover_path = joinpath(path, splitext(basename(card))[1] * ext)
 
     if isfile(cover_path)
         @warn("$(cover_path) already exists, perhaps you have demos of the same filename")

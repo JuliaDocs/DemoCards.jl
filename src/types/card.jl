@@ -22,4 +22,10 @@ end
 
 basename(x::AbstractDemoCard) = basename(x.path)
 
+function validate_id(id::String, card::AbstractDemoCard)
+    if occursin(' ', id)
+        throw("invalid id in $(card.path), it should not contain spaces.")
+    end
+end
+
 include("markdown.jl")
