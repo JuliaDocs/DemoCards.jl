@@ -5,6 +5,7 @@ using Mustache
 using ImageCore
 using FileIO
 using JSON
+using YAML
 
 const config_filename = "config.json"
 
