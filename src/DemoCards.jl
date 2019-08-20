@@ -8,6 +8,8 @@ using JSON
 using YAML
 
 const config_filename = "config.json"
+# directly copy these folders without processing
+const ignored_dirnames = ["assets"]
 
 include("compat.jl")
 

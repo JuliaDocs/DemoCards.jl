@@ -8,8 +8,9 @@ Make a demo page file and return the path to it.
 Processing pipeline:
 
 1. analyze the folder structure `source` and loading all available configs.
-2. preprocess demo files and save it
-3. save/copy cover images
+2. copy assets
+3. preprocess demo files and save it
+4. save/copy cover images
 
 !!! note
     By default, the source demo files are read, processed and save to `docs/src/demopages`,
@@ -66,8 +67,9 @@ function makedemos(source::String;
     mkpath(absolute_root)
     mkpath(joinpath(absolute_root, "covers")) # consistent to card template
 
-    save_cover(joinpath(absolute_root, "covers"), page)
+    copy_assets(absolute_root, page)
     save_markdown(absolute_root, page)
+    save_cover(joinpath(absolute_root, "covers"), page)
     generate(joinpath(absolute_root, "index.md"), page)
 
     # we can directly pass it to Documenter.makedocs
@@ -211,4 +213,26 @@ function save_markdown(root::String, card::MarkdownDemoCard)
     header = "# [$(card.title)](@id $(card.id))\n"
 
     write(markdown_path, header, body)
+end
+
+### copy assets
+
+function copy_assets(path::String, page::DemoPage)
+    _copy_assets(dirname(path), page.root)
+    copy_assets.(path, page.sections)
+end
+function copy_assets(path::String, sec::DemoSection)
+    _copy_assets(path, sec.root)
+    copy_assets.(joinpath(path, basename(sec.root)), sec.subsections)
+end
+
+function _copy_assets(dest_root::String, src_root::String)
+    # copy assets of this section
+    assets_dirs = filter(x->isdir(x)&&(basename(x) in ignored_dirnames),
+                         joinpath.(src_root, readdir(src_root)))
+    map(assets_dirs) do src
+        dest = joinpath(dest_root, basename(src_root), basename(src))
+        mkpath(dest)
+        cp(src, dest; force=true)
+    end
 end

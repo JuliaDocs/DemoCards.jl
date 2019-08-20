@@ -84,7 +84,7 @@ function DemoSection(root::String)::DemoSection
 
     path = joinpath.(root, readdir(root))
     card_paths = filter(x->isfile(x) && !endswith(x, config_filename), path)
-    section_paths = filter(isdir, path)
+    section_paths = filter(x->isdir(x)&&!(basename(x) in ignored_dirnames), path)
 
     if isempty(card_paths) && isempty(section_paths)
         throw("emtpy section folder $(root)")

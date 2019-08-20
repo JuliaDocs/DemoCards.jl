@@ -92,7 +92,8 @@ basename(page::DemoPage) = basename(page.root)
 function DemoPage(root::String)::DemoPage
     isdir(root) || throw("page root should be a valid dir, instead it's $(root)")
 
-    section_paths = filter(isdir, joinpath.(root, readdir(root)))
+    section_paths = filter(x->isdir(x)&&!(basename(x) in ignored_dirnames),
+                           joinpath.(root, readdir(root)))
     sections = map(DemoSection, section_paths)
 
 
