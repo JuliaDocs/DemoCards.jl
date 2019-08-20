@@ -1,10 +1,65 @@
+"""
+    makedemos(source::String) -> path
+
+Make a demo page file and return the path to it.
+
+`source` is the root path to the demos folder, by default it's relative path to `docs`.
+
+Processing pipeline:
+
+1. analyze the folder structure `source` and loading all available configs.
+2. preprocess demo files and save it
+3. save/copy cover images
+
+!!! note
+    By default, the source demo files are read, processed and save to `docs/src/demopages`,
+    so if you put all source demo files in `docs/src`, there will be a duplication of files and assets.
+
+# Keywords
+
+* `root::String`: root path to the whole documentaion. By default `docs`.
+* `destination::String`: By default `demopages`.
+
+# Examples
+
+You only need to call this function before `Documenter.makedocs`, and pass
+the result to it.
+
+```julia
+format = Documenter.HTML(edit_branch = "master",
+                         assets = [joinpath("assets", "style.css")])
+
+examples = makedemos("examples")
+
+makedocs(format = format,
+         pages = [
+            "Home" => "index.md",
+            "Examples" => examples,
+         ])
+```
+
+!!! warning
+
+    Currently, there's no guarantee that this function works for unconventional
+    documentation folder structure. By *convention*, it is:
+
+    ```text
+    .
+    ├── Project.toml
+    ├── docs
+    │   ├── make.jl
+    │   └── src
+    ├── src
+    └── test
+    ```
+"""
 function makedemos(source::String;
-                   root::String = "docs/src",
+                   root::String = "docs",
                    destination::String = "demopages")::String
     page = DemoPage(joinpath(root, source))
 
     relative_root = joinpath(destination, basename(page))
-    absolute_root = joinpath(root, relative_root)
+    absolute_root = joinpath(root, "src", relative_root)
 
     @info "SetupDemoCardsDirectory: setting up $(source) directory."
     rm(absolute_root; force=true, recursive=true)
