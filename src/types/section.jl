@@ -17,7 +17,7 @@ You can manage an extra `config.json` file to customize rendering of a demo sect
 Supported items are:
 
 * `order`: specify the cards order or subsections order. By default, it's case-insensitive alphabetic order.
-* 🚧`title`: specify the title of this demo section. By default, it's the folder name of `root`.
+* `title`: specify the title of this demo section. By default, it's the folder name of `root`.
 
 The following is an example of `config.json`:
 
@@ -75,6 +75,7 @@ struct DemoSection
     root::String
     cards::Vector # Why would `Vector{<:AbstractDemoCard}` fail here?
     subsections::Vector{DemoSection}
+    title::String
 end
 
 basename(sec::DemoSection) = basename(sec.root)
@@ -96,7 +97,8 @@ function DemoSection(root::String)::DemoSection
     # then load the config and reconstruct a new one
     section = DemoSection(root,
                           map(democard, card_paths),
-                          map(DemoSection, section_paths))
+                          map(DemoSection, section_paths),
+                          "")
 
     ordered_paths = joinpath.(root, load_config(section, "order"))
     if !isempty(section.cards)
@@ -107,7 +109,8 @@ function DemoSection(root::String)::DemoSection
         subsections = map(DemoSection, ordered_paths)
     end
 
-    DemoSection(root, cards, subsections)
+    title = load_config(section, "title")
+    DemoSection(root, cards, subsections, title)
 end
 
 
@@ -121,6 +124,8 @@ function load_config(sec::DemoSection, key)
         order = config[key]
         validate_order(order, sec)
         return order
+    elseif key == "title"
+        get(config, key, basename(sec))
     else
         throw("Unrecognized key $(key) for DemoSection")
     end
