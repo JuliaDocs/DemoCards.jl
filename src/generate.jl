@@ -150,13 +150,18 @@ end
 
 ### save demo card covers
 
-# TODO: we can lazily load those covers
 save_cover(path::String, page::DemoPage) = save_cover.(path, page.sections)
 function save_cover(path::String, sec::DemoSection)
     # TODO: we can perserve the folder structure when creating covers
     save_cover.(path, sec.subsections)
     save_cover.(path, sec.cards)
 end
+
+"""
+    save_cover(path::String, card::AbstractDemoCard)
+
+process the cover image and save it.
+"""
 function save_cover(path::String, card::AbstractDemoCard)
     ext = ".png" # consistent to card_template
     cover_path = joinpath(path, splitext(basename(card))[1] * ext)
@@ -165,7 +170,20 @@ function save_cover(path::String, card::AbstractDemoCard)
         @warn("$(cover_path) already exists, perhaps you have demos of the same filename")
     end
 
-    save(cover_path, card.cover)
+    cover = load_cover(card)
+
+    save(cover_path, cover)
+end
+
+function load_cover(card::MarkdownDemoCard)::AbstractArray{<:Colorant}
+    if !isnothing(card.cover)
+        return load(card.cover)
+    end
+
+    # TODO: we can load the first available image path as the cover image
+
+    # fallback
+    return Gray.(ones(128, 128))
 end
 
 ### save markdown files

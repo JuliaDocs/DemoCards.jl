@@ -12,7 +12,7 @@ Constructs a markdown-format demo card from existing markdown file `path`.
 Besides `path`, this struct has some other fields:
 
 * `path`: path to the source markdown file
-* `cover`: cover image of the demo card
+* `cover`: path to the cover image
 * `title`: one-line description of the demo card
 
 # Configuration
@@ -40,23 +40,14 @@ See also: [`DemoSection`](@ref DemoCards.DemoSection), [`DemoPage`](@ref DemoCar
 """
 struct MarkdownDemoCard <: AbstractDemoCard
     path::String
-    # storing image content enables preprocessing on it
-    cover::Array{<:Colorant, 2}
+    cover::Union{String, Nothing}
     id::String
     title::String
-
-    function MarkdownDemoCard(path::String,
-                              cover::AbstractArray{<:Colorant, 2},
-                              id::String,
-                              title::String)
-        # TODO: we can beautify cover image here
-        new(path, RGB.(cover), id, title)
-    end
 end
 
 function MarkdownDemoCard(path::String)::MarkdownDemoCard
     # first consturct an incomplete democard, and then load the config
-    card = MarkdownDemoCard(path, RGB.(Gray.(ones(128, 128))), "", "")
+    card = MarkdownDemoCard(path, "", "", "")
 
     cover = load_config(card, "cover")
     id    = load_config(card, "id")
@@ -68,7 +59,11 @@ function load_config(card::MarkdownDemoCard, key)
     config = parse(card)
 
     if key == "cover"
-        get_default_cover(card)
+        haskey(config, key) || return nothing
+
+        cover_path = config[key]
+        isfile(cover_path) || throw("$(cover_path) isn't a valid image file for cover.")
+        return cover_path
     elseif key == "id"
         haskey(config, key) || return get_default_id(card)
 
@@ -84,9 +79,6 @@ function load_config(card::MarkdownDemoCard, key)
         throw("Unrecognized key $(key) for MarkdownDemoCard")
     end
 end
-
-get_default_cover(demofile::MarkdownDemoCard) =
-    RGB.(Gray.(ones(128, 128)))
 
 function get_default_id(card::MarkdownDemoCard)
     name_without_ext = splitext(basename(card))[1]
