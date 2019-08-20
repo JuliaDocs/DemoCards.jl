@@ -13,7 +13,9 @@ Besides `path`, this struct has some other fields:
 
 * `path`: path to the source markdown file
 * `cover`: path to the cover image
+* `id`: cross-reference id
 * `title`: one-line description of the demo card
+* `description`: multi-line description of the demo card
 
 # Configuration
 
@@ -21,7 +23,7 @@ You can pass additional information by adding a YAML front matter to the markdow
 Supported items are:
 
 * `cover`: relative path to the cover image. If not specified, it will use the first available image link, or all-white image if there's no image links.
-* 🚧`description`: a multi-line description to this file, will be displayed when the demo card is hovered. By default it's empty string `""`.
+* `description`: a multi-line description to this file, will be displayed when the demo card is hovered. By default it uses `title`.
 * `id`: specify the `id` tag for cross-references. By default it's infered from the filename, e.g., `simple_demo` from `simple demo.md`.
 * `title`: one-line description to this file, will be displayed under the cover image. By default, it's the name of the file (without extension).
 
@@ -43,16 +45,21 @@ struct MarkdownDemoCard <: AbstractDemoCard
     cover::Union{String, Nothing}
     id::String
     title::String
+    description::String
 end
 
 function MarkdownDemoCard(path::String)::MarkdownDemoCard
     # first consturct an incomplete democard, and then load the config
-    card = MarkdownDemoCard(path, "", "", "")
+    card = MarkdownDemoCard(path, "", "", "", "")
 
     cover = load_config(card, "cover")
     id    = load_config(card, "id")
     title = load_config(card, "title")
-    MarkdownDemoCard(path, cover, id, title)
+    card = MarkdownDemoCard(path, cover, id, title, "")
+
+    # default description requires a title
+    description = load_config(card, "description")
+    MarkdownDemoCard(path, cover, id, title, description)
 end
 
 # markdown image syntax: ![title](path)
@@ -89,6 +96,8 @@ function load_config(card::MarkdownDemoCard, key)
             name_without_ext = splitext(basename(card))[1]
             uppercasefirst(name_without_ext)
         end
+    elseif key == "description"
+        return get(config, key, card.title)
     else
         throw("Unrecognized key $(key) for MarkdownDemoCard")
     end
