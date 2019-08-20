@@ -11,7 +11,7 @@ function makedemos(source::String;
     mkpath(absolute_root)
     mkpath(joinpath(absolute_root, "covers"))
 
-    save_covers(joinpath(absolute_root, "covers"), page)
+    save_cover(joinpath(absolute_root, "covers"), page)
     generate(joinpath(absolute_root, "index.md"), page)
 
     # we can directly pass it to Documenter.makedocs
@@ -92,14 +92,16 @@ function generate(card::AbstractDemoCard)
     Mustache.render(card_template, items)
 end
 
+### save demo card covers
 
-save_covers(path::String, page::DemoPage) = save_covers.(path, page.sections)
-function save_covers(path::String, sec::DemoSection)
+# TODO: we can lazily load those covers
+save_cover(path::String, page::DemoPage) = save_cover.(path, page.sections)
+function save_cover(path::String, sec::DemoSection)
     # TODO: we can perserve the folder structure when creating covers
-    save_covers.(path, sec.subsections)
-    save_covers.(path, sec.cards)
+    save_cover.(path, sec.subsections)
+    save_cover.(path, sec.cards)
 end
-function save_covers(path::String, card::AbstractDemoCard)
+function save_cover(path::String, card::AbstractDemoCard)
     ext = ".png" # consistent to card_template
     cover_path = joinpath(path, splitext(basename(card))[1] * ext)
 
