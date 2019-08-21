@@ -15,9 +15,24 @@ The rules are simple:
 In the following example:
 
 * we have one demo page: "simplest_demopage"
-* "simplest_demopage" has one demo sections: "dependencies"
+* "simplest_demopage" has one demo section: "dependencies"
 * "dependencies" has two demo subsections: "part1" and "part2"
 * "part1" and "part2" holds all the demo files
+* "assets" are ignored by `DemoCards.jl`
+
+```text
+../demos/simplest_demopage
+└── dependencies
+    ├── part1
+    │   ├── assets
+    │   ├── simple_documenter.md
+    │   ├── simple_julia.md
+    │   └── simple_literate.md
+    └── part2
+        ├── assets
+        ├── simple_fileio.md
+        └── simple_images.md
+```
 
 ```@setup simplest_demopage
 using DemoCards
@@ -26,7 +41,6 @@ root = "../demos/simplest_demopage"
 ```
 
 ```@repl simplest_demopage
-run(`tree $(root) -L 3`);
 DemoPage(root)
 ```
 
@@ -34,8 +48,8 @@ DemoPage(root)
 
 Deployment is also very simple:
 
-1. create a demopage using `makedemos`
-2. load a style sheet using `cardtheme`
+1. load a style sheet using `cardtheme`
+2. create a demopage using `makedemos`
 3. pass the result to `Documenter`
 
 ```julia

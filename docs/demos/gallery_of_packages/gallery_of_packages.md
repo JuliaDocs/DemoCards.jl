@@ -6,15 +6,24 @@ of this page.
 
 Here's the folder structure of this demo page:
 
-```@setup gallery_of_packages
-root = "../../../demos/gallery_of_packages/"
+```text
+docs/demos/gallery_of_packages/
+├── assets
+│   └── juliaimages.png
+├── config.json
+├── gallery_of_packages.md
+├── used_by
+│   ├── config.json
+│   └── images.md
+└── uses
+    ├── assets
+    ├── config.json
+    ├── documenter.md
+    ├── fileio.md
+    ├── images-1.md
+    ├── julia.md
+    └── literate.md
 ```
-
-```@repl gallery_of_packages
-run(`tree $(root) -L 2`);
-```
-
-
 
 ---
 
