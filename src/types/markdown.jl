@@ -62,9 +62,6 @@ function MarkdownDemoCard(path::String)::MarkdownDemoCard
     MarkdownDemoCard(path, cover, id, title, description)
 end
 
-# markdown image syntax: ![title](path)
-const regex_md_img = r"!\[[^\s]*\]\(([^\s]*)\)"
-
 function load_config(card::MarkdownDemoCard, key)
     config = parse(card)
 

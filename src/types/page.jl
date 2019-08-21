@@ -183,47 +183,7 @@ function get_default_template(page::DemoPage)
     return header * content * footer
 end
 
-# markdown title syntax:
-# 1. # title
-# 2. # [title](@id id)
-const regex_md_simple_title = r"^\s*#\s*([^\[\s]+)"
-const regex_md_title = r"^\s#\s\[(.*)\]\(\@id\s*([^\s]*)\)"
-
-"""
-    parse_template(page::DemoPage)
-
-parse the template file of page and return a configuration dict.
-
-Currently supported items are: `title`, `id`.
-
-!!! note
-
-    An empty dict will be returned if page doesn't have a template file.
-"""
-function parse_template(page::DemoPage)::Dict
-    # TODO: this function isn't good; it just works
-    if !isfile(page.template)
-        return Dict()
-    end
-
-    contents = read(page.template, String)
-    m = match(regex_md_title, contents)
-    if !isnothing(m)
-        return Dict(id=>m.captures[2], title=>m.captures[1])
-    end
-
-    m = match(regex_md_simple_title, contents)
-    if !isnothing(m)
-        title = m.captures[1]
-        # default documenter id has -1 suffix
-        id = replace(title, ' ' => '-') * "-1"
-        return Dict(title=>title, id=>id)
-    end
-
-    return Dict()
-end
-
 function load_template_config(page::DemoPage, key)
-    config = parse_template(page)
+    config = parse_markdown(page.template)
     get(config, key, nothing)
 end

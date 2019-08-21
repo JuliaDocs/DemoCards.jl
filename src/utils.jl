@@ -32,3 +32,48 @@ function validate_order(order::AbstractArray, x::Union{DemoPage, DemoSection})
         throw("incorrect order in $(config_filepath), please check the previous warning message.")
     end
 end
+
+
+### regexes
+
+# I'm not expert of regexes -- Johnny Chen
+
+# markdown image syntax: ![title](path)
+const regex_md_img = r"!\[[^\s]*\]\(([^\s]*)\)"
+
+# markdown title syntax:
+# 1. # title
+# 2. # [title](@id id)
+const regex_md_simple_title = r"^\s*#\s*([^\[\s]+)"
+const regex_md_title = r"^\s#\s\[(.*)\]\(\@id\s*([^\s]*)\)"
+
+
+"""
+    parse_markdown(path::String)
+
+parse the template file of page and return a configuration dict.
+
+Currently supported items are: `title`, `id`.
+"""
+function parse_markdown(path::String)::Dict
+    # TODO: this function isn't good; it just works
+    isfile(path) || return Dict()
+
+    contents = read(path, String)
+    m = match(regex_md_title, contents)
+    if !isnothing(m)
+        return Dict("title"=>m.captures[1], "id"=>m.captures[2])
+    end
+
+    m = match(regex_md_simple_title, contents)
+    if !isnothing(m)
+        title = m.captures[1]
+        # default documenter id has -1 suffix
+        id = replace(title, ' ' => '-') * "-1"
+        # id = replace(id, '\`' => '')
+        # id = strip(id, '-')
+        return Dict("title"=>title, "id"=>id)
+    end
+
+    return Dict()
+end

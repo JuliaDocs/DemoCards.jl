@@ -22,7 +22,7 @@ end
 
 basename(x::AbstractDemoCard) = basename(x.path)
 
-function validate_id(id::String, card::AbstractDemoCard)
+function validate_id(id::AbstractString, card::AbstractDemoCard)
     if occursin(' ', id)
         throw("invalid id in $(card.path), it should not contain spaces.")
     end
