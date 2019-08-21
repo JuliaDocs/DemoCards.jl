@@ -1,19 +1,23 @@
 using Documenter, DemoCards
 
+
+theme = cardtheme()
+simplest_demopage = makedemos("demos/simplest_demopage")
+gallery_of_packages = makedemos("demos/gallery_of_packages")
+
 format = Documenter.HTML(edit_branch = "master",
-                         assets = [joinpath("assets", "style.css")])
-
-
-simplest_demopage = makedemos("simplest_demopage")
-custom_demopage = makedemos("custom_demopage")
-custom_demo_orders = makedemos("custom_demo_orders")
+                         assets = [theme])
 
 makedocs(format = format,
          pages = [
             "Home" => "index.md",
-            "Simplest demepage" => simplest_demopage,
-            "Custom demopage" => custom_demopage,
-            "Custom demo orders" => custom_demo_orders
+            "QuickStart" => "quickstart.md",
+            "Concepts" => "concepts.md",
+            "Examples" => [
+                "Simplest Demopage" => simplest_demopage,
+                "Gallery of Packages" => gallery_of_packages,
+            ],
+            "Package References" => "references.md"
          ],
          sitename = "DemoCards")
 

@@ -1,26 +1,24 @@
-# DemoCards
+# DemoCards.jl
 
-Welcome to the gallery of demos!
+_Let's focus on writing good demos._
 
-To start with, all you need is well-organized demo files:
+A plugin package to [`Documenter.jl`](https://github.com/JuliaDocs/Documenter.jl) that dynamically generate a demo gallery for you.
 
-```text
-simplest_demos
-└── basic
-    ├── demo_1.md
-    ├── demo_2.md
-    ├── demo_3.md
-    ├── demo_4.md
-    ├── demo_5.md
-    ├── demo_6.md
-    ├── demo_7.md
-    └── demo_8.md
-```
 
-and the rules are simple:
+!!! note
 
-* The root folder holds the demo page,
-* each subfolder stands for a section/subsection,
-* each `.md` file is a complete demo.
+    Please read the [`Documenter.jl` documentation](https://juliadocs.github.io/Documenter.jl/stable/) first if you're unfamiliar with the julia documentation system.
 
-This package generates the [simplest demopage](@ref simplest_demopage) for you.
+
+## Package features
+
+* a plugin package to `Documenter.jl`.
+* magically generate an index page for all demos.
+* minimal configuration.
+* 🚧 all demos are tested by CI.
+
+## Manual Outline
+
+* [Quick Start](@ref quickstart) helps you set up this package easily.
+* [Concepts](@ref concepts) explains the basic bulding block of this package.
+* [Package References](@ref package_references) are detailed documentation of this package.
