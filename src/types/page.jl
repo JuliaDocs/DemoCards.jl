@@ -130,11 +130,13 @@ function load_config(page::DemoPage, key)
 
         template_file = config[key]
         template_path = joinpath(page.root, template_file)
-        check_ext(template_path, :markdown)
-        template = read(template_path, String)
 
-        validate_page_template(template, page)
-        return template
+        check_ext(template_path, :markdown)
+        if 1 != sum(occursin.("{{{sections}}}", readlines(template_path)))
+            throw("invalid template file $(template_path): it should has one and only one {{{sections}}}")
+        end
+
+        return read(template_path, String)
     else
         throw("Unrecognized key $(key) for DemoPage")
     end
@@ -179,11 +181,6 @@ function get_default_template(page::DemoPage)
     content = "{{{sections}}}" # render by Mustache
     footer = ""
     return header * content * footer
-end
-
-function validate_page_template(template::String, page::DemoPage)
-    # TODO: we need to check if there exists one and only one `{{sections}}` placeholder
-    true
 end
 
 # markdown title syntax:
