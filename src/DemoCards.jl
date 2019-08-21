@@ -20,9 +20,10 @@ include("types/page.jl")
 include("utils.jl")
 include("show.jl")
 include("generate.jl")
+include("cardthemes.jl")
 
 export MarkdownDemoCard, DemoSection, DemoPage,
-       generate, makedemos
+       generate, makedemos, cardtheme
 
 
 """

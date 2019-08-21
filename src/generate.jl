@@ -76,6 +76,26 @@ function makedemos(source::String;
     return joinpath(relative_root, "index.md")
 end
 
+"""
+    cardtheme(theme::AbstractString) -> path
+
+Currently supported themes are:
+
+* `minimal`
+"""
+function cardtheme(theme::AbstractString = "minimal";
+                   root::AbstractString = "docs",
+                   destination::String = "democards")::String
+    relative_root = destination
+    absolute_root = joinpath(root, "src", relative_root)
+    isdir(absolute_root) || mkpath(absolute_root)
+
+    filename = "cardtheme.css"
+    write(joinpath(absolute_root, filename), read_cardtheme(theme))
+
+    return joinpath(relative_root, filename)
+end
+
 const card_section_template = mt"""
 ```@raw html
 <div class="card-section">
