@@ -18,7 +18,7 @@ You can manage an extra `config.json` file to customize rendering of a demo page
 Supported items are:
 
 * `order`: specify the sections order. By default, it's case-insensitive alphabetic order.
-* `template`: path to template filename. The content of the template file should has one and only one `{{{sections}}}`.
+* `template`: path to template filename. The content of the template file should has one and only one `{{{democards}}}`.
 * `title`: specify the title of this demo page. By default, it's the folder name of `root`. Will be override by `template`.
 
 The following is an example of `config.json`:
@@ -132,8 +132,8 @@ function load_config(page::DemoPage, key)
         template_path = joinpath(page.root, template_file)
 
         check_ext(template_path, :markdown)
-        if 1 != sum(occursin.("{{{sections}}}", readlines(template_path)))
-            throw("invalid template file $(template_path): it should has one and only one {{{sections}}}")
+        if 1 != sum(occursin.("{{{democards}}}", readlines(template_path)))
+            throw("invalid template file $(template_path): it should has one and only one {{{democards}}}")
         end
 
         return read(template_path, String)
@@ -178,7 +178,7 @@ get_default_order(page::DemoPage) =
 function get_default_template(page::DemoPage)
     header = "# $(page.title)\n\n"
     # TODO: by doing this we loss the control on section-level template
-    content = "{{{sections}}}" # render by Mustache
+    content = "{{{democards}}}" # render by Mustache
     footer = ""
     return header * content * footer
 end
@@ -214,7 +214,10 @@ function parse_template(page::DemoPage)::Dict
 
     m = match(regex_md_simple_title, contents)
     if !isnothing(m)
-        return Dict(title=>m.captures[1])
+        title = m.captures[1]
+        # default documenter id has -1 suffix
+        id = replace(title, ' ' => '-') * "-1"
+        return Dict(title=>title, id=>id)
     end
 
     return Dict()

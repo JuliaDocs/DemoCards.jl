@@ -13,13 +13,13 @@ Processing pipeline:
 4. save/copy cover images
 
 !!! note
-    By default, the source demo files are read, processed and save to `docs/src/demopages`,
+    By default, the source demo files are read, processed and save to `docs/src/democards`,
     so if you put all source demo files in `docs/src`, there will be a duplication of files and assets.
 
 # Keywords
 
 * `root::String`: root path to the whole documentaion. By default `docs`.
-* `destination::String`: By default `demopages`.
+* `destination::String`: By default `democards`.
 
 # Examples
 
@@ -56,7 +56,7 @@ makedocs(format = format,
 """
 function makedemos(source::String;
                    root::String = "docs",
-                   destination::String = "demopages")::String
+                   destination::String = "democards")::String
     page = DemoPage(joinpath(root, source))
 
     relative_root = joinpath(destination, basename(page))
@@ -118,7 +118,7 @@ end
 generate(io::IO, page::DemoPage) = write(io, generate(page))
 function generate(page::DemoPage)
     # TODO: Important: we need to render section by section
-    items = Dict("sections" => generate(page.sections))
+    items = Dict("democards" => generate(page.sections))
     Mustache.render(page.template, items)
 end
 
