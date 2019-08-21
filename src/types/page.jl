@@ -91,6 +91,7 @@ basename(page::DemoPage) = basename(page.root)
 
 function DemoPage(root::String)::DemoPage
     isdir(root) || throw("page root should be a valid dir, instead it's $(root)")
+    root = rstrip(root, '/') # otherwise basename(root) will returns `""`
 
     section_paths = filter(x->isdir(x)&&!(basename(x) in ignored_dirnames),
                            joinpath.(root, readdir(root)))
@@ -123,12 +124,7 @@ function load_config(page::DemoPage, key)
         validate_order(order, page)
         return order
     elseif key == "title"
-        haskey(config, key) || return get_default_title(page)
-
-        if haskey(config, "template")
-            @warn("config item \"title\" in $(path) is suppressed by \"template\"")
-        end
-        return config[key]
+        return load_title(page, config)
     elseif key == "template"
         haskey(config, key) || return get_default_template(page)
 
@@ -144,6 +140,36 @@ function load_config(page::DemoPage, key)
     end
 end
 
+"""
+    load_title(page::DemoPage, config)
+
+load title from config using the following priority rules:
+
+1. parse the title out from the template file
+2. use config["title"]
+3. fallback: use the folder name
+"""
+function load_title(page::DemoPage, config)
+    key = "title"
+    title = load_template_config(page, key)
+
+    if haskey(config, key)
+        if isnothing(title)
+            return config[key]
+        else
+            path = joinpath(page.root, config_filename)
+            @warn("config item $(key) in $(path) is suppressed by \"template\"")
+            return title
+        end
+    else
+        if isnothing(title)
+            return basename(page)
+        else
+            return title
+        end
+    end
+end
+
 get_default_order(page::DemoPage) =
     sort(basename.(page.sections), by = x->lowercase(x))
 
@@ -155,9 +181,49 @@ function get_default_template(page::DemoPage)
     return header * content * footer
 end
 
-get_default_title(page::DemoPage) = basename(page)
-
 function validate_page_template(template::String, page::DemoPage)
     # TODO: we need to check if there exists one and only one `{{sections}}` placeholder
     true
+end
+
+# markdown title syntax:
+# 1. # title
+# 2. # [title](@id id)
+const regex_md_simple_title = r"^\s*#\s*([^\[\s]+)"
+const regex_md_title = r"^\s#\s\[(.*)\]\(\@id\s*([^\s]*)\)"
+
+"""
+    parse_template(page::DemoPage)
+
+parse the template file of page and return a configuration dict.
+
+Currently supported items are: `title`, `id`.
+
+!!! note
+
+    An empty dict will be returned if page doesn't have a template file.
+"""
+function parse_template(page::DemoPage)::Dict
+    # TODO: this function isn't good; it just works
+    if !isfile(page.template)
+        return Dict()
+    end
+
+    contents = read(page.template, String)
+    m = match(regex_md_title, contents)
+    if !isnothing(m)
+        return Dict(id=>m.captures[2], title=>m.captures[1])
+    end
+
+    m = match(regex_md_simple_title, contents)
+    if !isnothing(m)
+        return Dict(title=>m.captures[1])
+    end
+
+    return Dict()
+end
+
+function load_template_config(page::DemoPage, key)
+    config = parse_template(page)
+    get(config, key, nothing)
 end
