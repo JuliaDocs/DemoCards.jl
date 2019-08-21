@@ -83,7 +83,7 @@ basename(sec::DemoSection) = basename(sec.root)
 function DemoSection(root::String)::DemoSection
     isdir(root) || throw("section root should be a valid dir, instead it's $(root)")
 
-    path = joinpath.(root, readdir(root))
+    path = joinpath.(root, filter(x->!startswith(x, "."), readdir(root))) # filter out hidden files
     card_paths = filter(x->isfile(x) && !endswith(x, config_filename), path)
     section_paths = filter(x->isdir(x)&&!(basename(x) in ignored_dirnames), path)
 

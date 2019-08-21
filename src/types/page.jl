@@ -93,8 +93,9 @@ function DemoPage(root::String)::DemoPage
     isdir(root) || throw("page root should be a valid dir, instead it's $(root)")
     root = rstrip(root, '/') # otherwise basename(root) will returns `""`
 
+    path = joinpath.(root, filter(x->!startswith(x, "."), readdir(root))) # filter out hidden files
     section_paths = filter(x->isdir(x)&&!(basename(x) in ignored_dirnames),
-                           joinpath.(root, readdir(root)))
+                           path)
     sections = map(DemoSection, section_paths)
 
 
