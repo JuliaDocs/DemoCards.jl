@@ -1,12 +1,12 @@
 # [Quick Start](@id quickstart)
 
-This section describes how you can set up your demos easily.
+This section describes how you can set up your demos easily in four lines of codes_.
 
 ## Manage your demo files
 
-The rules are simple:
+The rules of demo management are super simple:
 
-* you need one demo page to hold all the demos
+* you need one demo page to hold all the demo files
 * a [demo page](@ref concepts_page) has several [demo sections](@ref concepts_section)
 * a demo section either
     * has other demo sections as nested subsections, or,
@@ -48,9 +48,9 @@ DemoPage(root)
 
 Deployment is also very simple:
 
-1. load a style sheet using `cardtheme`
+1. load a theme using `cardtheme`
 2. create a demopage using `makedemos`
-3. pass the result to `Documenter`
+3. pass the results to `Documenter.jl`
 
 ```julia
 theme = cardtheme()
@@ -66,18 +66,23 @@ makedocs(format = format,
          sitename = "Awesome demos")
 ```
 
-After it's set up, you can now focus on contributing more demos. For other
-works, you can leave it to `DemoCards.jl` :D
+!!! info
 
-Check the [Simplest Demopage](@ref simplest_demopage) to see how this page
-looks with the minimal configuration.
+    🚧 `cardtheme` is currrently at its draft stage. It simply copies an
+    existing css file and returns you a path to it.
+
+After it's set up, you can now focus on contributing more demos and leave
+other works to `DemoCards.jl`.
+
+Check the [Simplest Demopage](@ref simplest_demopage) to see what this page
+looks like with the minimal configuration.
 
 ## What DemoCards.jl does
 
 The pipeline of [`makedemos`](@ref DemoCards.makedemos) is:
 
-1. analyze the structure of your demo folder and extracts configuration information
-2. copy assets without processing
+1. analyze the structure of your demo folder and extracts supplementary configuration information
+2. copy "`assets`" folder without processing
 3. preprocess demo files and save it
 4. process and save cover images
 
@@ -86,24 +91,34 @@ to `Documenter.jl` 😃
 
 !!! tip
 
-    By default, `makedemos` generates all necessary files to `docs/src/democards`,
+    By default, `makedemos` generates all the necessary files to `docs/src/democards`,
     so it's recommended to add it to the `.gitignore` of your project.
+
+For advanced usage of `DemoCards.jl`, you need to understand the core [concepts](@ref concepts) of it.
+
+## Some known issues
+
+!!! warning
+
+    It's better to save your demo files outside `docs/src`.
+
+    If you store all your source demo files in `docs/src`, e.g., `docs/src/demos`,
+    `DemoCards.jl` will make a copy of it in `docs/src/democards`. This means
+    `Documenter.jl` will copy and process the same files _twice_.
 
 !!! warning
 
     Currently, there's no guarantee that this function works for untypical
-    documentation folder structure. By *typical*, it is:
+    documentation folder structure. By the name **typical**, it is:
 
-    ```text
+    ```julia
     .
     ├── Project.toml
     ├── docs
-    │   ├── demos
+    │   ├── demos # manage your demos outside docs/src
     │   ├── make.jl
     │   ├── Project.toml
     │   └── src
     ├── src
     └── test
     ```
-
-For advanced usage of `DemoCards.jl`, you need to understand the core [concepts](@ref concepts) of it.

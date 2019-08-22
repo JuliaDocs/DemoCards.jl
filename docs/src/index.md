@@ -15,7 +15,7 @@ A plugin package to [`Documenter.jl`](https://github.com/JuliaDocs/Documenter.jl
 * a plugin package to `Documenter.jl`.
 * magically generate an index page for all demos.
 * minimal configuration.
-* 🚧 all demos are tested by CI.
+* all demos can be tested by CI.
 
 ## Manual Outline
 

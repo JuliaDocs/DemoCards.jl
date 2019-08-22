@@ -1,27 +1,22 @@
 # [Concepts](@id concepts)
 
 This page is a brief introduction on the core types provided by `DemoCards.jl`.
-Knowing them helps you configure your demo pages. For details description, please
+Knowing them helps you configure your demo pages. For detailed description, please
 refer to the [Package References](@ref package_references).
 
 ## [`DemoPage`](@id concepts_page)
 
 [`DemoPage`](@ref DemoCards.DemoPage) is the root type in `DemoCards.jl`, everything
-else is contained in it directly or indirectly. It has following fields:
-
-* `root`: root path of all your demos in this page.
-* `sections`: holds a list of demo sections.
-* `template`: your gallery page is generated from the template.
-* `title`: page title.
+else is contained in it directly or indirectly.
 
 You can configure your `DemoPage` by maintaining a `config.json` file, supported
 configuration keys are:
 
-* `order`: specify the sections order. By default, it's case-insensitive alphabetic order.
+* `order`: specify the section orders. By default, it's case-insensitive alphabetic order.
 * `title`: specify the title of this demo page.
-* `template`: path to template filename.
+* `template`: template filename.
 
-A valid template should contain one and only one `{{{democards}}}`. For example,
+A valid template is a markdown file that contains one and only one `{{{democards}}}`. For example,
 
 ```markdown
 # Examples
@@ -45,24 +40,31 @@ Here's an example of `config.json` for `DemoPage`:
 }
 ```
 
+!!! note
+
+    Key `template` has higher priority over other keys.
+
+    For example, if you provide both `template` and `title` in your `config.json`
+    and the template file happens to have a title, `title` in `config.json` will
+    be suppressed.
+
 ## [`DemoSection`](@id concepts_section)
 
 [`DemoSection`](@ref DemoCards.DemoSection) defines the structure of your demo page.
-It has following fields:
+It has the following fields:
 
-* `root`: root path to all the demos in this section.
 * `cards`: holds a list of demo cards.
 * `subsections`: holds a list of demo subsections.
-* `title`: section title.
 
 !!! warning
+
     A `DemoSection` can't directly holds both cards and subsections; either of them
     should be empty vector.
 
-You can configure your `DemoSection` by maintaining a `config.json` file, supported
-configuration keys are:
+Similar to `DemoPage`, you can configure your `DemoSection` by maintaining a `config.json`
+file, supported configuration keys are:
 
-* `order`: specify the cards order or subsections order. By default, it'scase-insensitive alphabetic order.
+* `order`: specify the cards order or subsections order. By default, it's case-insensitive alphabetic order.
 * `title`: specify the title of this demo section.
 
 The following is an example of `config.json`:
@@ -77,11 +79,6 @@ The following is an example of `config.json`:
 }
 ```
 
-!!! note
-
-    If you've specified orders in `config.json`, then for every new demos, you need to add
-    its filename to `order`. `DemoCards.jl` isn't smart enough to guess what you really want.
-
 ## [DemoCard](@id concepts_card)
 
 In simple words, a demo card consists of a cover image, a one-line description, and
@@ -90,14 +87,18 @@ a link to its content -- just like a card.
 !!! info
 
     🚧 Currently, `DemoCards.jl` supports only markdown files. In the future it will
-    support julia source codes using [`Literate.jl`](https://github.com/fredrikekre/Literate.jl).
+
+    * support julia source codes using [`Literate.jl`](https://github.com/fredrikekre/Literate.jl)
+    * support simple URL link to other websites
 
 ### [`MarkdownDemoCard`](@id concepts_mdcard)
 
 [`MarkdownDemoCard`](@ref DemoCards.MarkdownDemoCard) is a demo card whose contents
-are written in the markdown format. The markdown files are almost directly passed
-to `Documenter.jl`, check the [syntax of Documenter.jl](https://juliadocs.github.io/Documenter.jl/stable/man/syntax/)
-for how to write the julia flavor markdown files.
+are written in the markdown format.
+
+The markdown files are almost directly passed to `Documenter.jl`, check the
+[syntax of Documenter.jl](https://juliadocs.github.io/Documenter.jl/stable/man/syntax/)
+if you are unfamiliar with the Julia flavor markdown syntax.
 
 You can configure your markdown demos by adding a [YAML format front matter](https://jekyllrb.com/docs/front-matter/).
 
@@ -126,10 +127,16 @@ Currently, there're two special names used in `DemoCards.jl`:
 * `assets` is a preserved name for `DemoCards.jl` to escape preprocessing
 * `config.json` is used to tell `DemoCards.jl` more informations of current folder.
 
-To free you from managing/re-organizing demo structure, there're two other decisions here:
+To free you from managing/re-organizing demo structure, some decisions are made here:
 
-* each folder maintains a `config.json`
-* path informations are always relative path
+* maintain a `config.json` in each folder
+* always use relative path
+* all information is supplementary and hence optional
+
+!!! note
+
+    If you've specified orders in `config.json`, then for every new demos, you need to add
+    its filename to `order`. `DemoCards.jl` isn't smart enough to guess what you really want.
 
 ---
 

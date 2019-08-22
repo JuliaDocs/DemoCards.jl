@@ -6,7 +6,7 @@ of this page.
 
 Here's the folder structure of this demo page:
 
-```text
+```julia
 docs/demos/gallery_of_packages/
 ├── assets
 │   └── juliaimages.png
@@ -24,6 +24,9 @@ docs/demos/gallery_of_packages/
     ├── julia.md
     └── literate.md
 ```
+
+Although the contents are trivial, this page already shows almost all the
+ability provided by `DemoCards.jl` now.
 
 ---
 
