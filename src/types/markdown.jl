@@ -91,7 +91,7 @@ function load_config(card::MarkdownDemoCard, key)
     elseif key == "title"
         return get(config, key) do
             name_without_ext = splitext(basename(card))[1]
-            uppercasefirst(name_without_ext)
+            strip(replace(uppercasefirst(name_without_ext), "_" => " "))
         end
     elseif key == "description"
         return get(config, key, card.title)

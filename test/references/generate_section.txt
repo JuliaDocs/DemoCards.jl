@@ -15,7 +15,7 @@
 <div class="card-text">
 ```
 
-[Demo_1](@ref demo_1-1)
+[Demo 1](@ref demo_1-1)
 ```@raw html
 </div>
 </div>
@@ -33,7 +33,7 @@
 <div class="card-text">
 ```
 
-[Demo_2](@ref demo_2-1)
+[Demo 2](@ref demo_2-1)
 ```@raw html
 </div>
 </div>

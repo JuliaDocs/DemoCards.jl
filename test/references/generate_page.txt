@@ -17,7 +17,7 @@
 <div class="card-text">
 ```
 
-[Demo_1](@ref demo_1-1)
+[Demo 1](@ref demo_1-1)
 ```@raw html
 </div>
 </div>
@@ -35,7 +35,7 @@
 <div class="card-text">
 ```
 
-[Demo_2](@ref demo_2-1)
+[Demo 2](@ref demo_2-1)
 ```@raw html
 </div>
 </div>
@@ -65,7 +65,7 @@
 <div class="card-text">
 ```
 
-[Demo_3](@ref demo_3-1)
+[Demo 3](@ref demo_3-1)
 ```@raw html
 </div>
 </div>
@@ -83,7 +83,7 @@
 <div class="card-text">
 ```
 
-[Demo_4](@ref demo_4-1)
+[Demo 4](@ref demo_4-1)
 ```@raw html
 </div>
 </div>
@@ -112,7 +112,7 @@
 <div class="card-text">
 ```
 
-[Demo_5](@ref demo_5-1)
+[Demo 5](@ref demo_5-1)
 ```@raw html
 </div>
 </div>
@@ -130,7 +130,7 @@
 <div class="card-text">
 ```
 
-[Demo_6](@ref demo_6-1)
+[Demo 6](@ref demo_6-1)
 ```@raw html
 </div>
 </div>
