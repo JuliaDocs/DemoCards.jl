@@ -1,4 +1,5 @@
 using DemoCards
+using DemoCards: DemoPage, generate
 using Test
 using ReferenceTests
 
