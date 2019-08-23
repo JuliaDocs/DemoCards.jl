@@ -19,6 +19,6 @@ makedocs(format = format,
             ],
             "Package References" => "references.md"
          ],
-         sitename = "DemoCards")
+         sitename = "DemoCards.jl")
 
 deploydocs(repo = "github.com/johnnychen94/DemoCards.jl.git")
