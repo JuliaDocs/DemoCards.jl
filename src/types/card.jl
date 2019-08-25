@@ -28,4 +28,35 @@ function validate_id(id::AbstractString, card::AbstractDemoCard)
     end
 end
 
+function load_config(card::T, key) where T <: AbstractDemoCard
+    config = parse(card)
+
+    if key == "cover"
+        root = dirname(card.path)
+        haskey(config, key) || return nothing
+
+        cover_path = joinpath(dirname(card.path), config[key])
+        isfile(cover_path) || throw("$(cover_path) isn't a valid image file for cover.")
+        return cover_path
+    elseif key == "id"
+        haskey(config, key) || return get_default_id(card)
+
+        id = config[key]
+        validate_id(id, card)
+        return id
+    elseif key == "title"
+        return get(config, key) do
+            name_without_ext = splitext(basename(card))[1]
+            strip(replace(uppercasefirst(name_without_ext), "_" => " "))
+        end
+    elseif key == "description"
+        return get(config, key, card.title)
+    else
+        throw("Unrecognized key $(key) for $(T)")
+    end
+end
+
+
+### load concrete implementations
+
 include("markdown.jl")

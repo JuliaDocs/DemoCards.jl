@@ -62,52 +62,47 @@ function MarkdownDemoCard(path::String)::MarkdownDemoCard
     MarkdownDemoCard(path, cover, id, title, description)
 end
 
-function load_config(card::MarkdownDemoCard, key)
-    config = parse(card)
-
-    if key == "cover"
-        root = dirname(card.path)
-        if haskey(config, key)
-            cover_path = joinpath(root, config[key])
-            isfile(cover_path) || throw("$(cover_path) isn't a valid image file for cover.")
-            return cover_path
-        else
-            # load the first valid image path
-            # only markdown syntax is supported now
-            contents = read(card.path, String)
-            image_paths = map(eachmatch(regex_md_img, contents)) do m
-                joinpath(root, m.captures[1])
-            end
-            filter!(isfile, image_paths)
-
-            return isempty(image_paths) ? nothing : first(image_paths)
-        end
-    elseif key == "id"
-        haskey(config, key) || return get_default_id(card)
-
-        id = config[key]
-        validate_id(id, card)
-        return id
-    elseif key == "title"
-        return get(config, key) do
-            name_without_ext = splitext(basename(card))[1]
-            strip(replace(uppercasefirst(name_without_ext), "_" => " "))
-        end
-    elseif key == "description"
-        return get(config, key, card.title)
-    else
-        throw("Unrecognized key $(key) for MarkdownDemoCard")
-    end
-end
-
 function get_default_id(card::MarkdownDemoCard)
     name_without_ext = splitext(basename(card))[1]
     # default documenter id has -1 suffix
     replace(name_without_ext, ' ' => '-') * "-1"
 end
 
+"""
+    parse(card::MarkdownDemoCard)
+
+parse out configuration of markdown files and return it as a `Dict`.
+
+Possible configuration resources are:
+
+* YAML front matter
+* image links
+
+!!! note
+
+    Users of this function need to use `haskey` to check if keys are existed.
+    They also need to validate the values.
+"""
 function parse(card::MarkdownDemoCard)
-    # TODO: we don't actually need to read the whole file
     contents = split(read(card.path, String), "---\n")
-    length(contents) == 1 ? Dict() : YAML.load(strip(contents[2]))
+
+    if length(contents) == 1
+        config = Dict()
+    else
+        config = YAML.load(strip(contents[2]))
+
+        # set the first valid image path as cover
+        # TODO: only markdown syntax is supported now
+        body = join(contents[3:end])
+        image_paths = map(eachmatch(regex_md_img, body)) do m
+            image_link = m.captures[1]
+            joinpath(card.path, image_link)
+        end
+        filter!(isfile, image_paths)
+        if !isempty(image_paths)
+            config["cover"] = first(image_paths)
+        end
+    end
+
+    return config
 end
