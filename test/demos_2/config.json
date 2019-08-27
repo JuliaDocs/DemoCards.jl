@@ -1,7 +1,0 @@
-{
-    "template": "test_template.md",
-    "order": [
-        "basic",
-        "advanced"
-    ]
-}
