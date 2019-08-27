@@ -1,0 +1,7 @@
+{
+    "template": "template.md",
+    "order": [
+        "subsection_1",
+        "subsection_2"
+    ]
+}
