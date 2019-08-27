@@ -62,12 +62,6 @@ function MarkdownDemoCard(path::String)::MarkdownDemoCard
     MarkdownDemoCard(path, cover, id, title, description)
 end
 
-function get_default_id(card::MarkdownDemoCard)
-    name_without_ext = splitext(basename(card))[1]
-    # default documenter id has -1 suffix
-    replace(name_without_ext, ' ' => '-') * "-1"
-end
-
 """
     parse(card::MarkdownDemoCard)
 
