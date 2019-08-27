@@ -40,6 +40,6 @@ function read_cardtheme(theme::AbstractString)
     if theme == "minimal"
         return theme_minimal
     else
-        throw("no theme $(theme) found.")
+        throw(ArgumentError("no theme $(theme) found."))
     end
 end

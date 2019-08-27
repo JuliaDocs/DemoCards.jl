@@ -81,16 +81,16 @@ end
 basename(sec::DemoSection) = basename(sec.root)
 
 function DemoSection(root::String)::DemoSection
-    isdir(root) || throw("section root should be a valid dir, instead it's $(root)")
+    isdir(root) || throw(ArgumentError("section root should be a valid dir, instead it's $(root)"))
 
     path = joinpath.(root, filter(x->!startswith(x, "."), readdir(root))) # filter out hidden files
     card_paths = filter(x->isfile(x) && !endswith(x, config_filename), path)
     section_paths = filter(x->isdir(x)&&!(basename(x) in ignored_dirnames), path)
 
     if isempty(card_paths) && isempty(section_paths)
-        throw("emtpy section folder $(root)")
+        throw(ArgumentError("emtpy section folder $(root)"))
     elseif !xor(isempty(card_paths), isempty(section_paths))
-        throw("section folder $(root) should only hold either cards or subsections")
+        throw(ArgumentError("section folder $(root) should only hold either cards or subsections"))
     end
 
     # first consturct an incomplete section
@@ -127,7 +127,7 @@ function load_config(sec::DemoSection, key)
     elseif key == "title"
         get(config, key, basename(sec))
     else
-        throw("Unrecognized key $(key) for DemoSection")
+        throw(ArgumentError("Unrecognized key $(key) for DemoSection"))
     end
 end
 

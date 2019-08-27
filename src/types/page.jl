@@ -90,7 +90,7 @@ end
 basename(page::DemoPage) = basename(page.root)
 
 function DemoPage(root::String)::DemoPage
-    isdir(root) || throw("page root should be a valid dir, instead it's $(root)")
+    isdir(root) || throw(ArgumentError("page root should be a valid dir, instead it's $(root)"))
     root = rstrip(root, '/') # otherwise basename(root) will returns `""`
 
     path = joinpath.(root, filter(x->!startswith(x, "."), readdir(root))) # filter out hidden files
@@ -134,12 +134,12 @@ function load_config(page::DemoPage, key)
 
         check_ext(template_path, :markdown)
         if 1 != sum(occursin.("{{{democards}}}", readlines(template_path)))
-            throw("invalid template file $(template_path): it should has one and only one {{{democards}}}")
+            throw(ArgumentError("invalid template file $(template_path): it should has one and only one {{{democards}}}"))
         end
 
         return read(template_path, String)
     else
-        throw("Unrecognized key $(key) for DemoPage")
+        throw(ArgumentError("Unrecognized key $(key) for DemoPage"))
     end
 end
 

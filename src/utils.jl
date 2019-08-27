@@ -1,5 +1,5 @@
 function validate_file(path, filetype = :text)
-    isfile(path) || throw("$(path) is not a valid file")
+    isfile(path) || throw(ArgumentError("$(path) is not a valid file"))
     check_ext(path, filetype)
 end
 
@@ -8,9 +8,9 @@ function check_ext(path, filetype = :text)
     if filetype == :text
         return true
     elseif filetype == :markdown
-        return lowercase(ext) in markdown_exts || throw("$(path) is not a valid markdown file")
+        return lowercase(ext) in markdown_exts || throw(ArgumentError("$(path) is not a valid markdown file"))
     else
-        throw("Unrecognized filetype $(filetype)")
+        throw(ArgumentError("Unrecognized filetype $(filetype)"))
     end
 end
 
@@ -29,7 +29,7 @@ function validate_order(order::AbstractArray, x::Union{DemoPage, DemoSection})
         entries = join(string.(setdiff(default_order, order)), "\n")
         isempty(entries) || @warn("The following entries in $(config_filepath) are missing:\n$(entries)")
 
-        throw("incorrect order in $(config_filepath), please check the previous warning message.")
+        throw(ArgumentError("incorrect order in $(config_filepath), please check the previous warning message."))
     end
 end
 

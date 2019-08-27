@@ -16,7 +16,7 @@ function democard(path::String)::AbstractDemoCard
     if ext in markdown_exts
         return MarkdownDemoCard(path)
     else
-        throw("unrecognized democard format $(path)")
+        throw(ArgumentError("unrecognized democard format $(path)"))
     end
 end
 
@@ -24,7 +24,7 @@ basename(x::AbstractDemoCard) = basename(x.path)
 
 function validate_id(id::AbstractString, card::AbstractDemoCard)
     if occursin(' ', id)
-        throw("invalid id in $(card.path), it should not contain spaces.")
+        throw(ArgumentError("invalid id in $(card.path), it should not contain spaces."))
     end
 end
 
@@ -36,7 +36,7 @@ function load_config(card::T, key) where T <: AbstractDemoCard
         haskey(config, key) || return nothing
 
         cover_path = joinpath(dirname(card.path), config[key])
-        isfile(cover_path) || throw("$(cover_path) isn't a valid image file for cover.")
+        isfile(cover_path) || throw(ArgumentError("$(cover_path) isn't a valid image file for cover."))
         return cover_path
     elseif key == "id"
         haskey(config, key) || return get_default_id(card)
@@ -52,7 +52,7 @@ function load_config(card::T, key) where T <: AbstractDemoCard
     elseif key == "description"
         return get(config, key, card.title)
     else
-        throw("Unrecognized key $(key) for $(T)")
+        throw(ArgumentError("Unrecognized key $(key) for $(T)"))
     end
 end
 
