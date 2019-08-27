@@ -44,22 +44,24 @@ const regex_md_img = r"!\[[^\]]*\]\(([^\s]*)\)"
 # markdown title syntax:
 # 1. # title
 # 2. # [title](@id id)
-const regex_md_simple_title = r"^\s*#\s*([^\[\s]+)"
-const regex_md_title = r"^\s#\s\[[^\]]*\]\(\@id\s*([^\s]*)\)"
+const regex_md_simple_title = r"^\s*#\s*([^\[\]\n]+)"
+const regex_md_title = r"^\s*#\s*\[([^\]]+)\]\(\@id\s+([^\s\)\n]+)\)"
 
 
 """
+    parse_markdown(contenst::String)
     parse_markdown(path::String)
 
 parse the template file of page and return a configuration dict.
 
 Currently supported items are: `title`, `id`.
 """
-function parse_markdown(path::String)::Dict
+function parse_markdown(contents::String)::Dict
     # TODO: this function isn't good; it just works
-    isfile(path) || return Dict()
+    if isfile(contents)
+        contents = read(contents, String)
+    end
 
-    contents = read(path, String)
     m = match(regex_md_title, contents)
     if !isnothing(m)
         return Dict("title"=>m.captures[1], "id"=>m.captures[2])
