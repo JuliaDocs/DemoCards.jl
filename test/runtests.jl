@@ -1,22 +1,17 @@
 using DemoCards
-using DemoCards: DemoPage, generate
+using DemoCards: democard, MarkdownDemoCard, DemoSection, DemoPage
 using Test
 using ReferenceTests
 
-# use include("runtests.jl") instead of include("test/runtests.jl")
+# support both `include("runtests.jl")` and `include("test/runtests.jl")`
+test_root = basename(pwd()) == "test" ? pwd() : joinpath(pwd(), "test")
 
-@testset "DemoCards.jl" begin
-    @test_nowarn page = DemoPage("demos_1")
-    @test_nowarn DemoPage("demos_2")
+include("types/card.jl")
+include("types/section.jl")
+include("types/page.jl")
 
-    @testset "render result" begin
-        page = DemoPage("demos_1")
-        # .md format isn't supported by FileIO
-        @test_reference "references/section.txt" page.sections[1]
-        @test_reference "references/page.txt" page
-        @test_reference "references/generate_section.txt" generate(page.sections[1])
-        @test_reference "references/generate_page.txt" generate(page)
-    end
-end
+include("generate.jl")
+include("show.jl")
+include("utils.jl")
 
 nothing
