@@ -39,13 +39,13 @@ end
 # I'm not expert of regexes -- Johnny Chen
 
 # markdown image syntax: ![title](path)
-const regex_md_img = r"!\[[^\s]*\]\(([^\s]*)\)"
+const regex_md_img = r"!\[[^\]]*\]\(([^\s]*)\)"
 
 # markdown title syntax:
 # 1. # title
 # 2. # [title](@id id)
 const regex_md_simple_title = r"^\s*#\s*([^\[\s]+)"
-const regex_md_title = r"^\s#\s\[(.*)\]\(\@id\s*([^\s]*)\)"
+const regex_md_title = r"^\s#\s\[[^\]]*\]\(\@id\s*([^\s]*)\)"
 
 
 """
