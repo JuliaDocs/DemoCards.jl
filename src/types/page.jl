@@ -184,7 +184,19 @@ function get_default_template(page::DemoPage)
     return header * content * footer
 end
 
+"""
+    load_template_config(page::DemoPage, key)
+
+parse out and return value of `key` from the template file of `page`.
+
+If `page` doesn't have a template file, it returns `nothing`.
+"""
 function load_template_config(page::DemoPage, key)
-    config = parse_markdown(page.template)
+    path = joinpath(page.root, config_filename)
+    config = isfile(path) ? JSON.parsefile(path) : Dict()
+    template_path = joinpath(page.root, get(config, "template", ""))
+    isfile(template_path) || return nothing
+
+    config = parse_markdown(template_path)
     get(config, key, nothing)
 end
