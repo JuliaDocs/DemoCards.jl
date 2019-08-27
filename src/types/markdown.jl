@@ -88,15 +88,18 @@ function parse(card::MarkdownDemoCard)
 
     if length(contents) == 1
         config = Dict()
+        body = join(contents)
     else
         config = YAML.load(strip(contents[2]))
+        body = join(contents[3:end])
+    end
 
+    if !haskey(config, "cover")
         # set the first valid image path as cover
         # TODO: only markdown syntax is supported now
-        body = join(contents[3:end])
         image_paths = map(eachmatch(regex_md_img, body)) do m
             image_link = m.captures[1]
-            joinpath(card.path, image_link)
+            joinpath(dirname(card.path), image_link)
         end
         filter!(isfile, image_paths)
         if !isempty(image_paths)
