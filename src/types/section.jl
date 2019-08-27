@@ -81,6 +81,7 @@ end
 basename(sec::DemoSection) = basename(sec.root)
 
 function DemoSection(root::String)::DemoSection
+    root = replace(root, r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
     isdir(root) || throw(ArgumentError("section root should be a valid dir, instead it's $(root)"))
 
     path = joinpath.(root, filter(x->!startswith(x, "."), readdir(root))) # filter out hidden files

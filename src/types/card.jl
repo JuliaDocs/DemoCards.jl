@@ -41,7 +41,7 @@ function load_config(card::T, key) where T <: AbstractDemoCard
         root = dirname(card.path)
         haskey(config, key) || return nothing
 
-        cover_path = joinpath(dirname(card.path), config[key])
+        cover_path = joinpath(root, config[key])
         isfile(cover_path) || throw(ArgumentError("$(cover_path) isn't a valid image file for cover."))
         return cover_path
     elseif key == "id"

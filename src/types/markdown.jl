@@ -92,13 +92,17 @@ function parse(card::MarkdownDemoCard)
         # set the first valid image path as cover
         # TODO: only markdown syntax is supported now
         image_paths = map(eachmatch(regex_md_img, body)) do m
-            image_link = m.captures[1]
-            joinpath(dirname(card.path), image_link)
+            m.captures[1]
         end
-        filter!(isfile, image_paths)
+        filter!(x->isfile(dirname(card.path), x), image_paths)
         if !isempty(image_paths)
             config["cover"] = first(image_paths)
         end
+    end
+
+    if haskey(config, "cover")
+        config["cover"] = replace(config["cover"],
+                                  r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
     end
 
     return config
