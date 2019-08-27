@@ -1,5 +1,5 @@
 @testset "show" begin
-    root = joinpath(test_root, "assets")
+    root = "assets"
 
     sec = DemoSection(joinpath(root, "section", "default"))
     @test_reference joinpath("references", "section.txt") sec

@@ -1,5 +1,5 @@
 @testset "MarkdownDemoCard" begin
-    root = joinpath(test_root, "assets", "card", "markdown")
+    root = joinpath("assets", "card", "markdown")
 
     # default behavior
     simplest = democard(joinpath(root, "simplest.md"))
