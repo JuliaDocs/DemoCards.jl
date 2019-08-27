@@ -1,3 +1,5 @@
+DemoPage("assets\page\default"):
+
 # default
   ## subsection_1
     card_1.md

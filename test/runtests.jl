@@ -3,7 +3,7 @@ using DemoCards: democard, MarkdownDemoCard, DemoSection, DemoPage
 using Test, ReferenceTests, Suppressor
 
 # support both `include("runtests.jl")` and `include("test/runtests.jl")`
-test_root = basename(pwd()) == "test" ? pwd() : joinpath(pwd(), "test")
+test_root = basename(pwd()) == "test" ? "" : "test"
 
 include("types/card.jl")
 include("types/section.jl")
