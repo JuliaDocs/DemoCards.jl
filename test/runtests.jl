@@ -4,7 +4,7 @@ using DemoCards: generate
 using Test, ReferenceTests, Suppressor
 
 # support both `include("runtests.jl")` and `include("test/runtests.jl")`
-test_root = basename(pwd()) == "test" ? "" : "test"
+test_root = basename(pwd()) == "test" ? "." : "test"
 
 cd(test_root) do
     include("types/card.jl")
