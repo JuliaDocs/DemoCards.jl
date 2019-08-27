@@ -1,5 +1,5 @@
 @testset "DemoPage" begin
-    root = joinpath(test_root, "assets", "page")
+    root = joinpath("assets", "page")
 
     # default DemoPage behavior
     page = DemoPage(joinpath(root, "default"))

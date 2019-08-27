@@ -1,4 +1,4 @@
-DemoPage("test/assets/page/default"):
+DemoPage("assets/page/default"):
 
 # default
   ## subsection_1

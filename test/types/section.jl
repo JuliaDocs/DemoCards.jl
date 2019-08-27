@@ -1,5 +1,5 @@
 @testset "DemoSection" begin
-    root = joinpath(test_root, "assets", "section")
+    root = joinpath("assets", "section")
 
     # default section behavior
     sec = DemoSection(joinpath(root, "default"))
