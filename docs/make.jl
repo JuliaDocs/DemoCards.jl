@@ -5,7 +5,8 @@ theme = cardtheme()
 simplest_demopage = makedemos("demos/simplest_demopage")
 gallery_of_packages = makedemos("demos/gallery_of_packages")
 
-format = Documenter.HTML(edit_branch = "master",
+format = Documenter.HTML(edit_link = "master",
+                         prettyurls = get(ENV, "CI", nothing) == "true",
                          assets = [theme])
 
 makedocs(format = format,
