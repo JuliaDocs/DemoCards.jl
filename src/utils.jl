@@ -36,10 +36,8 @@ end
 
 ### regexes
 
-# I'm not expert of regexes -- Johnny Chen
-
 # markdown image syntax: ![title](path)
-const regex_md_img = r"!\[[^\]]*\]\(([^\s]*)\)"
+const regex_md_img = r"^\s*\!\[[^\]]*\]\(([^\s]*)\)"
 
 # markdown title syntax:
 # 1. # title
