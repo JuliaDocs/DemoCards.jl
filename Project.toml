@@ -11,6 +11,11 @@ Mustache = "ffc61752-8dc7-55ee-8c37-f3e9cdd09e70"
 YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 
 [compat]
+FileIO = "1"
+ImageCore = "0.7, 0.8"
+JSON = "0.20, 0.21"
+Mustache = "0.5"
+YAML = "0.3"
 julia = "1"
 
 [extras]
