@@ -113,4 +113,7 @@ function save_democards(root::String, card::JuliaDemoCard)
               " and " *
               "[Literate.jl](https://github.com/fredrikekre/Literate.jl).*\n"
     write(md_path, header, body, footer)
+
+    # 5. filter out source file
+    @suppress Literate.source(src_path, root)
 end
