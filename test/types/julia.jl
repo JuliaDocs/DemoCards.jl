@@ -42,6 +42,11 @@
             @test title_6.id == "custom_id"
             @test title_6.title == "Custom Title"
             @test title_6.description == "Custom Title"
+
+            title_7 = JuliaDemoCard(joinpath(root, "title_7.jl"))
+            @test title_7.id == "custom_id"
+            @test title_7.title == "Custom Title"
+            @test title_7.description == "Custom Title"
         end
 
         @testset "cover" begin

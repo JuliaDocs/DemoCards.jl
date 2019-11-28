@@ -65,9 +65,12 @@ end
 
 function parse(card::JuliaDemoCard)
     contents = readlines(card.path)
-    if contents[1] == "# ---"
-        # start with a YAML format meta data
-        offset = findall(x->x=="# ---", contents)[2] # TODO: support "#---"
+    offsets = map(contents) do line
+        m = match(regex_jl_yaml, line)
+        m isa RegexMatch
+    end
+    if !isempty(offsets) && offsets[1]==1
+        offset = findall(offsets)[2]
         frontmatter = map(x->lstrip(x, '#'), contents[2:offset-1])
         config = YAML.load(join(frontmatter, "\n"))
 
@@ -123,8 +126,11 @@ function save_democards(root::String, card::JuliaDemoCard)
 
     # 1. source file
     contents = readlines(card.path)
-    offsets = findall(x->x=="# ---", contents) # TODO: support "#---"
-    body = isempty(offsets) ? contents : contents[offsets[2]+1:end]
+    offsets = map(contents) do line
+        m = match(regex_jl_yaml, line)
+        m isa RegexMatch
+    end
+    body = isempty(offsets) && offsets[1]==1 ? contents : contents[offsets[2]+1:end]
     body = join(body, "\n")
     write(src_path, body)
 
