@@ -33,6 +33,15 @@ function validate_order(order::AbstractArray, x::Union{DemoPage, DemoSection})
     end
 end
 
+"""return a flattened list of democards"""
+flatten(page::DemoPage) = vcat(flatten.(page.sections)...)
+function flatten(sec::DemoSection)
+    if isempty(sec.cards)
+        return vcat(flatten.(sec.subsections)...)
+    else
+        return sec.cards
+    end
+end
 
 ### regexes
 
