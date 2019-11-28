@@ -1,5 +1,5 @@
 """
-    makedemos(source::String) -> path
+    makedemos(source::String) -> path, postprocess_cb
 
 Make a demo page file and return the path to it.
 
@@ -11,10 +11,17 @@ Processing pipeline:
 2. copy assets
 3. preprocess demo files and save it
 4. save/copy cover images
+5. generate postprocess callback function, which includes url-redirection.
 
 !!! note
     By default, the source demo files are read, processed and save to `docs/src/democards`,
     so if you put all source demo files in `docs/src`, there will be a duplication of files and assets.
+
+
+# Outputs
+
+* `path`: path to demo page's index. You can directly pass it to `makedocs`.
+* `postprocess_cb`: callback function for postprocess. You can call `postprocess_cb()` _after_ `makedocs`.
 
 # Keywords
 
@@ -23,20 +30,25 @@ Processing pipeline:
 
 # Examples
 
-You only need to call this function before `Documenter.makedocs`, and pass
-the result to it.
+The following is a minimal example for you to start
 
 ```julia
+# 1. generate a style sheet and pass it to Documenter
+theme = cardtheme()
 format = Documenter.HTML(edit_branch = "master",
-                         assets = [joinpath("assets", "style.css")])
+                         assets = [theme])
 
-examples = makedemos("examples")
+# 2. make demo files
+examples, postprocess_cb = makedemos("examples")
 
 makedocs(format = format,
          pages = [
             "Home" => "index.md",
             "Examples" => examples,
          ])
+
+# 3. postprocessing
+postprocess_cb()
 ```
 
 !!! warning
@@ -56,24 +68,38 @@ makedocs(format = format,
 """
 function makedemos(source::String;
                    root::String = "docs",
-                   destination::String = "democards")::String
+                   destination::String = "democards",
+                   src::String = "src",
+                   build::String = "build")
     page = DemoPage(joinpath(root, source))
 
     relative_root = joinpath(destination, basename(page))
-    absolute_root = joinpath(root, "src", relative_root)
+    absolute_root = joinpath(root, src, relative_root)
+
+    # we can directly pass it to Documenter.makedocs
+    out_path = joinpath(relative_root, "index.md")
 
     @info "SetupDemoCardsDirectory: setting up $(source) directory."
     rm(absolute_root; force=true, recursive=true)
     mkpath(absolute_root)
     mkpath(joinpath(absolute_root, "covers")) # consistent to card template
 
+    # pipeline
     copy_assets(absolute_root, page)
     save_markdown(absolute_root, page)
     save_cover(joinpath(absolute_root, "covers"), page)
     generate(joinpath(absolute_root, "index.md"), page)
 
-    # we can directly pass it to Documenter.makedocs
-    return joinpath(relative_root, "index.md")
+    # pipeline: generate postprocess callback function
+    src_files = map(x->x.path, flatten(page))
+    postprocess_cb = ()->begin
+        @info "Redirect URL: redirect docs-edit-link for demos in $(source) directory."
+        foreach(src_files) do src_file
+            redirect_link(src_file, source, root, destination, src, build)
+        end
+    end
+
+    return out_path, postprocess_cb
 end
 
 """
@@ -255,4 +281,46 @@ function _copy_assets(dest_root::String, src_root::String)
         mkpath(dest)
         cp(src, dest; force=true)
     end
+end
+
+### postprocess
+
+"""
+    redirect_link(src_file, source, root, destination, src, build)
+
+Redirect the "Edit On GitHub" link of generated demo files to its original url, without
+this a 404 error is expected.
+"""
+function redirect_link(src_file, source, root, destination, src, build)
+    build_file = get_build_file(src_file, source, destination, build)
+    contents = read(build_file, String)
+
+    m = match(r"a class=\"docs-edit-link\" href=\"(.*)\" .*Edit on GitHub", contents)
+    isnothing(m) && return nothing
+    build_url = m.captures[1]
+
+    # note that url is joined by / instead of \
+    prefix = join([root, src, destination], "/")
+    base_url = split(build_url, prefix)[1]
+    src_url = replace(joinpath(base_url, src_file), "\\"=>"/")
+
+    new_contents = replace(contents, build_url=>src_url)
+    write(build_file, new_contents)
+end
+
+function get_build_file(src_file, source, destination, build)
+    source_dir = splitdir(source)[1]
+    build_dir = joinpath(build, destination)
+
+    dir, name = splitdir(src_file)
+    dir = replace(dir, source_dir => build_dir)
+    prettyurls = isdir(joinpath(dir, splitext(name)[1]))
+
+    # Documenter.HTML behaves differently on prettyurls
+    if prettyurls
+        build_file = joinpath(dir, splitext(name)[1], "index.html")
+    else
+        build_file = joinpath(dir, splitext(name)[1] * ".html")
+    end
+    return build_file
 end
