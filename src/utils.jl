@@ -48,6 +48,9 @@ end
 # markdown image syntax: ![title](path)
 const regex_md_img = r"^\s*\!\[[^\]]*\]\(([^\s]*)\)"
 
+# markdown image format in Literate: # ![title](path)
+const regex_jl_img = r"^[#\w*\s*]*\!\[[^\]]*\]\(([^\s]*)\)"
+
 # markdown title syntax:
 # 1. # title
 # 2. # [title](@id id)
