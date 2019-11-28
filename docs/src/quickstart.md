@@ -27,7 +27,7 @@ In the following example:
     │   ├── assets
     │   ├── simple_documenter.md
     │   ├── simple_julia.md
-    │   └── simple_literate.md
+    │   └── simple_literate.jl # julia source file
     └── part2
         ├── assets
         ├── simple_fileio.md

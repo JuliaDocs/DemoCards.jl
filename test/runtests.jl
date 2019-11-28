@@ -1,5 +1,5 @@
 using DemoCards
-using DemoCards: democard, MarkdownDemoCard, DemoSection, DemoPage
+using DemoCards: democard, MarkdownDemoCard, JuliaDemoCard, DemoSection, DemoPage
 using DemoCards: generate
 using Test, ReferenceTests, Suppressor
 

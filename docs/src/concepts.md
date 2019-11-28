@@ -4,7 +4,7 @@ This page is a brief introduction on the core types provided by `DemoCards.jl`.
 Knowing them helps you configure your demo pages. For detailed description, please
 refer to the [Package References](@ref package_references).
 
-## [`DemoPage`](@id concepts_page)
+## [DemoPage](@id concepts_page)
 
 [`DemoPage`](@ref DemoCards.DemoPage) is the root type in `DemoCards.jl`, everything
 else is contained in it directly or indirectly.
@@ -48,7 +48,7 @@ Here's an example of `config.json` for `DemoPage`:
     and the template file happens to have a title, `title` in `config.json` will
     be suppressed.
 
-## [`DemoSection`](@id concepts_section)
+## [DemoSection](@id concepts_section)
 
 [`DemoSection`](@ref DemoCards.DemoSection) defines the structure of your demo page.
 It has the following fields:
@@ -118,6 +118,27 @@ description: this demo shows how you can pass extra demo information to DemoCard
 ---
 
 You don't need to add a title in the body. DemoCards.jl fills it for you.
+```
+
+### [`JuliaDemoCard`](@id concepts_juliacard)
+
+[`JuliaDemoCard`](@ref DemoCards.JuliaDemoCard) is a demo card whose contents
+are written as julia source file.
+
+Conversion from `.jl` to `.md` and `.ipynb` are powered by [`Literate.jl`](https://github.com/fredrikekre/Literate.jl),
+please refer to [Literate Syntax](https://fredrikekre.github.io/Literate.jl/stable/fileformat/) if you're not familar.
+
+An additional YAML format is added to existing Literate format, for example:
+
+```julia
+# ---
+# title: Configure your demo with front matter
+# cover: cover.png
+# id: non_ambiguious_id
+# description: this demo shows how you can pass extra demo information to DemoCards package.
+# ---
+
+# You don't need to add a title in the body. DemoCards.jl fills it for you.
 ```
 
 ## Remarks

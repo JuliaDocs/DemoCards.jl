@@ -38,7 +38,7 @@ description: this demo shows how you can pass extra demo information to DemoCard
 ---
 ```
 
-See also: [`DemoSection`](@ref DemoCards.DemoSection), [`DemoPage`](@ref DemoCards.DemoPage)
+See also: [`JuliaDemoCard`](@ref DemoCards.JuliaDemoCard), [`DemoSection`](@ref DemoCards.DemoSection), [`DemoPage`](@ref DemoCards.DemoPage)
 """
 struct MarkdownDemoCard <: AbstractDemoCard
     path::String
@@ -111,4 +111,29 @@ function parse(card::MarkdownDemoCard)
     end
 
     return config
+end
+
+
+"""
+    save_democards(root::String, card::MarkdownDemoCard)
+
+process the original markdown file and save it.
+
+The processing pipeline is:
+
+1. strip the front matter
+2. insert a level-1 title and id
+"""
+function save_democards(root::String, card::MarkdownDemoCard)
+    isdir(root) || mkpath(root)
+
+    markdown_path = joinpath(root, basename(card))
+
+    contents = split(read(card.path, String), "---\n")
+    body = length(contents) == 1 ? contents[1] : join(contents[3:end])
+
+    # @ref syntax: https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@ref-link-1
+    header = "# [$(card.title)](@id $(card.id))\n"
+
+    write(markdown_path, header, body)
 end

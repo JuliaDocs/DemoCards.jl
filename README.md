@@ -13,6 +13,8 @@ _Let's focus on writing demos_
 * a plugin package to `Documenter.jl`.
 * magically generate an index page for all demos.
 * minimal configuration.
+* all demos can be tested by CI.
+* support demos in markdown and julia format.
 
 Organize your folders in the following way, and let `DemoCards.jl` manage the demo page for you.
 
@@ -26,8 +28,8 @@ docs/demos/simplest_demopage
     │   └── demo_3.md
     └── part2
         ├── assets
-        ├── demo_4.md
-        └── demo_5.md
+        ├── demo_4.jl
+        └── demo_5.jl
 ```
 
 Read the [Quick Start](https://johnnychen94.github.io/DemoCards.jl/dev/quickstart/) for more instructions.
