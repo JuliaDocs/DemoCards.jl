@@ -86,7 +86,7 @@ function makedemos(source::String;
 
     # pipeline
     copy_assets(absolute_root, page)
-    save_markdown(absolute_root, page)
+    save_democards(absolute_root, page)
     save_cover(joinpath(absolute_root, "covers"), page)
     generate(joinpath(absolute_root, "index.md"), page)
 
@@ -231,14 +231,14 @@ load_cover(card::AbstractDemoCard) =
 
 ### save markdown files
 
-save_markdown(root::String, page::DemoPage) = save_markdown.(root, page.sections)
-function save_markdown(root::String, sec::DemoSection)
-    save_markdown.(joinpath(root, basename(sec.root)), sec.subsections)
-    save_markdown.(joinpath(root, basename(sec.root)), sec.cards)
+save_democards(root::String, page::DemoPage) = save_democards.(root, page.sections)
+function save_democards(root::String, sec::DemoSection)
+    save_democards.(joinpath(root, basename(sec.root)), sec.subsections)
+    save_democards.(joinpath(root, basename(sec.root)), sec.cards)
 end
 
 """
-    save_markdown(root::String, card::MarkdownDemoCard)
+    save_democards(root::String, card::MarkdownDemoCard)
 
 process the original markdown file and save it.
 
@@ -247,7 +247,7 @@ The processing pipeline is:
 1. strip the front matter
 2. insert a level-1 title and id
 """
-function save_markdown(root::String, card::MarkdownDemoCard)
+function save_democards(root::String, card::MarkdownDemoCard)
     isdir(root) || mkpath(root)
 
     markdown_path = joinpath(root, basename(card))
@@ -261,7 +261,7 @@ function save_markdown(root::String, card::MarkdownDemoCard)
     write(markdown_path, header, body)
 end
 
-function save_markdown(root::String, card::JuliaDemoCard)
+function save_democards(root::String, card::JuliaDemoCard)
     isdir(root) || mkpath(root)
     cardname = splitext(basename(card.path))[1]
     md_path = joinpath(root, "$(cardname).md")
