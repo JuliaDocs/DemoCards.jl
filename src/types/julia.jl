@@ -1,5 +1,46 @@
 const julia_exts = [".jl",]
 
+"""
+    struct JuliaDemoCard <: AbstractDemoCard
+    JuliaDemoCard(path::String)
+
+Constructs a julia-format demo card from existing julia file `path`.
+
+The julia file is written in [Literate syntax](https://fredrikekre.github.io/Literate.jl/stable/fileformat).
+
+# Fields
+
+Besides `path`, this struct has some other fields:
+
+* `path`: path to the source julia file
+* `cover`: path to the cover image
+* `id`: cross-reference id
+* `title`: one-line description of the demo card
+* `description`: multi-line description of the demo card
+
+# Configuration
+
+You can pass additional information by adding a YAML front matter to the julia file.
+Supported items are:
+
+* `cover`: relative path to the cover image. If not specified, it will use the first available image link, or all-white image if there's no image links.
+* `description`: a multi-line description to this file, will be displayed when the demo card is hovered. By default it uses `title`.
+* `id`: specify the `id` tag for cross-references. By default it's infered from the filename, e.g., `simple_demo` from `simple demo.md`.
+* `title`: one-line description to this file, will be displayed under the cover image. By default, it's the name of the file (without extension).
+
+An example of the front matter (note the leading `#`):
+
+```julia
+# ---
+# title: passing extra information
+# cover: cover.png
+# id: non_ambiguious_id
+# description: this demo shows how you can pass extra demo information to DemoCards package.
+# ---
+```
+
+See also: [`MarkdownDemoCard`](@ref DemoCards.MarkdownDemoCard), [`DemoSection`](@ref DemoCards.DemoSection), [`DemoPage`](@ref DemoCards.DemoPage)
+"""
 struct JuliaDemoCard <: AbstractDemoCard
     path::String
     cover::Union{String, Nothing}
@@ -115,5 +156,5 @@ function save_democards(root::String, card::JuliaDemoCard)
     write(md_path, header, body, footer)
 
     # 5. filter out source file
-    @suppress Literate.source(src_path, root)
+    @suppress Literate.script(src_path, root)
 end

@@ -38,7 +38,7 @@ description: this demo shows how you can pass extra demo information to DemoCard
 ---
 ```
 
-See also: [`DemoSection`](@ref DemoCards.DemoSection), [`DemoPage`](@ref DemoCards.DemoPage)
+See also: [`JuliaDemoCard`](@ref DemoCards.JuliaDemoCard), [`DemoSection`](@ref DemoCards.DemoSection), [`DemoPage`](@ref DemoCards.DemoPage)
 """
 struct MarkdownDemoCard <: AbstractDemoCard
     path::String
