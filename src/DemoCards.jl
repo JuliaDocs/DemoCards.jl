@@ -2,6 +2,7 @@ module DemoCards
 
 import Base: basename
 using Mustache
+using Literate
 using ImageCore
 using FileIO
 using JSON

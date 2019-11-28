@@ -15,6 +15,8 @@ function democard(path::String)::AbstractDemoCard
     _, ext = splitext(path)
     if ext in markdown_exts
         return MarkdownDemoCard(path)
+    elseif ext in julia_exts
+        return JuliaDemoCard(path)
     else
         throw(ArgumentError("unrecognized democard format $(path)"))
     end
@@ -66,3 +68,4 @@ end
 ### load concrete implementations
 
 include("markdown.jl")
+include("julia.jl")

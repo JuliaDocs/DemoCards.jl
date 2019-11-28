@@ -226,7 +226,7 @@ function save_cover(path::String, card::AbstractDemoCard)
     save(cover_path, cover)
 end
 
-load_cover(card::MarkdownDemoCard) =
+load_cover(card::AbstractDemoCard) =
     isnothing(card.cover) ? Gray.(ones(128, 128)) : load(card.cover)
 
 ### save markdown files
@@ -259,6 +259,20 @@ function save_markdown(root::String, card::MarkdownDemoCard)
     header = "# [$(card.title)](@id $(card.id))\n"
 
     write(markdown_path, header, body)
+end
+
+function save_markdown(root::String, card::JuliaDemoCard)
+    isdir(root) || mkpath(root)
+    cardname = splitext(basename(card.path))[1]
+    md_path = joinpath(root, "$(cardname).md")
+
+    Literate.markdown(card.path, root) # output filename is md_path
+    contents = split(read(md_path, String), "---\n")
+    body = length(contents) == 1 ? contents[1] : join(contents[3:end])
+
+    # @ref syntax: https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@ref-link-1
+    header = "# [$(card.title)](@id $(card.id))\n"
+    write(md_path, header, body)
 end
 
 ### copy assets
