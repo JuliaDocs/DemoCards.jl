@@ -1,7 +1,6 @@
 @testset "MarkdownDemoCard" begin
     # default behavior
     simplest = democard("simplest.md")
-    @test simplest == MarkdownDemoCard("simplest.md")
     @test simplest.cover === nothing
     @test simplest.id == "simplest-1"
     @test simplest.path == "simplest.md"

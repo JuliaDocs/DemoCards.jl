@@ -1,7 +1,6 @@
 @testset "JuliaDemoCard" begin
     # default behavior
     simplest = democard("simplest.jl")
-    @test simplest == JuliaDemoCard("simplest.jl")
     @test simplest.cover === nothing
     @test simplest.id == "simplest-1"
     @test simplest.path == "simplest.jl"

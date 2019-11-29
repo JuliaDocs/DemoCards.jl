@@ -41,7 +41,7 @@ An example of the front matter (note the leading `#`):
 
 See also: [`MarkdownDemoCard`](@ref DemoCards.MarkdownDemoCard), [`DemoSection`](@ref DemoCards.DemoSection), [`DemoPage`](@ref DemoCards.DemoPage)
 """
-struct JuliaDemoCard <: AbstractDemoCard
+mutable struct JuliaDemoCard <: AbstractDemoCard
     path::String
     cover::Union{String, Nothing}
     id::String
@@ -53,14 +53,13 @@ function JuliaDemoCard(path::String)::JuliaDemoCard
     # first consturct an incomplete democard, and then load the config
     card = JuliaDemoCard(path, "", "", "", "")
 
-    cover = load_config(card, "cover")
-    id    = load_config(card, "id")
-    title = load_config(card, "title")
-    card = JuliaDemoCard(path, cover, id, title, "")
+    card.cover = load_config(card, "cover")
+    card.id    = load_config(card, "id")
+    card.title = load_config(card, "title")
 
     # default description requires a title
-    description = load_config(card, "description")
-    JuliaDemoCard(path, cover, id, title, description)
+    card.description = load_config(card, "description")
+    return card
 end
 
 function parse(card::JuliaDemoCard)

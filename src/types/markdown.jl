@@ -40,7 +40,7 @@ description: this demo shows how you can pass extra demo information to DemoCard
 
 See also: [`JuliaDemoCard`](@ref DemoCards.JuliaDemoCard), [`DemoSection`](@ref DemoCards.DemoSection), [`DemoPage`](@ref DemoCards.DemoPage)
 """
-struct MarkdownDemoCard <: AbstractDemoCard
+mutable struct MarkdownDemoCard <: AbstractDemoCard
     path::String
     cover::Union{String, Nothing}
     id::String
@@ -52,14 +52,13 @@ function MarkdownDemoCard(path::String)::MarkdownDemoCard
     # first consturct an incomplete democard, and then load the config
     card = MarkdownDemoCard(path, "", "", "", "")
 
-    cover = load_config(card, "cover")
-    id    = load_config(card, "id")
-    title = load_config(card, "title")
-    card = MarkdownDemoCard(path, cover, id, title, "")
+    card.cover = load_config(card, "cover")
+    card.id    = load_config(card, "id")
+    card.title = load_config(card, "title")
 
     # default description requires a title
-    description = load_config(card, "description")
-    MarkdownDemoCard(path, cover, id, title, description)
+    card.description = load_config(card, "description")
+    return card
 end
 
 """
