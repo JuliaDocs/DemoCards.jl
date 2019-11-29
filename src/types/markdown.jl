@@ -85,6 +85,8 @@ function parse(card::MarkdownDemoCard)
         body = join(contents)
     else
         config = YAML.load(strip(contents[2]))
+        haskey(config, "cover") && isfile(config["cover"]) || delete!(config, "cover")
+
         body = join(contents[3:end])
     end
     body = split(body, "\n")

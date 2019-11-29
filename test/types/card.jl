@@ -1,4 +1,7 @@
 @testset "AbstractDemoCard" begin
-    include("markdown.jl")
-    include("julia.jl")
+    for cardtype in ("markdown", "julia")
+        cd(joinpath("assets", "card", cardtype)) do
+            include("$(cardtype).jl")
+        end
+    end
 end

@@ -73,6 +73,7 @@ function parse(card::JuliaDemoCard)
         offset = findall(offsets)[2]
         frontmatter = map(x->lstrip(x, '#'), contents[2:offset-1])
         config = YAML.load(join(frontmatter, "\n"))
+        haskey(config, "cover") && isfile(config["cover"]) || delete!(config, "cover")
 
         body = contents[offset+1:end]
     else
