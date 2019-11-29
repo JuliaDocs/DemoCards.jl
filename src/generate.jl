@@ -91,11 +91,11 @@ function makedemos(source::String;
     generate(joinpath(absolute_root, "index.md"), page)
 
     # pipeline: generate postprocess callback function
-    src_files = map(x->x.path, flatten(page))
+    source_files = map(x->x.path, flatten(page))
     postprocess_cb = ()->begin
         @info "Redirect URL: redirect docs-edit-link for demos in $(source) directory."
-        foreach(src_files) do src_file
-            redirect_link(src_file, source, root, destination, src, build)
+        foreach(source_files) do source_file
+            redirect_link(source_file, source, root, destination, src, build)
         end
     end
 
@@ -274,8 +274,12 @@ end
 Redirect the "Edit On GitHub" link of generated demo files to its original url, without
 this a 404 error is expected.
 """
-function redirect_link(src_file, source, root, destination, src, build)
-    build_file = get_build_file(src_file, source, destination, build)
+function redirect_link(source_file, source, root, destination, src, build)
+    build_file = get_build_file(source_file, source, destination, build)
+    if !isfile(build_file)
+        @warn "$build_file doesn't exists, skip"
+        return nothing
+    end
     contents = read(build_file, String)
 
     m = match(r"a class=\"docs-edit-link\" href=\"(.*)\" .*Edit on GitHub", contents)
@@ -285,17 +289,17 @@ function redirect_link(src_file, source, root, destination, src, build)
     # note that url is joined by / instead of \
     prefix = join([root, src, destination], "/")
     base_url = split(build_url, prefix)[1]
-    src_url = replace(joinpath(base_url, src_file), "\\"=>"/")
+    src_url = replace(joinpath(base_url, source_file), "\\"=>"/")
 
     new_contents = replace(contents, build_url=>src_url)
     write(build_file, new_contents)
 end
 
-function get_build_file(src_file, source, destination, build)
+function get_build_file(source_file, source, destination, build)
     source_dir = splitdir(source)[1]
     build_dir = joinpath(build, destination)
 
-    dir, name = splitdir(src_file)
+    dir, name = splitdir(source_file)
     dir = replace(dir, source_dir => build_dir)
     prettyurls = isdir(joinpath(dir, splitext(name)[1]))
 
