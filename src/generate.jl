@@ -225,6 +225,9 @@ function save_cover(path::String, card::AbstractDemoCard)
 
     # saving all cover images to a fixed folder cover_path
     # so that we don't need to manipulate the image path in template
+    if any(size(cover) .>= max_coversize)
+        cover = imresize(cover, max_coversize)
+    end
     save(cover_path, cover)
 end
 
