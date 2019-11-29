@@ -124,8 +124,34 @@ function save_democards(root::String, card::JuliaDemoCard)
     nb_path = joinpath(root, "$(cardname).ipynb")
     src_path = joinpath(root, "$(cardname).jl")
 
-    # 1. source file
-    contents = readlines(card.path)
+
+    # 1. generating assets
+    cp(card.path, src_path; force=true)
+    project_dir = joinpath(pwd(), "docs")
+    cd(root) do
+        # TODO: this requires documentation build in a standard way, i.e., 
+        # `julia --project=docs/ docs/make.jl`
+        if Sys.isunix()
+            cmd = `julia --project=$(project_dir) $(cardname).jl`
+        elseif Sys.iswindows()
+            cmd = `julia.exe --project=$(project_dir) $(cardname).jl`
+        else
+            error("path primitives for this OS need to be defined")
+        end
+        # trigger an independent process to generate assets, and reconfigure cards
+        # WARNING: card.path is modified here
+        try
+            run(cmd)
+            card.path = cardname*".jl"
+            card.cover = load_config(card, "cover")
+            card.path = src_path
+        catch err
+            @warn "Executing demo $(card.path) fails."
+        end
+    end
+
+    # remove YAML frontmatter
+    contents = readlines(src_path)
     offsets = map(contents) do line
         m = match(regex_jl_yaml, line)
         m isa RegexMatch
@@ -138,7 +164,18 @@ function save_democards(root::String, card::JuliaDemoCard)
     end
     write(src_path, body)
 
-    # TODO: run source file once to generate potential assets
+    # trigger an independent julia process and generate potential assets
+    project_dir = joinpath(pwd(), "docs")
+    cd(root) do
+        if Sys.isunix()
+            cmd = `julia --project=$(project_dir) $(cardname).jl`
+        elseif Sys.iswindows()
+            cmd = `julia.exe --project=$(project_dir) $(cardname).jl`
+        else
+            error("path primitives for this OS need to be defined")
+        end
+        run(cmd)
+    end
 
     # 2. notebook
     @suppress Literate.notebook(src_path, root)
