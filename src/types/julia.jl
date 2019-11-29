@@ -130,8 +130,12 @@ function save_democards(root::String, card::JuliaDemoCard)
         m = match(regex_jl_yaml, line)
         m isa RegexMatch
     end
-    body = isempty(offsets) && offsets[1]==1 ? contents : contents[offsets[2]+1:end]
-    body = join(body, "\n")
+    if !isempty(offsets) && offsets[1]==1
+        offset = findall(offsets)[2]+1
+        body = join(contents[offset:end], "\n")
+    else
+        body = join(contents, "\n")
+    end
     write(src_path, body)
 
     # TODO: run source file once to generate potential assets
