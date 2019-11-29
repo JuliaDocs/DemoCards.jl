@@ -84,14 +84,16 @@ function makedemos(source::String;
     mkpath(absolute_root)
     mkpath(joinpath(absolute_root, "covers")) # consistent to card template
 
+    # make a copy before pipeline because `save_democards` modifies card path
+    source_files = map(x->x.path, flatten(page))
+
     # pipeline
     copy_assets(absolute_root, page)
-    save_democards(absolute_root, page)
+    save_democards(absolute_root, page) # WARNING: julia cards are reconfigured here
     save_cover(joinpath(absolute_root, "covers"), page)
     generate(joinpath(absolute_root, "index.md"), page)
 
     # pipeline: generate postprocess callback function
-    source_files = map(x->x.path, flatten(page))
     postprocess_cb = ()->begin
         @info "Redirect URL: redirect docs-edit-link for demos in $(source) directory."
         foreach(source_files) do source_file
