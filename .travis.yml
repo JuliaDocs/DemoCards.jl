@@ -23,6 +23,7 @@ jobs:
     - stage: "Documentation"
       julia: 1.0
       os: linux
+      if: branch = master
       script:
         - julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
                                                Pkg.instantiate()'
