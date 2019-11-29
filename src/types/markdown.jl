@@ -1,5 +1,13 @@
 # generally, Documenter.jl assumes markdown files ends with `.md`
 const markdown_exts = [".md",]
+const markdown_footer = raw"""
+
+---
+
+*This page was generated using [DemoCards.jl](https://github.com/johnnychen94/DemoCards.jl).*
+
+
+"""
 
 """
     struct MarkdownDemoCard <: AbstractDemoCard
@@ -136,5 +144,5 @@ function save_democards(root::String, card::MarkdownDemoCard)
     # @ref syntax: https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@ref-link-1
     header = "# [$(card.title)](@id $(card.id))\n"
 
-    write(markdown_path, header, body)
+    write(markdown_path, header, body, markdown_footer)
 end

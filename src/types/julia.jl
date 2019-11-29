@@ -1,4 +1,14 @@
 const julia_exts = [".jl",]
+const nbviewer_badge = "https://img.shields.io/badge/show-nbviewer-579ACA.svg"
+const download_badge = "https://img.shields.io/badge/download-julia-brightgreen.svg"
+const julia_footer = raw"""
+---
+
+*This page was generated using [DemoCards.jl](https://github.com/johnnychen94/DemoCards.jl) and [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
+
+
+"""
+
 
 """
     struct JuliaDemoCard <: AbstractDemoCard
@@ -156,7 +166,15 @@ function save_democards(root::String, card::JuliaDemoCard)
     else
         body = join(contents, "\n")
     end
-    write(src_path, body)
+
+    # insert header badge
+    # Ref: https://fredrikekre.github.io/Literate.jl/stable/outputformats/#Configuration-1
+    nbviewer_folder = join(splitpath(root)[3:end], "/") # remove docs/src prefix
+    nbviewer_url = replace("@__NBVIEWER_ROOT_URL__/$(nbviewer_folder)/$(cardname).ipynb", "\\"=>"/")
+    header = "#md # [![]($download_badge)]($(cardname).jl) [![]($nbviewer_badge)]($nbviewer_url)"
+    header *= "\n\n"
+
+    write(src_path, header, body)
 
     # 2. notebook
     @suppress Literate.notebook(src_path, root)
@@ -173,15 +191,7 @@ function save_democards(root::String, card::JuliaDemoCard)
     # @ref syntax: https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@ref-link-1
     header = "# [$(card.title)](@id $(card.id))\n"
 
-    footer = "\n---\n"
-    footer *= "\nDownload: " *
-              "[source]($(cardname).jl), " *
-              "[notebook]($(cardname).ipynb)" * "\n"
-    footer *= "\n*This page was generated using " *
-              "[DemoCards.jl](https://github.com/johnnychen94/DemoCards.jl)" *
-              " and " *
-              "[Literate.jl](https://github.com/fredrikekre/Literate.jl).*\n"
-    write(md_path, header, body, footer)
+    write(md_path, header, body, julia_footer)
 
     # 5. filter out source file
     @suppress Literate.script(src_path, root)
