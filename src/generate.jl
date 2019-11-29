@@ -226,8 +226,10 @@ function save_cover(path::String, card::AbstractDemoCard)
     save(cover_path, cover)
 end
 
-load_cover(card::AbstractDemoCard) =
-    isnothing(card.cover) ? Gray.(ones(128, 128)) : load(card.cover)
+function load_cover(card::AbstractDemoCard)
+    root = dirname(card.path)
+    isnothing(card.cover) ? Gray.(ones(128, 128)) : load(joinpath(root, card.cover))
+end
 
 ### save markdown files
 
