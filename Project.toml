@@ -16,6 +16,7 @@ YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 [compat]
 FileIO = "1"
 ImageCore = "0.7, 0.8"
+ImageTransformations = "0.7, 0.8"
 JSON = "0.20, 0.21"
 Literate = "2"
 Mustache = "0.5"
