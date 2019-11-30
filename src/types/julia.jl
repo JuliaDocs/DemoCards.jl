@@ -126,22 +126,16 @@ function save_democards(root::String, card::JuliaDemoCard)
 
 
     # 1. generating assets
+    # trigger an independent process to generate assets, and reconfigure cards
     cp(card.path, src_path; force=true)
     project_dir = joinpath(pwd(), "docs")
     cd(root) do
-        # TODO: this requires documentation build in a standard way, i.e., 
-        # `julia --project=docs/ docs/make.jl`
-        if Sys.isunix()
-            cmd = `julia --project=$(project_dir) $(cardname).jl`
-        elseif Sys.iswindows()
-            cmd = `julia.exe --project=$(project_dir) $(cardname).jl`
-        else
-            error("path primitives for this OS need to be defined")
-        end
-        # trigger an independent process to generate assets, and reconfigure cards
-        # WARNING: card.path is modified here
         try
-            run(cmd)
+            # TODO: this requires documentation build in a standard way, i.e., 
+            # `julia --project=docs/ docs/make.jl`
+            run(`julia --project=$(project_dir) $(cardname).jl`)
+
+            # WARNING: card.path is modified here
             card.path = cardname*".jl"
             card.cover = load_config(card, "cover")
             card.path = src_path
@@ -163,19 +157,6 @@ function save_democards(root::String, card::JuliaDemoCard)
         body = join(contents, "\n")
     end
     write(src_path, body)
-
-    # trigger an independent julia process and generate potential assets
-    project_dir = joinpath(pwd(), "docs")
-    cd(root) do
-        if Sys.isunix()
-            cmd = `julia --project=$(project_dir) $(cardname).jl`
-        elseif Sys.iswindows()
-            cmd = `julia.exe --project=$(project_dir) $(cardname).jl`
-        else
-            error("path primitives for this OS need to be defined")
-        end
-        run(cmd)
-    end
 
     # 2. notebook
     @suppress Literate.notebook(src_path, root)
