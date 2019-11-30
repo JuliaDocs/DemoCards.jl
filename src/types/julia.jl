@@ -169,8 +169,12 @@ function save_democards(root::String, card::JuliaDemoCard)
 
     # insert header badge
     # Ref: https://fredrikekre.github.io/Literate.jl/stable/outputformats/#Configuration-1
-    nbviewer_folder = join(splitpath(root)[3:end], "/") # remove docs/src prefix
-    nbviewer_url = replace("@__NBVIEWER_ROOT_URL__/$(nbviewer_folder)/$(cardname).ipynb", "\\"=>"/")
+    if get(ENV, "CI", nothing) == "true"
+        nbviewer_folder = join(splitpath(root)[3:end], "/") # remove docs/src prefix
+        nbviewer_url = replace("@__NBVIEWER_ROOT_URL__/$(nbviewer_folder)/$(cardname).ipynb", "\\"=>"/")
+    else
+        nbviewer_url = "$(cardname).ipynb"
+    end
     header = "#md # [![]($download_badge)]($(cardname).jl) [![]($nbviewer_badge)]($nbviewer_url)"
     header *= "\n\n"
 
