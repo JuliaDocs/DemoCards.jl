@@ -27,7 +27,7 @@ basename(x::AbstractDemoCard) = basename(x.path)
 function get_default_id(card::AbstractDemoCard)
     name_without_ext = splitext(basename(card))[1]
     # default documenter id has -1 suffix
-    replace(name_without_ext, ' ' => '-') * "-1"
+    replace(name_without_ext, r"[ _]" => '-') * "-1"
 end
 
 function validate_id(id::AbstractString, card::AbstractDemoCard)

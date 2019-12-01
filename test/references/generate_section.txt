@@ -9,14 +9,14 @@
 <div class="card-img">
 ```
 
-[![svd](covers/card_1.png)](@ref card_1-1)
+[![svd](covers/card_1.png)](@ref card-1-1)
 
 ```@raw html
 </div>
 <div class="card-text">
 ```
 
-[Card 1](@ref card_1-1)
+[Card 1](@ref card-1-1)
 ```@raw html
 </div>
 </div>
@@ -27,14 +27,14 @@
 <div class="card-img">
 ```
 
-[![svd](covers/card_2.png)](@ref card_2-1)
+[![svd](covers/card_2.png)](@ref card-2-1)
 
 ```@raw html
 </div>
 <div class="card-text">
 ```
 
-[Card 2](@ref card_2-1)
+[Card 2](@ref card-2-1)
 ```@raw html
 </div>
 </div>
@@ -56,14 +56,14 @@
 <div class="card-img">
 ```
 
-[![svd](covers/card_3.png)](@ref card_3-1)
+[![svd](covers/card_3.png)](@ref card-3-1)
 
 ```@raw html
 </div>
 <div class="card-text">
 ```
 
-[Card 3](@ref card_3-1)
+[Card 3](@ref card-3-1)
 ```@raw html
 </div>
 </div>
@@ -74,14 +74,14 @@
 <div class="card-img">
 ```
 
-[![svd](covers/card_4.png)](@ref card_4-1)
+[![svd](covers/card_4.png)](@ref card-4-1)
 
 ```@raw html
 </div>
 <div class="card-text">
 ```
 
-[Card 4](@ref card_4-1)
+[Card 4](@ref card-4-1)
 ```@raw html
 </div>
 </div>

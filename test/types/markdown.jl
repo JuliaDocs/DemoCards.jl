@@ -11,27 +11,27 @@
         @testset "title, id and description" begin
             # MarkdownDemoCard doesn't parse title from the markdown contents
             title_1 = MarkdownDemoCard("title_1.md")
-            @test title_1.id == "title_1-1"
+            @test title_1.id == "title-1-1"
             @test title_1.title == "Title 1"
             @test title_1.description == "Title 1"
 
             title_2 = MarkdownDemoCard("title_2.md")
-            @test title_2.id == "title_2-1"
+            @test title_2.id == "title-2-1"
             @test title_2.title == "Title 2"
             @test title_2.description == "Title 2"
 
             title_3 = MarkdownDemoCard("title_3.md")
-            @test title_3.id == "title_3-1"
+            @test title_3.id == "title-3-1"
             @test title_3.title == "Title 3"
             @test title_3.description == "Title 3"
 
             title_4 = MarkdownDemoCard("title_4.md")
-            @test title_4.id == "title_4-1"
+            @test title_4.id == "title-4-1"
             @test title_4.title == "Custom Title"
             @test title_4.description == "Custom Title"
 
             title_5 = MarkdownDemoCard("title_5.md")
-            @test title_5.id == "title_5-1"
+            @test title_5.id == "title-5-1"
             @test title_5.title == "Custom Title"
             @test title_5.description == "Custom Description"
 
