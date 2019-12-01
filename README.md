@@ -32,7 +32,7 @@ docs/demos/simplest_demopage
         └── demo_5.jl
 ```
 
-Read the [Quick Start](https://johnnychen94.github.io/DemoCards.jl/dev/quickstart/) for more instructions.
+Read the [Quick Start](https://johnnychen94.github.io/DemoCards.jl/stable/quickstart.html) for more instructions.
 
 
 [docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
