@@ -19,6 +19,10 @@
     page = DemoPage(joinpath(root, "template"))
     @test page.title == "Custom Title"
 
+    # template
+    page = DemoPage(joinpath(root, "template_2"))
+    @test page.title == "Custom Title"
+
     # template has higher priority
     @suppress_err page = DemoPage(joinpath(root, "suppressed_title"))
     @test page.title == "Custom Title"

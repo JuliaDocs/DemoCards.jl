@@ -18,7 +18,7 @@ You can manage an extra `config.json` file to customize rendering of a demo page
 Supported items are:
 
 * `order`: specify the sections order. By default, it's case-insensitive alphabetic order.
-* `template`: path to template filename. The content of the template file should has one and only one `{{{democards}}}`.
+* `template`: path to template filename. By default, it's `"index.md"`. The content of the template file should has one and only one `{{{democards}}}`.
 * `title`: specify the title of this demo page. By default, it's the folder name of `root`. Will be override by `template`.
 
 The following is an example of `config.json`:
@@ -128,18 +128,7 @@ function load_config(page::DemoPage, key)
     elseif key == "title"
         return load_title(page, config)
     elseif key == "template"
-        haskey(config, key) || return get_default_template(page)
-
-        template_file = replace(config[key],
-                                r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
-        template_path = joinpath(page.root, template_file)
-
-        check_ext(template_path, :markdown)
-        if 1 != sum(occursin.("{{{democards}}}", readlines(template_path)))
-            throw(ArgumentError("invalid template file $(template_path): it should has one and only one {{{democards}}}"))
-        end
-
-        return read(template_path, String)
+        return load_template(page, config)
     else
         throw(ArgumentError("Unrecognized key $(key) for DemoPage"))
     end
@@ -175,6 +164,26 @@ function load_title(page::DemoPage, config)
     end
 end
 
+function load_template(page, config)
+    key = "template"
+    if haskey(config, key)
+        # windows compatibility
+        template_name = replace(config[key],
+                            r"[/\\]" => Base.Filesystem.path_separator)
+        template_file = joinpath(page.root, template_name)
+    else
+        template_file = joinpath(page.root, template_filename)
+    end
+
+    isfile(template_file) || return get_default_template(page)
+
+    check_ext(template_file, :markdown)
+    if 1 != sum(occursin.("{{{democards}}}", readlines(template_file)))
+        throw(ArgumentError("invalid template file $(template_file): it should has one and only one {{{democards}}}"))
+    end
+    return read(template_file, String)
+end
+
 get_default_order(page::DemoPage) =
     sort(basename.(page.sections), by = x->lowercase(x))
 
@@ -196,7 +205,7 @@ If `page` doesn't have a template file, it returns `nothing`.
 function load_template_config(page::DemoPage, key)
     path = joinpath(page.root, config_filename)
     config = isfile(path) ? JSON.parsefile(path) : Dict()
-    template_path = joinpath(page.root, get(config, "template", ""))
+    template_path = joinpath(page.root, get(config, "template", template_filename))
     isfile(template_path) || return nothing
 
     config = parse_markdown(template_path)
