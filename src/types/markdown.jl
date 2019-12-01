@@ -133,7 +133,7 @@ The processing pipeline is:
 1. strip the front matter
 2. insert a level-1 title and id
 """
-function save_democards(root::String, card::MarkdownDemoCard)
+function save_democards(root::String, card::MarkdownDemoCard; credit)
     isdir(root) || mkpath(root)
 
     markdown_path = joinpath(root, basename(card))
@@ -143,6 +143,6 @@ function save_democards(root::String, card::MarkdownDemoCard)
 
     # @ref syntax: https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@ref-link-1
     header = "# [$(card.title)](@id $(card.id))\n"
-
-    write(markdown_path, header, body, markdown_footer)
+    footer = credit ? markdown_footer : ""
+    write(markdown_path, header, body, footer)
 end
