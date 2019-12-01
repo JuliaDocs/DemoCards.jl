@@ -169,9 +169,11 @@ function save_democards(root::String, card::JuliaDemoCard)
 
     # insert header badge
     # Ref: https://fredrikekre.github.io/Literate.jl/stable/outputformats/#Configuration-1
-    if get(ENV, "CI", nothing) == "true"
+    if any(map(k->haskey(ENV, k), ["HAS_JOSH_K_SEAL_OF_APPROVAL",
+                                   "GITHUB_ACTIONS",
+                                   "GITHUB_ACTIONS"]))
         nbviewer_folder = join(splitpath(root)[3:end], "/") # remove docs/src prefix
-        nbviewer_url = replace("@__NBVIEWER_ROOT_URL__/$(nbviewer_folder)/$(cardname).ipynb", "\\"=>"/")
+        nbviewer_url = "@__NBVIEWER_ROOT_URL__/$(nbviewer_folder)/$(cardname).ipynb"
     else
         nbviewer_url = "$(cardname).ipynb"
     end
