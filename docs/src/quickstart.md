@@ -1,6 +1,6 @@
 # [Quick Start](@id quickstart)
 
-This section describes how you can set up your demos easily in four lines of codes_.
+This section describes how you can set up your demos easily in _five lines of codes_.
 
 ## Manage your demo files
 
@@ -30,6 +30,7 @@ In the following example:
     │   └── simple_literate.jl # julia source file
     └── part2
         ├── assets
+        ├── simple_cameraman.jl # julia source file
         ├── simple_fileio.md
         └── simple_images.md
 ```
