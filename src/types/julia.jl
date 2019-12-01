@@ -140,14 +140,16 @@ function save_democards(root::String,
 
 
     # 1. generating assets
-    # trigger an independent process to generate assets, and reconfigure cards
     cp(card.path, src_path; force=true)
     project_dir = joinpath(pwd(), "docs")
     cd(root) do
         try
-            # TODO: this requires documentation build in a standard way, i.e., 
-            # `julia --project=docs/ docs/make.jl`
-            run(`julia --project=$(project_dir) $(cardname).jl`)
+            # run scripts in a sandbox
+            m = Module(gensym())
+            # modules created with Module() does not have include defined
+            # abspath is needed since this will call `include_relative`
+            Core.eval(m, :(include(x) = Base.include($m, abspath(x))))
+            Core.eval(m, :(include($cardname * ".jl")))
 
             # WARNING: card.path is modified here
             card.path = cardname*".jl"
