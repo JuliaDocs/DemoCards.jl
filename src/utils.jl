@@ -57,12 +57,12 @@ const regex_jl_yaml = r"^#\s*---"
 # markdown title syntax:
 # 1. # title
 # 2. # [title](@id id)
-const regex_md_simple_title = r"^\s*#\s*([^\[\]\n]+)"
-const regex_md_title = r"^\s*#\s*\[([^\]]+)\]\(\@id\s+([^\s\)\n]+)\)"
+const regex_md_simple_title = r"^\s*#\s*([^\[\]\n\r]+)"
+const regex_md_title = r"^\s*#\s*\[([^\]]+)\]\(\@id\s+([^\s\)\n\r]+)\)"
 
 
 """
-    parse_markdown(contenst::String)
+    parse_markdown(contents::String)
     parse_markdown(path::String)
 
 parse the template file of page and return a configuration dict.

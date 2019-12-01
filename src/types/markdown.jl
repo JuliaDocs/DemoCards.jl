@@ -85,18 +85,19 @@ Possible configuration resources are:
     They also need to validate the values.
 """
 function parse(card::MarkdownDemoCard)
-    contents = split(read(card.path, String), "---\n")
+    contents = readlines(card.path)
+    offsets = findall(map(x->match(r"^---\s*", x) isa RegexMatch, contents))
 
-    if length(contents) == 1
+    if isempty(offsets)
         config = Dict()
-        body = join(contents)
+        body_offset = 1
     else
-        config = YAML.load(strip(contents[2]))
+        frontmatter = join(contents[offsets[1]:offsets[2]], "\n")
+        config = YAML.load(frontmatter)
         haskey(config, "cover") && isfile(config["cover"]) || delete!(config, "cover")
-
-        body = join(contents[3:end])
+        body_offset = offsets[2]+1
     end
-    body = split(body, "\n")
+    body = contents[body_offset:end]
 
     if !haskey(config, "cover")
         # set the first valid image path as cover
