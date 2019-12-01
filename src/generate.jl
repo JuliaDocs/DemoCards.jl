@@ -324,18 +324,23 @@ function redirect_link(source_file, source, root, destination, src, build)
 end
 
 function get_build_file(source_file, source, destination, build)
-    source_dir = splitdir(source)[1]
-    build_dir = joinpath(build, destination)
+    source_root = splitdir(source)[1]
+    build_root = joinpath(build, destination)
+    if isempty(source_root)
+        # when source is a folder in "docs", e.g., "demos"
+        source_root = splitpath(source_file)[1] # root, e.g., "docs"
+        build_root = joinpath(source_root, build_root)
+    end
 
-    dir, name = splitdir(source_file)
-    dir = replace(dir, source_dir => build_dir)
-    prettyurls = isdir(joinpath(dir, splitext(name)[1]))
+    source_dir, name = splitdir(source_file)
+    build_dir = replace(source_dir, source_root => build_root)
+    prettyurls = isdir(joinpath(build_dir, splitext(name)[1]))
 
     # Documenter.HTML behaves differently on prettyurls
     if prettyurls
-        build_file = joinpath(dir, splitext(name)[1], "index.html")
+        build_file = joinpath(build_dir, splitext(name)[1], "index.html")
     else
-        build_file = joinpath(dir, splitext(name)[1] * ".html")
+        build_file = joinpath(build_dir, splitext(name)[1] * ".html")
     end
     return build_file
 end

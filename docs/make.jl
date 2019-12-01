@@ -5,7 +5,7 @@ using Documenter, DemoCards
 theme = cardtheme()
 
 # 2. generate demo files
-simplest_demopage, postprocess_cb1 = makedemos("demos/simplest_demopage")
+simplest_demopage, postprocess_cb1 = makedemos("simplest_demopage")
 gallery_of_packages, postprocess_cb2 = makedemos("demos/gallery_of_packages")
 
 # 3. normal Documenter usage
