@@ -5,7 +5,7 @@ using Documenter, DemoCards
 theme = cardtheme()
 
 # 2. generate demo files
-simplest_demopage, postprocess_cb1 = makedemos("simplest_demopage")
+quickstart, postprocess_cb1 = makedemos("quickstart")
 gallery_of_packages, postprocess_cb2 = makedemos("demos/gallery_of_packages")
 
 # 3. normal Documenter usage
@@ -16,10 +16,9 @@ format = Documenter.HTML(edit_link = "master",
 makedocs(format = format,
          pages = [
             "Home" => "index.md",
-            "QuickStart" => "quickstart.md",
+            "QuickStart" => quickstart,
             "Concepts" => "concepts.md",
             "Examples" => [
-                "Simplest Demopage" => simplest_demopage,
                 "Gallery of Packages" => gallery_of_packages,
             ],
             "Package References" => "references.md"

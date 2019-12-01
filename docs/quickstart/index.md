@@ -14,31 +14,33 @@ The rules of demo management are super simple:
 
 In the following example:
 
-* we have one demo page: "simplest_demopage"
-* "simplest_demopage" has one demo section: "dependencies"
-* "dependencies" has two demo subsections: "part1" and "part2"
+* we have one demo page: "quickstart" ---> The current page
+* "quickstart" has one demo section: "gallery"
+* "gallery" has two demo subsections: "part1" and "part2"
 * "part1" and "part2" holds all the demo files
 * "assets" are ignored by `DemoCards.jl`
+* "index.md" is where all demo cards are organized in
 
 ```text
-../demos/simplest_demopage
-└── dependencies
-    ├── part1
-    │   ├── assets
-    │   ├── simple_documenter.md
-    │   ├── simple_julia.md
-    │   └── simple_literate.jl # julia source file
-    └── part2
-        ├── assets
-        ├── simple_cameraman.jl # julia source file
-        ├── simple_fileio.md
-        └── simple_images.md
+docs/quickstart/
+├── gallery
+│   ├── part1
+│   │   ├── assets
+│   │   ├── simple_documenter.md
+│   │   ├── simple_julia.md
+│   │   └── simple_literate.jl # julia source file
+│   └── part2
+│       ├── assets
+│       ├── simple_cameraman.jl # # julia source file
+│       ├── simple_fileio.md
+│       └── simple_images.md
+└── index.md
 ```
 
 ```@setup simplest_demopage
 using DemoCards
 using DemoCards: DemoPage
-root = "../demos/simplest_demopage"
+root = joinpath("../docs/quickstart")
 ```
 
 ```@repl simplest_demopage
@@ -78,8 +80,13 @@ postprocess_cb()
 After it's set up, you can now focus on contributing more demos and leave
 other works to `DemoCards.jl`.
 
-Check the [Simplest Demopage](@ref simplest_demopage) to see what this page
-looks like with the minimal configuration.
+Here's the generated demos
+
+---
+
+{{{democards}}}
+
+---
 
 ## What DemoCards.jl does
 

@@ -1,3 +1,6 @@
+# ---
+# title: generate cover on the fly
+# ---
 using TestImages, FileIO
 
 img = testimage("cameraman")
