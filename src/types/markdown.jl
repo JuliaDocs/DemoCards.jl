@@ -133,7 +133,10 @@ The processing pipeline is:
 1. strip the front matter
 2. insert a level-1 title and id
 """
-function save_democards(root::String, card::MarkdownDemoCard; credit)
+function save_democards(root::String,
+                        card::MarkdownDemoCard;
+                        credit,
+                        kwargs...)
     isdir(root) || mkpath(root)
 
     markdown_path = joinpath(root, basename(card))

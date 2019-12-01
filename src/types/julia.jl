@@ -116,7 +116,7 @@ end
 
 
 """
-    save_democards(root::String, card::JuliaDemoCard; credit)
+    save_democards(root::String, card::JuliaDemoCard; credit, nbviewer_root_url)
 
 process the original julia file and save it.
 
@@ -127,7 +127,11 @@ The processing pipeline is:
 3. generate markdown file
 4. insert header and footer to generated markdown file
 """
-function save_democards(root::String, card::JuliaDemoCard; credit)
+function save_democards(root::String,
+                        card::JuliaDemoCard;
+                        credit,
+                        nbviewer_root_url,
+                        kwargs...)
     isdir(root) || mkpath(root)
     cardname = splitext(basename(card.path))[1]
     md_path = joinpath(root, "$(cardname).md")
@@ -168,12 +172,9 @@ function save_democards(root::String, card::JuliaDemoCard; credit)
     end
 
     # insert header badge
-    # Ref: https://fredrikekre.github.io/Literate.jl/stable/outputformats/#Configuration-1
-    if any(map(k->haskey(ENV, k), ["HAS_JOSH_K_SEAL_OF_APPROVAL",
-                                   "GITHUB_ACTIONS",
-                                   "GITHUB_ACTIONS"]))
+    if !isempty(nbviewer_root_url)
         nbviewer_folder = join(splitpath(root)[3:end], "/") # remove docs/src prefix
-        nbviewer_url = "@__NBVIEWER_ROOT_URL__/$(nbviewer_folder)/$(cardname).ipynb"
+        nbviewer_url = "$(nbviewer_root_url)/$(nbviewer_folder)/$(cardname).ipynb"
     else
         nbviewer_url = "$(cardname).ipynb"
     end
