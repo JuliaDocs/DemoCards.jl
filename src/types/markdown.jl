@@ -117,6 +117,10 @@ function parse(card::MarkdownDemoCard)
     return config
 end
 
+function get_default_description(card::MarkdownDemoCard)
+    return card.title
+end
+
 
 """
     save_democards(root::String, card::MarkdownDemoCard)
