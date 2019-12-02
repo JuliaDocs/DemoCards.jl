@@ -73,21 +73,22 @@ const theme_minimal = """
 
 .card-img .card-description {
     opacity: 0;
+    z-index: -1;
     position: absolute;
     top: 25%;
-    left: 50%;
+    left: 140%;
     width: 100%;
     transform: translate(-50%, -50%);
     padding: 10px;
     border-radius: 5px;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.8);
     color: #fff;
     text-align: center;
-    font-size: 18px;
-    transition: all 0.3s ease-in-out 0s;
+    font-size: 14px;
 }
 
 .card-img:hover .card-description{
+    z-index: 3;
     opacity: 1;
 }
 
