@@ -40,11 +40,14 @@ docs/quickstart/
 ```@setup simplest_demopage
 using DemoCards
 using DemoCards: DemoPage
-root = joinpath("../docs/quickstart")
 ```
 
+And Democards reads the demo structure from your folder structure:
+
 ```@repl simplest_demopage
-DemoPage(root)
+cd("../../../..") do
+    DemoPage("docs/quickstart")
+end
 ```
 
 ## Deploy your demo page

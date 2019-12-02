@@ -10,8 +10,8 @@ _Let's focus on writing demos_
 
 ## Overview
 
-* a plugin package to `Documenter.jl`.
-* magically generate an index page for all demos.
+* a plugin package to `Documenter.jl` to manage all your demos.
+* folder structure is demo structure.
 * minimal configuration.
 * all demos can be tested by CI.
 * support demos in markdown and julia format.
