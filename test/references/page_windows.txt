@@ -1,6 +1,6 @@
 DemoPage("assets\page\default"):
 
-# default
+# Default
   ## subsection_1
     card_1.md
     card_2.md

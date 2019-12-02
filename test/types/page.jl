@@ -3,7 +3,7 @@
 
     # default DemoPage behavior
     page = DemoPage(joinpath(root, "default"))
-    @test page.title == "default"
+    @test page.title == "Default"
     sec1, sec2 = page.sections
     @test sec1.root == joinpath(page.root, "subsection_1")
     @test sec2.root == joinpath(page.root, "subsection_2")

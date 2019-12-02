@@ -1,5 +1,5 @@
-# default
-## subsection_1
+# Default
+## Subsection 1
 ```@raw html
 <div class="card-section">
 ```
@@ -46,7 +46,7 @@
 </div>
 ```
 
-## subsection_2
+## Subsection 2
 ```@raw html
 <div class="card-section">
 ```

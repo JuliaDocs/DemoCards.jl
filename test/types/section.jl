@@ -3,11 +3,11 @@
 
     # default section behavior
     sec = DemoSection(joinpath(root, "default"))
-    @test sec.title == "default"
+    @test sec.title == "Default"
     @test sec.cards == []
     subsec1, subsec2 = sec.subsections
-    @test subsec1.title == "subsection_1"
-    @test subsec2.title == "subsection_2"
+    @test subsec1.title == "Subsection 1"
+    @test subsec2.title == "Subsection 2"
     @test subsec1.subsections == []
     @test subsec2.subsections == []
     card1, card2 = subsec1.cards
@@ -23,7 +23,7 @@
     @test sec.cards == []
     subsec1, subsec2 = sec.subsections
     @test subsec1.title == "Subsection 1"
-    @test subsec2.title == "subsection_2"
+    @test subsec2.title == "Subsection 2"
     @test subsec1.subsections == []
     @test subsec2.subsections == []
     card1, card2 = subsec1.cards

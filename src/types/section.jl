@@ -126,7 +126,7 @@ function load_config(sec::DemoSection, key)
         validate_order(order, sec)
         return order
     elseif key == "title"
-        get(config, key, basename(sec))
+        get(config, key, get_default_title(sec))
     else
         throw(ArgumentError("Unrecognized key $(key) for DemoSection"))
     end

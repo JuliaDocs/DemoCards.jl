@@ -157,7 +157,7 @@ function load_title(page::DemoPage, config)
         end
     else
         if isnothing(title)
-            return basename(page)
+            return get_default_title(page)
         else
             return title
         end

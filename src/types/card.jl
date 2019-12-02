@@ -52,10 +52,7 @@ function load_config(card::T, key) where T <: AbstractDemoCard
         validate_id(id, card)
         return id
     elseif key == "title"
-        return get(config, key) do
-            name_without_ext = splitext(basename(card))[1]
-            strip(replace(uppercasefirst(name_without_ext), "_" => " "))
-        end
+        return get(config, key, get_default_title(card))
     elseif key == "description"
         return get(config, key, card.title)
     else

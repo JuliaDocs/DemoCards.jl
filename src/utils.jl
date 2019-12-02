@@ -92,3 +92,8 @@ function parse_markdown(contents::String)::Dict
 
     return Dict()
 end
+
+function get_default_title(x::Union{AbstractDemoCard, DemoSection, DemoPage})
+    name_without_ext = splitext(basename(x))[1]
+    strip(replace(uppercasefirst(name_without_ext), r"[_-]" => " "))
+end
