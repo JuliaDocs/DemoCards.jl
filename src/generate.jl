@@ -175,7 +175,8 @@ function generate(card::AbstractDemoCard)
     items = Dict(
         "name" => splitext(basename(card))[1],
         "id" => card.id,
-        "title" => card.title
+        "title" => card.title,
+        "description" => card.description,
     )
     Mustache.render(card_template, items)
 end

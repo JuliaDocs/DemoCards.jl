@@ -16,6 +16,7 @@ const card_template = mt"""
 ```@raw html
 <div class="card">
 <div class="card-img">
+<p class="card-description">{{description}}</p>
 ```
 
 [![svd](covers/{{name}}.png)](@ref {{id}})
@@ -68,6 +69,26 @@ const theme_minimal = """
     border-radius: 5px;
     display:block;
     margin:auto;
+}
+
+.card-img .card-description {
+    opacity: 0;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    text-align: center;
+    font-size: 18px;
+    transition: all 0.3s ease-in-out 0s;
+}
+
+.card-img:hover .card-description{
+    opacity: 1;
 }
 
 """
