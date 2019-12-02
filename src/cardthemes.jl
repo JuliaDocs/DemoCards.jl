@@ -1,5 +1,38 @@
 # TODO: we can manage themes like TestImages.jl
 
+const card_section_template = mt"""
+```@raw html
+<div class="card-section">
+```
+
+{{{cards}}}
+
+```@raw html
+</div>
+```
+"""
+
+const card_template = mt"""
+```@raw html
+<div class="card">
+<div class="card-img">
+```
+
+[![svd](covers/{{name}}.png)](@ref {{id}})
+
+```@raw html
+</div>
+<div class="card-text">
+```
+
+[{{title}}](@ref {{id}})
+```@raw html
+</div>
+</div>
+```
+
+"""
+
 const max_coversize = (220, 200)
 const theme_minimal = """
 .card-section {
