@@ -8,7 +8,7 @@ end
 
 function show(io::IO, sec::DemoSection; level=1)
     print(io, repeat(indent_spaces, level-1))
-    println(io, repeat("#", level), " ", basename(sec))
+    println(io, repeat("#", level), " ", sec.title)
 
     # a section either holds cards or subsections
     # here it's a mere coincident to show cards first
@@ -21,7 +21,8 @@ function show(io::IO, sec::DemoSection; level=1)
 end
 
 function show(io::IO, page::DemoPage)
-    println(io, "DemoPage(\"", page.root, "\"):\n")
+    page_root = replace(page.root, "\\" => "/")
+    println(io, "DemoPage(\"", page_root, "\"):\n")
     println(io, "# ", page.title)
     foreach(x->show(io, x; level=2), page.sections)
 end

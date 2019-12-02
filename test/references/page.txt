@@ -1,9 +1,9 @@
 DemoPage("assets/page/default"):
 
-# default
-  ## subsection_1
+# Default
+  ## Subsection 1
     card_1.md
     card_2.md
-  ## subsection_2
+  ## Subsection 2
     card_3.md
     card_4.md

@@ -1,9 +1,0 @@
-DemoPage("assets\page\default"):
-
-# Default
-  ## subsection_1
-    card_1.md
-    card_2.md
-  ## subsection_2
-    card_3.md
-    card_4.md
