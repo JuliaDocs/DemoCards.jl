@@ -63,11 +63,11 @@ const regex_md_simple_title = r"^\s*#\s*([^\[\]\n\r]+)"
 const regex_md_title = r"^\s*#\s*\[([^\]]+)\]\(\@id\s+([^\s\)\n\r]+)\)"
 
 # markdown content
+# lines that are not title, image, link, list
 const regex_md_content = r"^\s*(?<content>[^#-*!<\d\.>].*)"
 const regex_jl_content = r"^\s*#\s*(?<content>[^#-\*!<\d\.>][^#]+)"
 
-# markdown URL
-# 1. [text](url)
+# markdown URL: [text](url)
 const regex_md_url = r"\[(?<text>[^\]]*)\]\((?<url>[^\)]*)\)"
 
 """
@@ -132,7 +132,6 @@ stripped for julia codes.
 `contents` can be `String` or vector of `String`. Outputs have the same type of `contents`.
 """
 function split_frontmatter(contents::String)
-    contents = replace(contents, r"\n\r"=>"\n")
     frontmatter, body = split_frontmatter(split(contents, "\n"))
     return join(frontmatter, "\n"), join(body, "\n")
 end
