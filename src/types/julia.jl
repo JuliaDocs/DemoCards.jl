@@ -73,21 +73,12 @@ function JuliaDemoCard(path::String)::JuliaDemoCard
 end
 
 function parse(card::JuliaDemoCard)
-    contents = readlines(card.path)
-    offsets = map(contents) do line
-        m = match(regex_jl_yaml, line)
-        m isa RegexMatch
-    end
-    if !isempty(offsets) && offsets[1]==1
-        offset = findall(offsets)[2]
-        frontmatter = map(x->lstrip(x, '#'), contents[2:offset-1])
+    frontmatter, body = split_frontmatter(readlines(card.path))
+    if !isempty(frontmatter)
         config = YAML.load(join(frontmatter, "\n"))
         haskey(config, "cover") && isfile(config["cover"]) || delete!(config, "cover")
-
-        body = contents[offset+1:end]
     else
         config = Dict()
-        body = contents
     end
 
     if !haskey(config, "cover")
@@ -161,17 +152,7 @@ function save_democards(root::String,
     end
 
     # remove YAML frontmatter
-    contents = readlines(src_path)
-    offsets = map(contents) do line
-        m = match(regex_jl_yaml, line)
-        m isa RegexMatch
-    end
-    if !isempty(offsets) && offsets[1]==1
-        offset = findall(offsets)[2]+1
-        body = join(contents[offset:end], "\n")
-    else
-        body = join(contents, "\n")
-    end
+    _, body = split_frontmatter(read(src_path, String))
 
     # insert header badge
     if !isempty(nbviewer_root_url)

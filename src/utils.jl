@@ -51,8 +51,10 @@ const regex_md_img = r"^\s*\!\[[^\]]*\]\(([^\s]*)\)"
 # markdown image format in Literate: # ![title](path)
 const regex_jl_img = r"^[#\w*\s*]*\!\[[^\]]*\]\(([^\s]*)\)"
 
-# YAML frontmatter in julia: # ---
-const regex_jl_yaml = r"^#\s*---"
+# YAML frontmatter
+# 1. markdown: ---
+# 2. julia: # ---
+const regex_yaml = r"^#?\s*---"
 
 # markdown title syntax:
 # 1. # title
@@ -96,4 +98,33 @@ end
 function get_default_title(x::Union{AbstractDemoCard, DemoSection, DemoPage})
     name_without_ext = splitext(basename(x))[1]
     strip(replace(uppercasefirst(name_without_ext), r"[_-]" => " "))
+end
+
+"""
+    split_frontmatter(contents) -> frontmatter, body
+
+splits the YAML frontmatter out from markdown and julia source code. Leading `# ` will be
+stripped for julia codes.
+
+`contents` can be `String` or vector of `String`. Outputs have the same type of `contents`.
+"""
+function split_frontmatter(contents::String)
+    frontmatter, body = split_frontmatter(split(contents, "\n"))
+    return join(frontmatter, "\n"), join(body, "\n")
+end
+function split_frontmatter(contents::AbstractArray{<:AbstractString})
+    offsets = map(contents) do line
+        m = match(regex_yaml, line)
+        m isa RegexMatch
+    end
+    offsets = findall(offsets)
+    if !isempty(offsets)
+        # anything before frontmatter is thrown away
+        frontmatter = map(x->lstrip(x, ('#', ' ')), contents[offsets[1]: offsets[2]])
+        body = contents[offsets[2]+1:end]
+    else
+        frontmatter = ""
+        body = contents
+    end
+    return frontmatter, body
 end

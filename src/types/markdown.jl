@@ -85,19 +85,13 @@ Possible configuration resources are:
     They also need to validate the values.
 """
 function parse(card::MarkdownDemoCard)
-    contents = readlines(card.path)
-    offsets = findall(map(x->match(r"^---\s*", x) isa RegexMatch, contents))
-
-    if isempty(offsets)
-        config = Dict()
-        body_offset = 1
-    else
-        frontmatter = join(contents[offsets[1]:offsets[2]], "\n")
-        config = YAML.load(frontmatter)
+    frontmatter, body = split_frontmatter(readlines(card.path))
+    if !isempty(frontmatter)
+        config = YAML.load(join(frontmatter, "\n"))
         haskey(config, "cover") && isfile(config["cover"]) || delete!(config, "cover")
-        body_offset = offsets[2]+1
+    else
+        config = Dict()
     end
-    body = contents[body_offset:end]
 
     if !haskey(config, "cover")
         # set the first valid image path as cover
@@ -142,8 +136,7 @@ function save_democards(root::String,
 
     markdown_path = joinpath(root, basename(card))
 
-    contents = split(read(card.path, String), "---\n")
-    body = length(contents) == 1 ? contents[1] : join(contents[3:end])
+    _, body = split_frontmatter(read(card.path, String))
 
     # @ref syntax: https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@ref-link-1
     header = "# [$(card.title)](@id $(card.id))\n"
