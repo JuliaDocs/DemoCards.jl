@@ -105,10 +105,6 @@ function parse(card::JuliaDemoCard)
     return config
 end
 
-function get_default_description(card::JuliaDemoCard)
-    return card.title
-end
-
 
 """
     save_democards(root::String, card::JuliaDemoCard; credit, nbviewer_root_url)

@@ -62,9 +62,13 @@ const regex_yaml = r"^#?\s*---"
 const regex_md_simple_title = r"^\s*#\s*([^\[\]\n\r]+)"
 const regex_md_title = r"^\s*#\s*\[([^\]]+)\]\(\@id\s+([^\s\)\n\r]+)\)"
 
-# description in markdown
-# The first paragraph that is not a title, image, list or codes
-const regex_md_description = r"\n\s*([^#-*!<```><\d\.>].*)\n"
+# markdown content
+const regex_md_content = r"^\s*(?<content>[^#-*!<\d\.>].*)"
+const regex_jl_content = r"^\s*#\s*(?<content>[^#-\*!<\d\.>][^#]+)"
+
+# markdown URL
+# 1. [text](url)
+const regex_md_url = r"\[(?<text>[^\]]*)\]\((?<url>[^\)]*)\)"
 
 """
     parse_markdown(contents::String)
@@ -103,6 +107,22 @@ function get_default_title(x::Union{AbstractDemoCard, DemoSection, DemoPage})
     strip(replace(uppercasefirst(name_without_ext), r"[_-]" => " "))
 end
 
+
+get_default_description(card::MarkdownDemoCard) = get_default_description(card, regex_md_content)
+get_default_description(card::JuliaDemoCard) = get_default_description(card, regex_jl_content)
+function get_default_description(card::AbstractDemoCard, regex_content)
+    # description as the first paragraph that is not a title, image, list or codes
+    _, body = split_frontmatter(readlines(card.path))
+    m = findall(map(x->match(regex_content, x) isa RegexMatch, body))
+    isempty(m) && return card.title
+
+    paragraph_line = findall(x->x!=1, diff(m))
+    offset = isempty(paragraph_line) ? length(m) : paragraph_line[1]
+    description = join(map(x->lstrip(x, ('#', ' ')), body[m[1:offset]]), " ")
+    return replace(description, regex_md_url => s"\g<text>")
+end
+
+
 """
     split_frontmatter(contents) -> frontmatter, body
 
@@ -112,6 +132,7 @@ stripped for julia codes.
 `contents` can be `String` or vector of `String`. Outputs have the same type of `contents`.
 """
 function split_frontmatter(contents::String)
+    contents = replace(contents, r"\n\r"=>"\n")
     frontmatter, body = split_frontmatter(split(contents, "\n"))
     return join(frontmatter, "\n"), join(body, "\n")
 end
