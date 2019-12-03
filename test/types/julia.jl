@@ -5,7 +5,7 @@
     @test simplest.id == "simplest-1"
     @test simplest.path == "simplest.jl"
     @test simplest.title == "Simplest"
-    @test simplest.description == "Simplest"
+    @test simplest.description == "This is the content"
 
     @testset "parse" begin
         @testset "title, id and description" begin
@@ -13,22 +13,22 @@
             title_1 = JuliaDemoCard("title_1.jl")
             @test title_1.id == "title-1-1"
             @test title_1.title == "Title 1"
-            @test title_1.description == "Title 1"
+            @test title_1.description == "This is the content"
 
             title_2 = JuliaDemoCard("title_2.jl")
             @test title_2.id == "title-2-1"
             @test title_2.title == "Title 2"
-            @test title_2.description == "Title 2"
+            @test title_2.description == "This is the content"
 
             title_3 = JuliaDemoCard("title_3.jl")
             @test title_3.id == "title-3-1"
             @test title_3.title == "Title 3"
-            @test title_3.description == "Title 3"
+            @test title_3.description == "This is the content"
 
             title_4 = JuliaDemoCard("title_4.jl")
             @test title_4.id == "title-4-1"
             @test title_4.title == "Custom Title"
-            @test title_4.description == "Custom Title"
+            @test title_4.description == "This is the content"
 
             title_5 = JuliaDemoCard("title_5.jl")
             @test title_5.id == "title-5-1"
@@ -38,12 +38,12 @@
             title_6 = JuliaDemoCard("title_6.jl")
             @test title_6.id == "custom_id"
             @test title_6.title == "Custom Title"
-            @test title_6.description == "Custom Title"
+            @test title_6.description == "This is the content"
 
             title_7 = JuliaDemoCard("title_7.jl")
             @test title_7.id == "custom_id"
             @test title_7.title == "Custom Title"
-            @test title_7.description == "Custom Title"
+            @test title_7.description == "This is the content"
         end
 
         @testset "cover" begin
