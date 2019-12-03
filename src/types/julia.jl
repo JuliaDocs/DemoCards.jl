@@ -135,6 +135,10 @@ function save_democards(root::String,
     project_dir = joinpath(pwd(), "docs")
     cd(root) do
         try
+            foreach(ignored_dirnames) do x
+                isdir(x) || mkdir(x)
+            end
+                         
             # run scripts in a sandbox
             m = Module(gensym())
             # modules created with Module() does not have include defined
