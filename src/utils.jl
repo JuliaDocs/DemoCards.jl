@@ -62,6 +62,9 @@ const regex_yaml = r"^#?\s*---"
 const regex_md_simple_title = r"^\s*#\s*([^\[\]\n\r]+)"
 const regex_md_title = r"^\s*#\s*\[([^\]]+)\]\(\@id\s+([^\s\)\n\r]+)\)"
 
+# description in markdown
+# The first paragraph that is not a title, image, list or codes
+const regex_md_description = r"\n\s*([^#-*!<```><\d\.>].*)\n"
 
 """
     parse_markdown(contents::String)

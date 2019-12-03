@@ -118,7 +118,14 @@ function parse(card::MarkdownDemoCard)
 end
 
 function get_default_description(card::MarkdownDemoCard)
-    return card.title
+    contents = read(card.path, String)
+    m = match(regex_md_description, contents)
+    if m isa RegexMatch
+        # strip all URL link in description
+        return replace(m.captures[1], r"\[(?<text>[^\]]*)\]\(?<url>[^\)]*\)" => s"\g<text>")
+    else
+        return card.title
+    end
 end
 
 
