@@ -318,7 +318,8 @@ function get_nbviewer_root_url(branch)
     if haskey(ENV, "HAS_JOSH_K_SEAL_OF_APPROVAL") # Travis CI
         repo_slug = get(ENV, "TRAVIS_REPO_SLUG", "unknown-repository")
         deploy_folder = if get(ENV, "TRAVIS_PULL_REQUEST", nothing) == "false"
-            get(ENV, "TRAVIS_TAG", "dev")
+            tag = ENV["TRAVIS_TAG"]
+            isempty(tag) ? "dev" : tag
         else
             "previews/PR$(get(ENV, "TRAVIS_PULL_REQUEST", "##"))"
         end
