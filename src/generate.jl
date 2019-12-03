@@ -139,39 +139,6 @@ function cardtheme(theme::AbstractString = "minimal";
     return joinpath(relative_root, filename)
 end
 
-const card_section_template = mt"""
-```@raw html
-<div class="card-section">
-```
-
-{{{cards}}}
-
-```@raw html
-</div>
-```
-"""
-
-const card_template = mt"""
-```@raw html
-<div class="card">
-<div class="card-img">
-```
-
-[![svd](covers/{{name}}.png)](@ref {{id}})
-
-```@raw html
-</div>
-<div class="card-text">
-```
-
-[{{title}}](@ref {{id}})
-```@raw html
-</div>
-</div>
-```
-
-"""
-
 function generate(file::String, page::DemoPage)
     check_ext(file, :markdown)
     open(file, "w") do f
@@ -208,7 +175,8 @@ function generate(card::AbstractDemoCard)
     items = Dict(
         "name" => splitext(basename(card))[1],
         "id" => card.id,
-        "title" => card.title
+        "title" => card.title,
+        "description" => card.description,
     )
     Mustache.render(card_template, items)
 end
