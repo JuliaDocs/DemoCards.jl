@@ -151,7 +151,8 @@ function save_democards(root::String,
             card.cover = load_config(card, "cover")
             card.path = src_path
         catch err
-            @warn "Executing demo $(card.path) fails."
+            # throw warnings when generating notebooks
+            err isa LoadError || rethrow(err)
         end
     end
 
@@ -171,7 +172,11 @@ function save_democards(root::String,
     write(src_path, header, body)
 
     # 2. notebook
-    @suppress Literate.notebook(src_path, root; credit=credit)
+    try
+        @suppress Literate.notebook(src_path, root; credit=credit)
+    catch err
+        @warn err.msg
+    end
 
     # 3. markdown
     @suppress Literate.markdown(src_path, root; credit=false) # manually add credit later
