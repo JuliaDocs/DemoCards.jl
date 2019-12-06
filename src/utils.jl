@@ -59,8 +59,8 @@ const regex_yaml = r"^#?\s*---"
 # markdown title syntax:
 # 1. # title
 # 2. # [title](@id id)
-const regex_md_simple_title = r"^\s*#\s*([^\[\]\n\r]+)"
-const regex_md_title = r"^\s*#\s*\[([^\]]+)\]\(\@id\s+([^\s\)\n\r]+)\)"
+const regex_md_simple_title = r"^\s*#\s*(?<title>[^\[\]\n\r]+)"
+const regex_md_title = r"^\s*#\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)\n\r]+)\)"
 
 # markdown content
 # lines that are not title, image, link, list
@@ -94,8 +94,6 @@ function parse_markdown(contents::String)::Dict
         title = m.captures[1]
         # default documenter id has -1 suffix
         id = replace(title, ' ' => '-') * "-1"
-        # id = replace(id, '\`' => '')
-        # id = strip(id, '-')
         return Dict("title"=>title, "id"=>id)
     end
 

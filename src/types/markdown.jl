@@ -86,12 +86,11 @@ Possible configuration resources are:
 """
 function parse(card::MarkdownDemoCard)
     frontmatter, body = split_frontmatter(readlines(card.path))
+    config = parse_markdown(join(body, "\n"))
     if !isempty(frontmatter)
-        config = YAML.load(join(frontmatter, "\n"))
-        haskey(config, "cover") && isfile(config["cover"]) || delete!(config, "cover")
-    else
-        config = Dict()
+        merge!(config, YAML.load(join(frontmatter, "\n")))
     end
+    haskey(config, "cover") && isfile(config["cover"]) || delete!(config, "cover")
 
     if !haskey(config, "cover")
         # set the first valid image path as cover
