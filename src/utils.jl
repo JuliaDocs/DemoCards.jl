@@ -59,8 +59,8 @@ const regex_yaml = r"^#?\s*---"
 # markdown title syntax:
 # 1. # title
 # 2. # [title](@id id)
-const regex_md_simple_title = r"^\s*#\s*(?<title>[^\[\]\n\r]+)"
-const regex_md_title = r"^\s*#\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)\n\r]+)\)"
+const regex_md_simple_title = r"^\s*#+\s*(?<title>[^\[\]\n\r]+)"
+const regex_md_title = r"^\s*#+\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)\n\r]+)\)"
 
 # markdown content
 # lines that are not title, image, link, list
@@ -111,7 +111,13 @@ get_default_description(card::JuliaDemoCard) = get_default_description(card, reg
 function get_default_description(card::AbstractDemoCard, regex_content)
     # description as the first paragraph that is not a title, image, list or codes
     _, body = split_frontmatter(readlines(card.path))
-    m = findall(map(x->match(regex_content, x) isa RegexMatch, body))
+    content_lines = map(x->match(regex_content, x) isa RegexMatch, body)
+    code_lines = findall(map(x->startswith(lstrip(x), "```"), body))
+    for (i,j) in zip(code_lines[1:2:end], code_lines[2:2:end])
+        # mark code lines as non-content lines
+        content_lines[i:j] .= 0
+    end
+    m = findall(content_lines)
     isempty(m) && return card.title
 
     paragraph_line = findall(x->x!=1, diff(m))
