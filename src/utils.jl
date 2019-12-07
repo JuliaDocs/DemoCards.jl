@@ -229,12 +229,13 @@ function split_frontmatter(contents::String)
     return join(frontmatter, "\n"), join(body, "\n")
 end
 function split_frontmatter(contents::AbstractArray{<:AbstractString})
+    # TODO: remove magic comments
     offsets = map(contents) do line
         m = match(regex_yaml, line)
         m isa RegexMatch
     end
     offsets = findall(offsets)
-    if !isempty(offsets)
+    if !isempty(offsets) && offsets[1] == 1 # only first line is treated as frontmatter
         # anything before frontmatter is thrown away
         frontmatter = map(x->lstrip(x, ('#', ' ')), contents[offsets[1]: offsets[2]])
         body = contents[offsets[2]+1:end]

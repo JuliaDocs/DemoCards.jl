@@ -116,8 +116,12 @@ function DemoPage(root::String)::DemoPage
 end
 
 function load_config(page::DemoPage, key)
-    path = joinpath(page.root, config_filename)
-    config = isfile(path) ? JSON.parsefile(path) : Dict()
+    json_path = joinpath(page.root, config_filename)
+    json_config = isfile(json_path) ? JSON.parsefile(json_path) : Dict()
+
+    template_file = joinpath(page.root, get(json_config, "template", template_filename))
+    config = parse_markdown(template_file)
+    config = merge(json_config, config) # template has higher priority over config file
 
     if key == "order"
         haskey(config, key) || return get_default_order(page)
@@ -126,41 +130,11 @@ function load_config(page::DemoPage, key)
         validate_order(order, page)
         return order
     elseif key == "title"
-        return load_title(page, config)
+        return get(config, key, get_default_title(page))
     elseif key == "template"
         return load_template(page, config)
     else
         throw(ArgumentError("Unrecognized key $(key) for DemoPage"))
-    end
-end
-
-"""
-    load_title(page::DemoPage, config)
-
-load title from config using the following priority rules:
-
-1. parse the title out from the template file
-2. use config["title"]
-3. fallback: use the folder name
-"""
-function load_title(page::DemoPage, config)
-    key = "title"
-    title = load_template_config(page, key)
-
-    if haskey(config, key)
-        if isnothing(title)
-            return config[key]
-        else
-            path = joinpath(page.root, config_filename)
-            @warn("config item $(key) in $(path) is suppressed by \"template\"")
-            return title
-        end
-    else
-        if isnothing(title)
-            return get_default_title(page)
-        else
-            return title
-        end
     end
 end
 
@@ -193,21 +167,4 @@ function get_default_template(page::DemoPage)
     content = "{{{democards}}}" # render by Mustache
     footer = ""
     return header * content * footer
-end
-
-"""
-    load_template_config(page::DemoPage, key)
-
-parse out and return value of `key` from the template file of `page`.
-
-If `page` doesn't have a template file, it returns `nothing`.
-"""
-function load_template_config(page::DemoPage, key)
-    path = joinpath(page.root, config_filename)
-    config = isfile(path) ? JSON.parsefile(path) : Dict()
-    template_path = joinpath(page.root, get(config, "template", template_filename))
-    isfile(template_path) || return nothing
-
-    config = parse_markdown(template_path)
-    get(config, key, nothing)
 end
