@@ -60,6 +60,32 @@ function load_config(card::T, key) where T <: AbstractDemoCard
     end
 end
 
+"""
+    parse(card::AbstractDemoCard, content_parser)
+
+Parse the content of `card` and return the configuration.
+
+!!! note
+
+    Users of this function need to use `haskey` to check if keys are existed.
+    They also need to validate the values.
+"""
+function parse(card::AbstractDemoCard, content_parser=nothing)
+    frontmatter, body = split_frontmatter(readlines(card.path))
+    config = isnothing(content_parser) ? Dict() : content_parser(body)
+    # frontmatter has higher priority
+    if !isempty(frontmatter)
+        merge!(config, YAML.load(join(frontmatter, "\n")))
+    end
+
+    if haskey(config, "cover")
+        config["cover"] = replace(config["cover"],
+                                  r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
+    end
+
+    return config
+end
+
 
 ### load concrete implementations
 

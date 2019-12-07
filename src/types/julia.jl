@@ -72,38 +72,7 @@ function JuliaDemoCard(path::String)::JuliaDemoCard
     return card
 end
 
-function parse(card::JuliaDemoCard)
-    frontmatter, body = split_frontmatter(readlines(card.path))
-    if !isempty(frontmatter)
-        config = YAML.load(join(frontmatter, "\n"))
-        haskey(config, "cover") && isfile(config["cover"]) || delete!(config, "cover")
-    else
-        config = Dict()
-    end
-
-    if !haskey(config, "cover")
-        # set the first valid image path as cover
-        # TODO: only markdown syntax is supported now
-        image_paths = map(body) do line
-            m = match(regex_jl_img, line)
-            m isa RegexMatch || return nothing
-            return m.captures[1]
-        end
-        filter!(image_paths) do x
-            !isnothing(x) && isfile(dirname(card.path), x)
-        end
-        if !isempty(image_paths)
-            config["cover"] = first(image_paths)
-        end
-    end
-
-    if haskey(config, "cover")
-        config["cover"] = replace(config["cover"],
-                                  r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
-    end
-
-    return config
-end
+parse(card::JuliaDemoCard) = parse(card, parse_julia)
 
 
 """

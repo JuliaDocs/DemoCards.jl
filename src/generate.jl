@@ -216,7 +216,14 @@ end
 
 function load_cover(card::AbstractDemoCard)
     root = dirname(card.path)
-    isnothing(card.cover) ? Gray.(ones(128, 128)) : load(joinpath(root, card.cover))
+    fallback_cover() = Gray.(ones(max_coversize))
+
+    isnothing(card.cover) && return fallback_cover()
+
+    cover_path = joinpath(root, card.cover)
+    !isfile(cover_path) && return fallback_cover()
+
+    return load(cover_path)
 end
 
 ### save markdown files

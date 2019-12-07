@@ -11,18 +11,18 @@
         @testset "title, id and description" begin
             # JuliaDemoCard doesn't parse title from the markdown contents
             title_1 = JuliaDemoCard("title_1.jl")
-            @test title_1.id == "title-1-1"
-            @test title_1.title == "Title 1"
+            @test title_1.id == "Custom-Title-1"
+            @test title_1.title == "Custom Title"
             @test title_1.description == "This is the content"
 
             title_2 = JuliaDemoCard("title_2.jl")
-            @test title_2.id == "title-2-1"
-            @test title_2.title == "Title 2"
+            @test title_2.id == "custom_id_2"
+            @test title_2.title == "Custom Title 2"
             @test title_2.description == "This is the content"
 
             title_3 = JuliaDemoCard("title_3.jl")
-            @test title_3.id == "title-3-1"
-            @test title_3.title == "Title 3"
+            @test title_3.id == "Custom-Title-3-1-1"
+            @test title_3.title == "Custom Title 3-1"
             @test title_3.description == "This is the content"
 
             title_4 = JuliaDemoCard("title_4.jl")
@@ -54,7 +54,7 @@
             @test cover_2.cover ==  joinpath("..", "logo.png")
 
             cover_3 = JuliaDemoCard("cover_3.jl")
-            @test cover_3.cover == joinpath("..", "logo.png")
+            @test cover_3.cover == "nonexistence.jpg"
 
             cover_4 = JuliaDemoCard("cover_4.jl")
             @test cover_4.cover == joinpath("..", "logo.png")
