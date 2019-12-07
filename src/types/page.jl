@@ -120,7 +120,7 @@ function load_config(page::DemoPage, key)
     json_config = isfile(json_path) ? JSON.parsefile(json_path) : Dict()
 
     template_file = joinpath(page.root, get(json_config, "template", template_filename))
-    config = parse_markdown(template_file)
+    config = parse(Val(:Markdown), template_file)
     config = merge(json_config, config) # template has higher priority over config file
 
     if key == "order"

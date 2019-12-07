@@ -69,8 +69,6 @@ function MarkdownDemoCard(path::String)::MarkdownDemoCard
     return card
 end
 
-parse(card::MarkdownDemoCard) = parse(card, parse_markdown)
-
 
 """
     save_democards(root::String, card::MarkdownDemoCard)

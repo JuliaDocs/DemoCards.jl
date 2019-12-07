@@ -43,117 +43,116 @@ function flatten(sec::DemoSection)
     end
 end
 
-### regexes
+### regexes and configuration parsers
 
-# markdown image syntax: ![title](path)
-const regex_md_img = r"^\s*!\[(?<title>[^\]]*)\]\((?<path>[^\s]*)\)"
+raw"""
+    get_regex(card::AbstractDemoCard, regex_type)
 
-# markdown image format in Literate: # ![title](path)
-const regex_jl_img = r"^#!?\w*\s+!\[(?<title>[^\]]*)\]\((?<path>[^\s]*)\)"
+Return regex used to parse `card`.
+
+`regex_type` and capture fields:
+
+* `:image`: $1=>title, $2=>path
+* `:title`: $1=>title, (Optionally, $2=>id)
+* `:content`: $1=>content
+"""
+function get_regex(::Val{:Markdown}, regex_type)
+    if regex_type == :image
+        # Example: ![title](path)
+        return r"^\s*!\[(?<title>[^\]]*)\]\((?<path>[^\s]*)\)"
+    elseif regex_type == :title
+        # Example: # [title](@id id)
+        regex_title = r"\s*#+\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)]+)\)"
+        # Example: # title
+        regex_simple_title = r"\s*#+\s*(?<title>[^#]+)"
+        
+        # Note: return complicated one first
+        return (regex_title, regex_simple_title)
+    elseif regex_type == :content
+        # lines that are not title, image, link, list
+        return r"^\s*(?<content>[^#\-*!<\d\.>].*)"
+    else
+        error("Unrecognized regex type: $(regex_type)")
+    end
+end
+
+function get_regex(::Val{:Julia}, regex_type)
+    if regex_type == :image
+        # Example: #md ![title](path)
+        return r"^#!?\w*\s+!\[(?<title>[^\]]*)\]\((?<path>[^\s]*)\)"
+    elseif regex_type == :title
+        # Example: # [title](@id id)
+        regex_title = r"\s*#!?\w*\s+#+\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)]+)\)"
+        # Example: # title
+        regex_simple_title = r"\s*#!?\w*\s+#+\s*(?<title>[^#]+)"
+        
+        # Note: return complicated one first
+        return (regex_title, regex_simple_title)
+    elseif regex_type == :content
+        # lines that are not title, image, link, list
+        return r"^\s*#!?\w*\s+(?<content>[^#\-\*!<\d\.>]+)"
+    else
+        error("Unrecognized regex type: $(regex_type)")
+    end
+end
 
 # YAML frontmatter
 # 1. markdown: ---
 # 2. julia: # ---
 const regex_yaml = r"^#?\s*---"
 
-# markdown title syntax:
-# 1. # title
-# 2. # [title](@id id)
-const regex_md_simple_title = r"\s*#+\s*(?<title>[^#]+)"
-const regex_md_title = r"\s*#+\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)]+)\)"
-
-# markdown title syntax for julia:
-# 1. # # title
-# 2. #md # title
-# 3. #!jl # title
-const regex_jl_simple_title = r"\s*#!?\w*\s+#+\s*(?<title>[^#]+)"
-const regex_jl_title = r"\s*#!?\w*\s+#+\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)]+)\)"
-
-# markdown content
-# lines that are not title, image, link, list
-const regex_md_content = r"^\s*(?<content>[^#\-*!<\d\.>].*)"
-const regex_jl_content = r"^\s*#!?\w*\s+(?<content>[^#\-\*!<\d\.>]+)"
-
 # markdown URL: [text](url)
 const regex_md_url = r"\[(?<text>[^\]]*)\]\((?<url>[^\)]*)\)"
 
 """
-    parse_markdown(contents)
-    parse_markdown(path::String)
+    parse([T::Val], card::AbstractDemoCard)
+    parse(T::Val, contents)
+    parse(T::Val, path)
 
-parse markdown contents and return a configuration dict.
+Parse the content of `card` and return the configuration.
 
 Currently supported items are: `title`, `id`, `cover`, `description`.
+
+!!! note
+
+    Users of this function need to use `haskey` to check if keys are existed.
+    They also need to validate the values.
 """
-function parse_markdown(contents::String)
-    contents = isfile(contents) ? read(contents, String) : contents
-    parse_markdown(split(contents, "\n"))
-end
-
-function parse_markdown(contents::AbstractArray{<:AbstractString})::Dict
-    config = Dict()
-    _, contents = split_frontmatter(contents) # drop frontmatter
-
-    # The first title line in markdown format is parse out as the title
-    title_matches = map(contents) do line
-        # try to match the most complicated pattern first
-        m = match(regex_md_title, line)
-        m isa RegexMatch && return m
-        m = match(regex_md_simple_title, line)
-        m isa RegexMatch && return m
-        return nothing
-    end
-    title_lines = findall(map(x->x isa RegexMatch, title_matches))
-    if !isempty(title_lines)
-        m = title_matches[title_lines[1]]
-        title = m["title"]
-        if length(m.captures) == 1
-            # default documenter id has -1 suffix
-            id = replace(title, ' ' => '-') * "-1"
-        elseif length(m.captures) == 2
-            id = m.captures[2]
-        else
-            error("Unrecognized regex format $(m.regex)")
-        end
-        merge!(config, Dict("title"=>title, "id"=>id))
+function parse(T::Val, card::AbstractDemoCard)
+    frontmatter, body = split_frontmatter(readlines(card.path))
+    config = parse(T, body)
+    # frontmatter has higher priority
+    if !isempty(frontmatter)
+        merge!(config, YAML.load(join(frontmatter, "\n")))
     end
 
-    # The first valid image link is parsed out as card cover
-    image_matches = map(contents) do line
-        m = match(regex_md_img, line)
-        m isa RegexMatch && return m
-        return nothing
-    end
-    image_lines = findall(map(x->x isa RegexMatch, image_matches))
-    if !isempty(image_lines)
-        config["cover"] = image_matches[image_lines[1]]["path"]
-    end
-
-    description = parse_description(contents, regex_md_content)
-    if !isnothing(description)
-        config["description"] = description
+    if haskey(config, "cover")
+        config["cover"] = replace(config["cover"],
+                                  r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
     end
 
     return config
 end
+parse(card::JuliaDemoCard) = parse(Val(:Julia), card)
+parse(card::MarkdownDemoCard) = parse(Val(:Markdown), card)
 
 
-function parse_julia(contents::String)
+function parse(T::Val, contents::String)
     contents = isfile(contents) ? read(contents, String) : contents
-    parse_julia(split(contents, "\n"))
+    parse(T, split(contents, "\n"))
 end
 
-function parse_julia(contents::AbstractArray{<:AbstractString})::Dict
+function parse(T::Val, contents::AbstractArray{<:AbstractString})::Dict
     config = Dict()
     _, contents = split_frontmatter(contents) # drop frontmatter
 
     # The first title line in markdown format is parse out as the title
     title_matches = map(contents) do line
         # try to match the most complicated pattern first
-        m = match(regex_jl_title, line)
-        m isa RegexMatch && return m
-        m = match(regex_jl_simple_title, line)
-        m isa RegexMatch && return m
+        for re in get_regex(T, :title)
+            m = match(re, line)
+            m isa RegexMatch && return m
+        end
         return nothing
     end
     title_lines = findall(map(x->x isa RegexMatch, title_matches))
@@ -173,7 +172,7 @@ function parse_julia(contents::AbstractArray{<:AbstractString})::Dict
 
     # The first valid image link is parsed out as card cover
     image_matches = map(contents) do line
-        m = match(regex_jl_img, line)
+        m = match(get_regex(T, :image), line)
         m isa RegexMatch && return m
         return nothing
     end
@@ -182,7 +181,7 @@ function parse_julia(contents::AbstractArray{<:AbstractString})::Dict
         config["cover"] = image_matches[image_lines[1]]["path"]
     end
 
-    description = parse_description(contents, regex_jl_content)
+    description = parse_description(contents, get_regex(T, :content))
     if !isnothing(description)
         config["description"] = description
     end

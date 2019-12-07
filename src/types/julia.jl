@@ -72,8 +72,6 @@ function JuliaDemoCard(path::String)::JuliaDemoCard
     return card
 end
 
-parse(card::JuliaDemoCard) = parse(card, parse_julia)
-
 
 """
     save_democards(root::String, card::JuliaDemoCard; credit, nbviewer_root_url)
