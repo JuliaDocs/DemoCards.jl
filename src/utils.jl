@@ -46,10 +46,10 @@ end
 ### regexes
 
 # markdown image syntax: ![title](path)
-const regex_md_img = r"^\s*\!\[(?<title>[^\]]*)\]\((?<path>[^\s]*)\)"
+const regex_md_img = r"^\s*!\[(?<title>[^\]]*)\]\((?<path>[^\s]*)\)"
 
 # markdown image format in Literate: # ![title](path)
-const regex_jl_img = r"^[#\w*\s*]*\!\[[^\]]*\]\(([^\s]*)\)"
+const regex_jl_img = r"^#!?[<src><jl><nb><md>]?\s+!\[(?<title>[^\]]*)\]\((?<path>[^\s]*)\)"
 
 # YAML frontmatter
 # 1. markdown: ---
@@ -62,10 +62,17 @@ const regex_yaml = r"^#?\s*---"
 const regex_md_simple_title = r"\s*#+\s*(?<title>[^\[\]]+)"
 const regex_md_title = r"\s*#+\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)]+)\)"
 
+# markdown title syntax for julia:
+# 1. # # title
+# 2. #md # title
+# 3. #!jl # title
+const regex_jl_simple_title = r"\s*#!?[<src><jl><nb><md>]?\s+#+\s*(?<title>[^#\[\]]+)"
+const regex_jl_title = r"\s*#!?[<src><jl><nb><md>]?\s+#+\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)]+)\)"
+
 # markdown content
 # lines that are not title, image, link, list
 const regex_md_content = r"^\s*(?<content>[^#-*!<\d\.>].*)"
-const regex_jl_content = r"^\s*#\s*(?<content>[^#-\*!<\d\.>][^#]+)"
+const regex_jl_content = r"^\s*#\s+(?<content>[^#-\*!<\d\.>][^#]+)"
 
 # markdown URL: [text](url)
 const regex_md_url = r"\[(?<text>[^\]]*)\]\((?<url>[^\)]*)\)"
@@ -88,7 +95,6 @@ function parse_markdown(contents::AbstractArray{<:AbstractString})::Dict
     _, contents = split_frontmatter(contents) # drop frontmatter
 
     # The first title line in markdown format is parse out as the title
-    # of demo card/section/page
     title_matches = map(contents) do line
         # try to match the most complicated pattern first
         m = match(regex_md_title, line)
@@ -131,6 +137,59 @@ function parse_markdown(contents::AbstractArray{<:AbstractString})::Dict
     return config
 end
 
+
+function parse_julia(contents::String)
+    contents = isfile(contents) ? read(contents, String) : contents
+    parse_julia(split(contents, "\n"))
+end
+
+function parse_julia(contents::AbstractArray{<:AbstractString})::Dict
+    config = Dict()
+    _, contents = split_frontmatter(contents) # drop frontmatter
+
+    # The first title line in markdown format is parse out as the title
+    title_matches = map(contents) do line
+        # try to match the most complicated pattern first
+        m = match(regex_jl_title, line)
+        m isa RegexMatch && return m
+        m = match(regex_jl_simple_title, line)
+        m isa RegexMatch && return m
+        return nothing
+    end
+    title_lines = findall(map(x->x isa RegexMatch, title_matches))
+    if !isempty(title_lines)
+        m = title_matches[title_lines[1]]
+        title = m["title"]
+        if length(m.captures) == 1
+            # default documenter id has -1 suffix
+            id = replace(title, ' ' => '-') * "-1"
+        elseif length(m.captures) == 2
+            id = m.captures[2]
+        else
+            error("Unrecognized regex format $(m.regex)")
+        end
+        merge!(config, Dict("title"=>title, "id"=>id))
+    end
+
+    # The first valid image link is parsed out as card cover
+    image_matches = map(contents) do line
+        m = match(regex_jl_img, line)
+        m isa RegexMatch && return m
+        return nothing
+    end
+    image_lines = findall(map(x->x isa RegexMatch, image_matches))
+    if !isempty(image_lines)
+        config["cover"] = image_matches[image_lines[1]]["path"]
+    end
+
+    description = parse_description(contents, regex_jl_content)
+    if !isnothing(description)
+        config["description"] = description
+    end
+
+    return config
+end
+
 function get_default_title(x::Union{AbstractDemoCard, DemoSection, DemoPage})
     name_without_ext = splitext(basename(x))[1]
     strip(replace(uppercasefirst(name_without_ext), r"[_-]" => " "))
@@ -138,11 +197,6 @@ end
 
 
 get_default_description(card::AbstractDemoCard) = card.title
-get_default_description(card::JuliaDemoCard) = get_default_description(card, regex_jl_content)
-function get_default_description(card::AbstractDemoCard, regex)
-    _, body = split_frontmatter(readlines(card.path))
-    parse_description(body, regex)
-end
 
 function parse_description(contents::AbstractArray{<:AbstractString}, regex)
     # description as the first paragraph that is not a title, image, list or codes

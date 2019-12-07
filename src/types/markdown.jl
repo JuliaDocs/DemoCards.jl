@@ -69,35 +69,7 @@ function MarkdownDemoCard(path::String)::MarkdownDemoCard
     return card
 end
 
-"""
-    parse(card::MarkdownDemoCard)
-
-parse out configuration of markdown files and return it as a `Dict`.
-
-Possible configuration resources are:
-
-* YAML front matter
-* image links
-
-!!! note
-
-    Users of this function need to use `haskey` to check if keys are existed.
-    They also need to validate the values.
-"""
-function parse(card::MarkdownDemoCard)
-    frontmatter, body = split_frontmatter(readlines(card.path))
-    config = parse_markdown(join(body, "\n"))
-    if !isempty(frontmatter)
-        merge!(config, YAML.load(join(frontmatter, "\n")))
-    end
-
-    if haskey(config, "cover")
-        config["cover"] = replace(config["cover"],
-                                  r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
-    end
-
-    return config
-end
+parse(card::MarkdownDemoCard) = parse(card, parse_markdown)
 
 
 """
