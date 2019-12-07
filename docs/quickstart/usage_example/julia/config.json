@@ -1,7 +1,0 @@
-{
-    "title": "Julia Demos",
-    "order": [
-        "julia_demo.jl",
-        "cover_on_the_fly.jl"
-    ]
-}

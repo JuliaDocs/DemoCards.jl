@@ -34,11 +34,10 @@ docs/quickstart
     │   ├── configure_sec_and_page.md
     │   └── simple_markdown_demo.md
     ├── config.json
-    └── julia
-        ├── assets
-        ├── config.json
-        ├── cover_on_the_fly.jl
-        └── julia_demo.jl
+    └── julia demos
+        ├── 1.julia_demo.jl
+        ├── 2.cover_on_the_fly.jl
+        └── assets
 ```
 
 ```@setup simplest_demopage

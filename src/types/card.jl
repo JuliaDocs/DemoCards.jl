@@ -26,8 +26,13 @@ basename(x::AbstractDemoCard) = basename(x.path)
 
 function get_default_id(card::AbstractDemoCard)
     name_without_ext = splitext(basename(card))[1]
+
+    # drop leading coutning numbers such as 1. 1_ 1-
+    m = match(r"\d*[\._\-]?(?<name>.*)", name_without_ext)
+    name_without_ext = m["name"]
+
     # default documenter id has -1 suffix
-    replace(name_without_ext, r"[ _]" => '-') * "-1"
+    replace(name_without_ext, r"[ _\.]" => '-') * "-1"
 end
 
 function validate_id(id::AbstractString, card::AbstractDemoCard)
