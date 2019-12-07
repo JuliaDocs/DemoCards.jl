@@ -73,7 +73,8 @@ function get_regex(::Val{:Markdown}, regex_type)
         return (regex_title, regex_simple_title)
     elseif regex_type == :content
         # lines that are not title, image, link, list
-        return r"^\s*(?<content>[^#\-*!<\d\.>].*)"
+        # FIXME: list is also captured by this regex
+        return r"^\s*(?<content>[^#\-*!].*)"
     else
         error("Unrecognized regex type: $(regex_type)")
     end
@@ -93,7 +94,8 @@ function get_regex(::Val{:Julia}, regex_type)
         return (regex_title, regex_simple_title)
     elseif regex_type == :content
         # lines that are not title, image, link, list
-        return r"^\s*#!?\w*\s+(?<content>[^#\-\*!<\d\.>]+)"
+        # FIXME: list is also captured by this regex
+        return r"^\s*#!?\w*\s+(?<content>[^#\-\*!]+)"
     else
         error("Unrecognized regex type: $(regex_type)")
     end
