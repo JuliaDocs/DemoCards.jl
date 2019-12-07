@@ -76,7 +76,7 @@ const regex_md_url = r"\[(?<text>[^\]]*)\]\((?<url>[^\)]*)\)"
 
 parse markdown contents and return a configuration dict.
 
-Currently supported items are: `title`, `id`.
+Currently supported items are: `title`, `id`, `cover`, `description`.
 """
 function parse_markdown(contents::String)
     contents = isfile(contents) ? read(contents, String) : contents
@@ -85,6 +85,7 @@ end
 
 function parse_markdown(contents::AbstractArray{<:AbstractString})::Dict
     config = Dict()
+    _, contents = split_frontmatter(contents) # drop frontmatter
 
     # The first title line in markdown format is parse out as the title
     # of demo card/section/page
@@ -122,6 +123,11 @@ function parse_markdown(contents::AbstractArray{<:AbstractString})::Dict
         config["cover"] = image_matches[image_lines[1]]["path"]
     end
 
+    description = parse_description(contents, regex_md_content)
+    if !isnothing(description)
+        config["description"] = description
+    end
+
     return config
 end
 
@@ -131,23 +137,27 @@ function get_default_title(x::Union{AbstractDemoCard, DemoSection, DemoPage})
 end
 
 
-get_default_description(card::MarkdownDemoCard) = get_default_description(card, regex_md_content)
+get_default_description(card::AbstractDemoCard) = card.title
 get_default_description(card::JuliaDemoCard) = get_default_description(card, regex_jl_content)
-function get_default_description(card::AbstractDemoCard, regex_content)
-    # description as the first paragraph that is not a title, image, list or codes
+function get_default_description(card::AbstractDemoCard, regex)
     _, body = split_frontmatter(readlines(card.path))
-    content_lines = map(x->match(regex_content, x) isa RegexMatch, body)
-    code_lines = findall(map(x->startswith(lstrip(x), "```"), body))
+    parse_description(body, regex)
+end
+
+function parse_description(contents::AbstractArray{<:AbstractString}, regex)
+    # description as the first paragraph that is not a title, image, list or codes
+    content_lines = map(x->match(regex, x) isa RegexMatch, contents)
+    code_lines = findall(map(x->startswith(lstrip(x), "```"), contents))
     for (i,j) in zip(code_lines[1:2:end], code_lines[2:2:end])
         # mark code lines as non-content lines
         content_lines[i:j] .= 0
     end
     m = findall(content_lines)
-    isempty(m) && return card.title
+    isempty(m) && return nothing
 
     paragraph_line = findall(x->x!=1, diff(m))
     offset = isempty(paragraph_line) ? length(m) : paragraph_line[1]
-    description = join(map(x->lstrip(x, ('#', ' ')), body[m[1:offset]]), " ")
+    description = join(map(x->lstrip(x, ('#', ' ')), contents[m[1:offset]]), " ")
     return replace(description, regex_md_url => s"\g<text>")
 end
 
