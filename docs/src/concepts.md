@@ -158,7 +158,3 @@ To free you from managing/re-organizing demo structure, some decisions are made 
 
     If you've specified orders in `config.json`, then for every new demos, you need to add
     its filename to `order`. `DemoCards.jl` isn't smart enough to guess what you really want.
-
----
-
-Check [Gallery of Packages](@ref gallery_of_packages) for a more complicated usage of `DemoCards.jl`.
