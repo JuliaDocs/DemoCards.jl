@@ -3,6 +3,7 @@ function validate_file(path, filetype = :text)
     check_ext(path, filetype)
 end
 
+
 function check_ext(path, filetype = :text)
     _, ext = splitext(path)
     if filetype == :text
@@ -13,6 +14,7 @@ function check_ext(path, filetype = :text)
         throw(ArgumentError("Unrecognized filetype $(filetype)"))
     end
 end
+
 
 ### common utils for DemoPage and DemoSection
 
@@ -42,6 +44,7 @@ function flatten(sec::DemoSection)
         return sec.cards
     end
 end
+
 
 ### regexes and configuration parsers
 
@@ -96,6 +99,7 @@ function get_regex(::Val{:Julia}, regex_type)
     end
 end
 
+
 # YAML frontmatter
 # 1. markdown: ---
 # 2. julia: # ---
@@ -103,6 +107,7 @@ const regex_yaml = r"^#?\s*---"
 
 # markdown URL: [text](url)
 const regex_md_url = r"\[(?<text>[^\]]*)\]\((?<url>[^\)]*)\)"
+
 
 """
     parse([T::Val], card::AbstractDemoCard)
@@ -141,7 +146,6 @@ function parse(T::Val, contents::String)
     contents = isfile(contents) ? read(contents, String) : contents
     parse(T, split(contents, "\n"))
 end
-
 function parse(T::Val, contents::AbstractArray{<:AbstractString})::Dict
     config = Dict()
     _, contents = split_frontmatter(contents) # drop frontmatter
@@ -188,14 +192,6 @@ function parse(T::Val, contents::AbstractArray{<:AbstractString})::Dict
 
     return config
 end
-
-function get_default_title(x::Union{AbstractDemoCard, DemoSection, DemoPage})
-    name_without_ext = splitext(basename(x))[1]
-    strip(replace(uppercasefirst(name_without_ext), r"[_-]" => " "))
-end
-
-
-get_default_description(card::AbstractDemoCard) = card.title
 
 function parse_description(contents::AbstractArray{<:AbstractString}, regex)
     # description as the first paragraph that is not a title, image, list or codes
@@ -249,4 +245,10 @@ function split_frontmatter(contents::AbstractArray{<:AbstractString})
         body = contents
     end
     return frontmatter, body
+end
+
+
+function get_default_title(x::Union{AbstractDemoCard, DemoSection, DemoPage})
+    name_without_ext = splitext(basename(x))[1]
+    strip(replace(uppercasefirst(name_without_ext), r"[_-]" => " "))
 end
