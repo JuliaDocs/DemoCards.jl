@@ -164,16 +164,10 @@ function parse(T::Val, contents::AbstractArray{<:AbstractString})::Dict
     title_lines = findall(map(x->x isa RegexMatch, title_matches))
     if !isempty(title_lines)
         m = title_matches[title_lines[1]]
-        title = m["title"]
-        if length(m.captures) == 1
-            # default documenter id has -1 suffix
-            id = replace(title, ' ' => '-') * "-1"
-        elseif length(m.captures) == 2
-            id = m.captures[2]
-        else
-            error("Unrecognized regex format $(m.regex)")
+        config["title"] = m["title"]
+        if length(m.captures) == 2
+            config["id"] = m["id"]
         end
-        merge!(config, Dict("title"=>title, "id"=>id))
     end
 
     # The first valid image link is parsed out as card cover

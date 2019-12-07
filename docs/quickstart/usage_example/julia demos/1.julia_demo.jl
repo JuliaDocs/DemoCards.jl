@@ -18,20 +18,21 @@
 
 x = 1//3
 y = 2//5
+x + y
 
 #-
 
 # Images can be loaded and displayed
-using TestImages
+using TestImages, ImageShow
 img = testimage("lena")
 
-# The frontmatter is also written in YAML with only a leading #, for example:
+# The frontmatter is also written in YAML with only a leading `#`, for example:
 
-# ```yaml
-# ---
-# title: write your demo in julia
-# cover: assets/literate.png
-# description: This demo shows you how to write your demo in julia
-#
-# ---
+# ```
+# # ---
+# # title: <title>
+# # cover: <cover>
+# # id: <id>
+# # description: <description>
+# # ---
 # ```
