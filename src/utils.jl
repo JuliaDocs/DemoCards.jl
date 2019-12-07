@@ -59,8 +59,8 @@ const regex_yaml = r"^#?\s*---"
 # markdown title syntax:
 # 1. # title
 # 2. # [title](@id id)
-const regex_md_simple_title = r"^\s*#+\s*(?<title>[^\[\]\n\r]+)"
-const regex_md_title = r"^\s*#+\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)\n\r]+)\)"
+const regex_md_simple_title = r"\s*#+\s*(?<title>[^\[\]]+)"
+const regex_md_title = r"\s*#+\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)]+)\)"
 
 # markdown content
 # lines that are not title, image, link, list
@@ -71,33 +71,46 @@ const regex_jl_content = r"^\s*#\s*(?<content>[^#-\*!<\d\.>][^#]+)"
 const regex_md_url = r"\[(?<text>[^\]]*)\]\((?<url>[^\)]*)\)"
 
 """
-    parse_markdown(contents::String)
+    parse_markdown(contents)
     parse_markdown(path::String)
 
-parse the template file of page and return a configuration dict.
+parse markdown contents and return a configuration dict.
 
 Currently supported items are: `title`, `id`.
 """
-function parse_markdown(contents::String)::Dict
-    # TODO: this function isn't good; it just works
-    if isfile(contents)
-        contents = read(contents, String)
+function parse_markdown(contents::String)
+    contents = isfile(contents) ? read(contents, String) : contents
+    parse_markdown(split(contents, "\n"))
+end
+
+function parse_markdown(contents::AbstractArray{<:AbstractString})::Dict
+    # The first title line in markdown format is parse out as the title
+    # of demo card/section/page
+    title_matches = map(contents) do line
+        # try to match the most complicated pattern first
+        m = match(regex_md_title, line)
+        m isa RegexMatch && return m
+        m = match(regex_md_simple_title, line)
+        m isa RegexMatch && return m
+        return nothing
+    end
+    title_lines = findall(map(x->x isa RegexMatch, title_matches))
+    config = Dict()
+    if !isempty(title_lines)
+        m = title_matches[title_lines[1]]
+        title = m["title"]
+        if length(m.captures) == 1
+            # default documenter id has -1 suffix
+            id = replace(title, ' ' => '-') * "-1"
+        elseif length(m.captures) == 2
+            id = m.captures[2]
+        else
+            error("Unrecognized regex format $(m.regex)")
+        end
+        merge!(config, Dict("title"=>title, "id"=>id))
     end
 
-    m = match(regex_md_title, contents)
-    if !isnothing(m)
-        return Dict("title"=>m.captures[1], "id"=>m.captures[2])
-    end
-
-    m = match(regex_md_simple_title, contents)
-    if !isnothing(m)
-        title = m.captures[1]
-        # default documenter id has -1 suffix
-        id = replace(title, ' ' => '-') * "-1"
-        return Dict("title"=>title, "id"=>id)
-    end
-
-    return Dict()
+    merge!(config, Dict())
 end
 
 function get_default_title(x::Union{AbstractDemoCard, DemoSection, DemoPage})
