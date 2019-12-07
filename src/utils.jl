@@ -49,7 +49,7 @@ end
 const regex_md_img = r"^\s*!\[(?<title>[^\]]*)\]\((?<path>[^\s]*)\)"
 
 # markdown image format in Literate: # ![title](path)
-const regex_jl_img = r"^#!?[<src><jl><nb><md>]?\s+!\[(?<title>[^\]]*)\]\((?<path>[^\s]*)\)"
+const regex_jl_img = r"^#!?\w*\s+!\[(?<title>[^\]]*)\]\((?<path>[^\s]*)\)"
 
 # YAML frontmatter
 # 1. markdown: ---
@@ -59,20 +59,20 @@ const regex_yaml = r"^#?\s*---"
 # markdown title syntax:
 # 1. # title
 # 2. # [title](@id id)
-const regex_md_simple_title = r"\s*#+\s*(?<title>[^\[\]]+)"
+const regex_md_simple_title = r"\s*#+\s*(?<title>[^#]+)"
 const regex_md_title = r"\s*#+\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)]+)\)"
 
 # markdown title syntax for julia:
 # 1. # # title
 # 2. #md # title
 # 3. #!jl # title
-const regex_jl_simple_title = r"\s*#!?[<src><jl><nb><md>]?\s+#+\s*(?<title>[^#\[\]]+)"
-const regex_jl_title = r"\s*#!?[<src><jl><nb><md>]?\s+#+\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)]+)\)"
+const regex_jl_simple_title = r"\s*#!?\w*\s+#+\s*(?<title>[^#]+)"
+const regex_jl_title = r"\s*#!?\w*\s+#+\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)]+)\)"
 
 # markdown content
 # lines that are not title, image, link, list
-const regex_md_content = r"^\s*(?<content>[^#-*!<\d\.>].*)"
-const regex_jl_content = r"^\s*#\s+(?<content>[^#-\*!<\d\.>][^#]+)"
+const regex_md_content = r"^\s*(?<content>[^#\-*!<\d\.>].*)"
+const regex_jl_content = r"^\s*#!?\w*\s+(?<content>[^#\-\*!<\d\.>]+)"
 
 # markdown URL: [text](url)
 const regex_md_url = r"\[(?<text>[^\]]*)\]\((?<url>[^\)]*)\)"
@@ -201,7 +201,9 @@ get_default_description(card::AbstractDemoCard) = card.title
 function parse_description(contents::AbstractArray{<:AbstractString}, regex)
     # description as the first paragraph that is not a title, image, list or codes
     content_lines = map(x->match(regex, x) isa RegexMatch, contents)
-    code_lines = findall(map(x->startswith(lstrip(x), "```"), contents))
+    code_lines = map(contents) do line
+        match(r"#?!?\w*```", lstrip(line)) isa RegexMatch
+    end |> findall
     for (i,j) in zip(code_lines[1:2:end], code_lines[2:2:end])
         # mark code lines as non-content lines
         content_lines[i:j] .= 0
@@ -211,7 +213,11 @@ function parse_description(contents::AbstractArray{<:AbstractString}, regex)
 
     paragraph_line = findall(x->x!=1, diff(m))
     offset = isempty(paragraph_line) ? length(m) : paragraph_line[1]
-    description = join(map(x->lstrip(x, ('#', ' ')), contents[m[1:offset]]), " ")
+    description = map(contents[m[1:offset]]) do line
+        m = match(regex, line)
+        m["content"]
+    end
+    description = join(description, " ")
     return replace(description, regex_md_url => s"\g<text>")
 end
 
