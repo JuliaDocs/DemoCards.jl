@@ -34,6 +34,15 @@ docs/demos/simplest_demopage
 
 Read the [Quick Start](https://johnnychen94.github.io/DemoCards.jl/stable/democards/quickstart/index.html) for more instructions.
 
+# Caveat Emptor
+
+The use of this package heavily relies on [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl),
+[Literate.jl](https://github.com/fredrikekre/Literate.jl), [Mustache.jl](https://github.com/jverzani/Mustache.jl)
+and others. Unfortunately, I'm not a contributor of any. This package also uses a lot of Regex, which I know little.
+
+The initial purpose of this package is to set up the [demo page](https://juliaimages.org/latest/democards/examples) of JuliaImages.
+I'm not sure how broadly this package suits the need of others, but I'd like to accept any issues/PRs on improving the usage experience.
+
 
 [docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
 [docs-dev-url]: https://johnnychen94.github.io/DemoCards.jl/dev
