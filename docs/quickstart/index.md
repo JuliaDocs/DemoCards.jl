@@ -15,26 +15,30 @@ The rules of demo management are super simple:
 In the following example:
 
 * we have one demo page: "quickstart" ---> The current page
-* "quickstart" has one demo section: "gallery"
-* "gallery" has two demo subsections: "part1" and "part2"
-* "part1" and "part2" holds all the demo files
-* "assets" are ignored by `DemoCards.jl`
+* "quickstart" has one demo section: "usage example"
+* "usage example" has two demo subsections: "markdown" and "julia"
+  * "markdown" section holds all markdown demos
+  * "julia" section holds all julia demos
+* "assets" folders are ignored by `DemoCards.jl`
 * "index.md" is where all demo cards are organized in
+* "config.json" are configuration files
 
 ```text
-docs/quickstart/
-├── gallery
-│   ├── part1
-│   │   ├── assets
-│   │   ├── simple_documenter.md
-│   │   ├── simple_julia.md
-│   │   └── simple_literate.jl # julia source file
-│   └── part2
-│       ├── assets
-│       ├── simple_cameraman.jl # # julia source file
-│       ├── simple_fileio.md
-│       └── simple_images.md
-└── index.md
+docs/quickstart
+├── index.md
+└── usage_example
+    ├── basics
+    │   ├── assets
+    │   ├── config.json
+    │   ├── configure_card.md
+    │   ├── configure_sec_and_page.md
+    │   └── simple_markdown_demo.md
+    ├── config.json
+    └── julia
+        ├── assets
+        ├── config.json
+        ├── cover_on_the_fly.jl
+        └── julia_demo.jl
 ```
 
 ```@setup simplest_demopage
@@ -42,7 +46,7 @@ using DemoCards
 using DemoCards: DemoPage
 ```
 
-And Democards reads the demo structure from your folder structure:
+Democards can read the demo structure from your folder structure:
 
 ```@repl simplest_demopage
 cd("../../../..") do
@@ -61,7 +65,7 @@ Deployment is also very simple:
 
 ```julia
 theme = cardtheme()
-demopage, postprocess_cb = makedemos("demos/simplest_demopage") # relative path to docs/
+demopage, postprocess_cb = makedemos("demos") # relative path to docs/
 
 format = Documenter.HTML(edit_branch = "master",
                          assets = [theme, ])
@@ -83,7 +87,8 @@ postprocess_cb()
 After it's set up, you can now focus on contributing more demos and leave
 other works to `DemoCards.jl`.
 
-Here's the generated demos
+Here's the generated democards! You can read it one by one to have a direct
+experience on how things are managed in `DemoCards.jl`.
 
 ---
 
@@ -111,7 +116,7 @@ to `Documenter.jl` 😃
 
 For advanced usage of `DemoCards.jl`, you need to understand the core [concepts](@ref concepts) of it.
 
-## Some known issues
+## Before you start
 
 !!! warning
 
