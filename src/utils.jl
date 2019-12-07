@@ -46,7 +46,7 @@ end
 ### regexes
 
 # markdown image syntax: ![title](path)
-const regex_md_img = r"^\s*\!\[[^\]]*\]\(([^\s]*)\)"
+const regex_md_img = r"^\s*\!\[(?<title>[^\]]*)\]\((?<path>[^\s]*)\)"
 
 # markdown image format in Literate: # ![title](path)
 const regex_jl_img = r"^[#\w*\s*]*\!\[[^\]]*\]\(([^\s]*)\)"
@@ -84,6 +84,8 @@ function parse_markdown(contents::String)
 end
 
 function parse_markdown(contents::AbstractArray{<:AbstractString})::Dict
+    config = Dict()
+
     # The first title line in markdown format is parse out as the title
     # of demo card/section/page
     title_matches = map(contents) do line
@@ -95,7 +97,6 @@ function parse_markdown(contents::AbstractArray{<:AbstractString})::Dict
         return nothing
     end
     title_lines = findall(map(x->x isa RegexMatch, title_matches))
-    config = Dict()
     if !isempty(title_lines)
         m = title_matches[title_lines[1]]
         title = m["title"]
@@ -110,7 +111,18 @@ function parse_markdown(contents::AbstractArray{<:AbstractString})::Dict
         merge!(config, Dict("title"=>title, "id"=>id))
     end
 
-    merge!(config, Dict())
+    # The first valid image link is parsed out as card cover
+    image_matches = map(contents) do line
+        m = match(regex_md_img, line)
+        m isa RegexMatch && return m
+        return nothing
+    end
+    image_lines = findall(map(x->x isa RegexMatch, image_matches))
+    if !isempty(image_lines)
+        config["cover"] = image_matches[image_lines[1]]["path"]
+    end
+
+    return config
 end
 
 function get_default_title(x::Union{AbstractDemoCard, DemoSection, DemoPage})
