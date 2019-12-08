@@ -23,7 +23,7 @@ using DemoCards: democard
         foreach(config_1_files) do filename
             card = democard(joinpath(root, filename))
             @test card.title == "This is a title"
-            @test card.id == "This-is-a-title-1"
+            @test card.id == "this-is-a-title-1"
             @test card.description == "This is a description"
         end
 
@@ -39,7 +39,7 @@ using DemoCards: democard
         foreach(config_3_files) do filename
             card = democard(joinpath(root, filename))
             @test card.title == "This is a title"
-            @test card.id == "This-is-a-title-1"
+            @test card.id == "this-is-a-title-1"
             @test card.description == "This is a description that spreads along multiple lines"
         end
     end

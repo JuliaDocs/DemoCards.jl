@@ -61,9 +61,9 @@ function MarkdownDemoCard(path::String)::MarkdownDemoCard
     card = MarkdownDemoCard(path, "", "", "", "")
 
     card.cover = load_config(card, "cover")
-    card.id    = load_config(card, "id")
     card.title = load_config(card, "title")
-
+    # default id requires a title
+    card.id    = load_config(card, "id")
     # default description requires a title
     card.description = load_config(card, "description")
     return card
