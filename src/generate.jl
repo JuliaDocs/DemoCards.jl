@@ -172,8 +172,14 @@ function generate(sec::DemoSection; level=1)
 end
 
 function generate(card::AbstractDemoCard)
+    if isnothing(card.cover)
+        ext = ".png"
+    else
+        _, ext = splitext(card.cover)
+    end
+    name = splitext(basename(card))[1] * ext
     items = Dict(
-        "name" => splitext(basename(card))[1],
+        "name" => name,
         "id" => card.id,
         "title" => card.title,
         "description" => card.description,
@@ -197,33 +203,21 @@ end
 process the cover image and save it.
 """
 function save_cover(path::String, card::AbstractDemoCard)
-    ext = ".png" # consistent to card_template
-    cover_path = joinpath(path, splitext(basename(card))[1] * ext)
-
-    if isfile(cover_path)
-        @warn("$(cover_path) already exists, perhaps you have demos of the same filename")
+    if isnothing(card.cover)
+        cover_path = joinpath(path, splitext(basename(card))[1] * ".png")
+        if isfile(cover_path)
+            @warn "cover file already exists, perhaps you have demos of the same filename" cover_path
+        end
+        save(cover_path, Gray.(ones(max_coversize)))
+    else
+        _, ext = splitext(card.cover)
+        cover_path = joinpath(path, splitext(basename(card))[1] * ext)
+        if isfile(cover_path)
+            @warn "cover file already exists, perhaps you have demos of the same filename" cover_path
+        end
+        src_path = joinpath(dirname(card.path), card.cover)
+        cp(src_path, cover_path)
     end
-
-    cover = load_cover(card)
-
-    # saving all cover images to a fixed folder cover_path
-    # so that we don't need to manipulate the image path in template
-    if any(size(cover) .>= max_coversize)
-        cover = imresize(cover, max_coversize)
-    end
-    save(cover_path, cover)
-end
-
-function load_cover(card::AbstractDemoCard)
-    root = dirname(card.path)
-    fallback_cover() = Gray.(ones(max_coversize))
-
-    isnothing(card.cover) && return fallback_cover()
-
-    cover_path = joinpath(root, card.cover)
-    !isfile(cover_path) && return fallback_cover()
-
-    return load(cover_path)
 end
 
 ### save markdown files

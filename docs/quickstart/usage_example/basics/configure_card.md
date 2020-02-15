@@ -1,6 +1,6 @@
 ---
 title: Configure your card
-cover: assets/democards.png
+cover: assets/logo.svg
 id: configure_your_card
 description: This demo show you how to pass additional meta info of card to DemoCards.jl
 ---

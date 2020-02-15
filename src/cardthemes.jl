@@ -15,18 +15,15 @@ const card_section_template = mt"""
 const card_template = mt"""
 ```@raw html
 <div class="card">
-<div class="card-img">
+<div class="card-cover">
 <p class="card-description">{{description}}</p>
-```
-
-[![svd](covers/{{name}}.png)](@ref {{id}})
-
-```@raw html
+<img class="card-cover-image" src="covers/{{{name}}}"/>
 </div>
 <div class="card-text">
 ```
 
 [{{title}}](@ref {{id}})
+
 ```@raw html
 </div>
 </div>
@@ -60,7 +57,11 @@ const theme_minimal = """
     padding: 0 15px;
 }
 
-.card-img {
+.card-cover-image {
+    width: 100%;
+}
+
+.card-cover {
     width: $(max_coversize[2])px;
     height: $(max_coversize[1])px;
     padding: 5px;
@@ -71,7 +72,7 @@ const theme_minimal = """
     margin:auto;
 }
 
-.card-img .card-description {
+.card-cover .card-description {
     opacity: 0;
     z-index: -1;
     position: absolute;
@@ -87,7 +88,7 @@ const theme_minimal = """
     font-size: 14px;
 }
 
-.card-img:hover .card-description{
+.card-cover:hover .card-description{
     z-index: 3;
     opacity: 1;
 }
