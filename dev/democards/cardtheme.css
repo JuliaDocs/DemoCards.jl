@@ -22,7 +22,11 @@
     padding: 0 15px;
 }
 
-.card-img {
+.card-cover-image {
+    width: 100%;
+}
+
+.card-cover {
     width: 200px;
     height: 220px;
     padding: 5px;
@@ -33,7 +37,7 @@
     margin:auto;
 }
 
-.card-img .card-description {
+.card-cover .card-description {
     opacity: 0;
     z-index: -1;
     position: absolute;
@@ -49,7 +53,7 @@
     font-size: 14px;
 }
 
-.card-img:hover .card-description{
+.card-cover:hover .card-description{
     z-index: 3;
     opacity: 1;
 }

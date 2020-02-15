@@ -38,24 +38,34 @@ makedocs(format = format,
          sitename = &quot;Awesome demos&quot;)
 
 postprocess_cb()</code></pre><div class="admonition is-info"><header class="admonition-header">Info</header><div class="admonition-body"><p>🚧 <code>cardtheme</code> is currrently at its draft stage. It simply copies an existing css file and returns you a path to it.</p></div></div><p>After it&#39;s set up, you can now focus on contributing more demos and leave other works to <code>DemoCards.jl</code>.</p><p>Here&#39;s the generated democards! You can read it one by one to have a direct experience on how things are managed in <code>DemoCards.jl</code>.</p><hr/><h1 id="Usage-example-1"><a class="docs-heading-anchor" href="#Usage-example-1">Usage example</a><a class="docs-heading-anchor-permalink" href="#Usage-example-1" title="Permalink"></a></h1><h2 id="Basics-1"><a class="docs-heading-anchor" href="#Basics-1">Basics</a><a class="docs-heading-anchor-permalink" href="#Basics-1" title="Permalink"></a></h2><div class="card-section"><div class="card">
-<div class="card-img">
-<p class="card-description">This demo show you what DemoCards.jl does to a markdown demo.</p><p><a href="usage_example/basics/simple_markdown_demo.html#simple-markdown-demo-1-1"><img src="covers/simple_markdown_demo.png" alt="svd"/></a></p></div>
+<div class="card-cover">
+<p class="card-description">This demo show you what DemoCards.jl does to a markdown demo.</p>
+<img class="card-cover-image" src="covers/simple_markdown_demo.png"/>
+</div>
 <div class="card-text"><p><a href="usage_example/basics/simple_markdown_demo.html#simple-markdown-demo-1-1">Simple markdown demo</a></p></div>
 </div><div class="card">
-<div class="card-img">
-<p class="card-description">This demo show you how to pass additional meta info of card to DemoCards.jl</p><p><a href="usage_example/basics/configure_card.html#configure_your_card-1"><img src="covers/configure_card.png" alt="svd"/></a></p></div>
+<div class="card-cover">
+<p class="card-description">This demo show you how to pass additional meta info of card to DemoCards.jl</p>
+<img class="card-cover-image" src="covers/configure_card.svg"/>
+</div>
 <div class="card-text"><p><a href="usage_example/basics/configure_card.html#configure_your_card-1">Configure your card</a></p></div>
 </div><div class="card">
-<div class="card-img">
-<p class="card-description">This demo shows you how to manipulate your demo sections.</p><p><a href="usage_example/basics/configure_sec_and_page.html#configure-your-section-and-page-1-1"><img src="covers/configure_sec_and_page.png" alt="svd"/></a></p></div>
+<div class="card-cover">
+<p class="card-description">This demo shows you how to manipulate your demo sections.</p>
+<img class="card-cover-image" src="covers/configure_sec_and_page.png"/>
+</div>
 <div class="card-text"><p><a href="usage_example/basics/configure_sec_and_page.html#configure-your-section-and-page-1-1">Configure your section and page</a></p></div>
 </div></div><h2 id="Julia-demos-1"><a class="docs-heading-anchor" href="#Julia-demos-1">Julia demos</a><a class="docs-heading-anchor-permalink" href="#Julia-demos-1" title="Permalink"></a></h2><div class="card-section"><div class="card">
-<div class="card-img">
-<p class="card-description">This demo shows you how to write your demo in julia</p><p><a href="usage_example/julia demos/1.julia_demo.html#write-your-demo-in-julia-1-1"><img src="covers/1.julia_demo.png" alt="svd"/></a></p></div>
+<div class="card-cover">
+<p class="card-description">This demo shows you how to write your demo in julia</p>
+<img class="card-cover-image" src="covers/1.julia_demo.png"/>
+</div>
 <div class="card-text"><p><a href="usage_example/julia demos/1.julia_demo.html#write-your-demo-in-julia-1-1">write your demo in julia</a></p></div>
 </div><div class="card">
-<div class="card-img">
-<p class="card-description">this demo shows you how to generate cover on the fly</p><p><a href="usage_example/julia demos/2.cover_on_the_fly.html#generate-your-cover-on-the-fly-1-1"><img src="covers/2.cover_on_the_fly.png" alt="svd"/></a></p></div>
+<div class="card-cover">
+<p class="card-description">this demo shows you how to generate cover on the fly</p>
+<img class="card-cover-image" src="covers/2.cover_on_the_fly.png"/>
+</div>
 <div class="card-text"><p><a href="usage_example/julia demos/2.cover_on_the_fly.html#generate-your-cover-on-the-fly-1-1">Generate your cover on the fly</a></p></div>
 </div></div><hr/><h2 id="What-DemoCards.jl-does-1"><a class="docs-heading-anchor" href="#What-DemoCards.jl-does-1">What DemoCards.jl does</a><a class="docs-heading-anchor-permalink" href="#What-DemoCards.jl-does-1" title="Permalink"></a></h2><p>The pipeline of <a href="../../references.html#DemoCards.makedemos-Tuple{String}"><code>makedemos</code></a> is:</p><ol><li>analyze the structure of your demo folder and extracts supplementary configuration information</li><li>copy &quot;<code>assets</code>&quot; folder without processing</li><li>preprocess demo files and save it</li><li>process and save cover images</li><li>generate a postprocessing callback function</li></ol><p>Since all files are generated to <code>docs/src</code>, the next step is to leave everything else to <code>Documenter.jl</code> 😃</p><div class="admonition is-success"><header class="admonition-header">Tip</header><div class="admonition-body"><p>By default, <code>makedemos</code> generates all the necessary files to <code>docs/src/democards</code>, so it&#39;s recommended to add it to the <code>.gitignore</code> of your project.</p></div></div><p>For advanced usage of <code>DemoCards.jl</code>, you need to understand the core <a href="../../concepts.html#concepts-1">concepts</a> of it.</p><h2 id="Before-you-start-1"><a class="docs-heading-anchor" href="#Before-you-start-1">Before you start</a><a class="docs-heading-anchor-permalink" href="#Before-you-start-1" title="Permalink"></a></h2><div class="admonition is-warning"><header class="admonition-header">Warning</header><div class="admonition-body"><p>It&#39;s better to save your demo files outside <code>docs/src</code>.</p><p>If you store all your source demo files in <code>docs/src</code>, e.g., <code>docs/src/demos</code>, <code>DemoCards.jl</code> will make a copy of it in <code>docs/src/democards</code>. This means <code>Documenter.jl</code> will copy and process the same files <em>twice</em>.</p></div></div><div class="admonition is-warning"><header class="admonition-header">Warning</header><div class="admonition-body"><p>Currently, there&#39;s no guarantee that this function works for untypical documentation folder structure. By the name <strong>typical</strong>, it is:</p><pre><code class="language-julia">.
 ├── Project.toml
@@ -65,4 +75,4 @@ postprocess_cb()</code></pre><div class="admonition is-info"><header class="admo
 │   ├── Project.toml
 │   └── src
 ├── src
-└── test</code></pre></div></div></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../index.html">« Home</a><a class="docs-footer-nextpage" href="../../concepts.html">Concepts »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Saturday 8 February 2020 17:22">Saturday 8 February 2020</span>. Using Julia version 1.3.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+└── test</code></pre></div></div></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../index.html">« Home</a><a class="docs-footer-nextpage" href="../../concepts.html">Concepts »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Saturday 15 February 2020 14:50">Saturday 15 February 2020</span>. Using Julia version 1.3.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
