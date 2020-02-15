@@ -17,7 +17,9 @@ const card_template = mt"""
 <div class="card">
 <div class="card-cover">
 <p class="card-description">{{description}}</p>
-<img class="card-cover-image" src="covers/{{{name}}}"/>
+```
+[![card-cover-image](covers/{{name}})](@ref {{id}})
+```@raw html
 </div>
 <div class="card-text">
 ```
@@ -57,7 +59,7 @@ const theme_minimal = """
     padding: 0 15px;
 }
 
-.card-cover-image {
+img[alt="card-cover-image"] {
     width: 100%;
 }
 

@@ -9,7 +9,9 @@
 <div class="card">
 <div class="card-cover">
 <p class="card-description">Card 1</p>
-<img class="card-cover-image" src="covers/card_1.png"/>
+```
+[![card-cover-image](covers/card_1.png)](@ref card-1-1)
+```@raw html
 </div>
 <div class="card-text">
 ```
@@ -25,7 +27,9 @@
 <div class="card">
 <div class="card-cover">
 <p class="card-description">Card 2</p>
-<img class="card-cover-image" src="covers/card_2.png"/>
+```
+[![card-cover-image](covers/card_2.png)](@ref card-2-1)
+```@raw html
 </div>
 <div class="card-text">
 ```
@@ -52,7 +56,9 @@
 <div class="card">
 <div class="card-cover">
 <p class="card-description">Card 3</p>
-<img class="card-cover-image" src="covers/card_3.png"/>
+```
+[![card-cover-image](covers/card_3.png)](@ref card-3-1)
+```@raw html
 </div>
 <div class="card-text">
 ```
@@ -68,7 +74,9 @@
 <div class="card">
 <div class="card-cover">
 <p class="card-description">Card 4</p>
-<img class="card-cover-image" src="covers/card_4.png"/>
+```
+[![card-cover-image](covers/card_4.png)](@ref card-4-1)
+```@raw html
 </div>
 <div class="card-text">
 ```
