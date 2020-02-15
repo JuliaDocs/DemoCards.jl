@@ -210,13 +210,17 @@ function save_cover(path::String, card::AbstractDemoCard)
         end
         save(cover_path, Gray.(ones(max_coversize)))
     else
-        _, ext = splitext(card.cover)
-        cover_path = joinpath(path, splitext(basename(card))[1] * ext)
-        if isfile(cover_path)
-            @warn "cover file already exists, perhaps you have demos of the same filename" cover_path
-        end
         src_path = joinpath(dirname(card.path), card.cover)
-        cp(src_path, cover_path)
+        if isfile(src_path)
+            _, ext = splitext(card.cover)
+            cover_path = joinpath(path, splitext(basename(card))[1] * ext)
+            if isfile(cover_path)
+                @warn "cover file already exists, perhaps you have demos of the same filename" cover_path
+            end
+            cp(src_path, cover_path)
+        else
+            @warn "cover file doesn't exists" cover_path=src_path
+        end
     end
 end
 
