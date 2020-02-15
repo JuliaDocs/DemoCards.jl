@@ -2,7 +2,7 @@
 
 | **Documentation**                                                               | **Build Status**                                                                                |
 |:-------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|
-| [![][docs-stable-img]][docs-stable-url] [![][docs-dev-img]][docs-dev-url] | [![][travis-img]][travis-url] [![][appveyor-img]][appveyor-url] [![][codecov-img]][codecov-url] |
+| [![][docs-stable-img]][docs-stable-url] [![][docs-dev-img]][docs-dev-url] | [![][action-img]][action-url] [![][pkgeval-img]][pkgeval-url] [![][codecov-img]][codecov-url] |
 
 This package is used to *dynamically* generate a demo page and integrate with [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl).
 
@@ -50,11 +50,11 @@ I'm not sure how broadly this package suits the need of others, but I'd like to 
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 [docs-stable-url]: https://johnnychen94.github.io/DemoCards.jl/stable
 
-[travis-img]: https://travis-ci.org/johnnychen94/DemoCards.jl.svg?branch=master
-[travis-url]: https://travis-ci.org/johnnychen94/DemoCards.jl
-
-[appveyor-img]: https://ci.appveyor.com/api/projects/status/github/johnnychen94/DemoCards.jl?svg=true
-[appveyor-url]: https://ci.appveyor.com/project/johnnychen94/DemoCards-jl
+[action-img]: https://github.com/johnnychen94/DemoCards.jl/workflows/Unit%20test/badge.svg
+[action-url]: https://github.com/johnnychen94/DemoCards.jl/actions
 
 [codecov-img]: https://codecov.io/gh/johnnychen94/DemoCards.jl/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/johnnychen94/DemoCards.jl
+
+[pkgeval-img]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/D/DemoCards.svg
+[pkgeval-url]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html
