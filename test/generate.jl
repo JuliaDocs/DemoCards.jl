@@ -9,7 +9,10 @@
 
     abs_root = joinpath(pwd(), root, "page", "default")
     mktempdir() do root
-        path, post_process_cb = @suppress_err makedemos(abs_root, root=root)
+        tmp_root = joinpath(root, "page", "default")
+        mkpath(tmp_root)
+        cp(abs_root, tmp_root, force=true)
+        path, post_process_cb = @suppress_err makedemos(tmp_root, root=root)
         @test @suppress_err path == joinpath("democards", "default", "index.md")
         @test cardtheme(root=root) == joinpath("democards", "cardtheme.css")
     end
