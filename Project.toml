@@ -4,6 +4,7 @@ authors = ["Johnny Chen <johnnychen94@hotmail.com>"]
 version = "0.1.6"
 
 [deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 ImageCore = "a09fc81d-aa75-5fe9-8630-4744c3626534"
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
@@ -13,6 +14,7 @@ Suppressor = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
 YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 
 [compat]
+Documenter = "0.22, 0.23, 0.24"
 FileIO = "1"
 ImageCore = "0.7, 0.8"
 JSON = "0.20, 0.21"
