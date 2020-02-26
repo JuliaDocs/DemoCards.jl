@@ -89,9 +89,10 @@ function save_democards(root::String,
     markdown_path = joinpath(root, basename(card))
 
     _, body = split_frontmatter(read(card.path, String))
-
+    config = parse(Val(:Markdown), body)
+    need_header = !haskey(config, "title")
     # @ref syntax: https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@ref-link-1
-    header = "# [$(card.title)](@id $(card.id))\n"
+    header = need_header ? "# [$(card.title)](@id $(card.id))\n" : ""
     footer = credit ? markdown_footer : ""
     write(markdown_path, header, body, footer)
 end

@@ -68,7 +68,7 @@ function get_regex(::Val{:Markdown}, regex_type)
         regex_title = r"\s*#+\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)]+)\)"
         # Example: # title
         regex_simple_title = r"\s*#+\s*(?<title>[^#]+)"
-        
+
         # Note: return complicated one first
         return (regex_title, regex_simple_title)
     elseif regex_type == :content
@@ -89,7 +89,7 @@ function get_regex(::Val{:Julia}, regex_type)
         regex_title = r"\s*#!?\w*\s+#+\s*\[(?<title>[^\]]+)\]\(\@id\s+(?<id>[^\s\)]+)\)"
         # Example: # title
         regex_simple_title = r"\s*#!?\w*\s+#+\s*(?<title>[^#]+)"
-        
+
         # Note: return complicated one first
         return (regex_title, regex_simple_title)
     elseif regex_type == :content
@@ -145,8 +145,14 @@ parse(card::MarkdownDemoCard) = parse(Val(:Markdown), card)
 
 
 function parse(T::Val, contents::String)
-    contents = isfile(contents) ? read(contents, String) : contents
-    parse(T, split(contents, "\n"))
+    # if we just check isfile then it's likely to complain that filename is too long
+    # compat: for Julia > 1.1 `endswith` supports regex as well
+    if match(r"\.(\w+)$", contents) isa RegexMatch && isfile(contents)
+        contents = readlines(contents)
+    else
+        contents = split(contents, "\n")
+    end
+    parse(T, contents)
 end
 function parse(T::Val, contents::AbstractArray{<:AbstractString})::Dict
     config = Dict()

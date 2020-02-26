@@ -105,7 +105,7 @@ function save_democards(root::String,
             foreach(ignored_dirnames) do x
                 isdir(x) || mkdir(x)
             end
-                         
+
             # run scripts in a sandbox
             m = Module(gensym())
             # modules created with Module() does not have include defined
@@ -153,9 +153,10 @@ function save_democards(root::String,
     body = join(contents[offsets[2]+1:end], "\n")
 
     # 4. insert header and footer to generated markdown file
-
+    config = parse(Val(:Julia), body)
+    need_header = !haskey(config, "title")
     # @ref syntax: https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@ref-link-1
-    header = "# [$(card.title)](@id $(card.id))\n"
+    header = need_header ? "# [$(card.title)](@id $(card.id))\n" : ""
     footer = credit ? julia_footer : ""
     write(md_path, header, body, footer)
 
