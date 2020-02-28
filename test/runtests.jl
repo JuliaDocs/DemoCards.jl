@@ -1,6 +1,7 @@
 using DemoCards
 using DemoCards: democard, MarkdownDemoCard, JuliaDemoCard, DemoSection, DemoPage
 using DemoCards: generate
+using HTTP
 using Test, ReferenceTests, Suppressor
 
 # support both `include("runtests.jl")` and `include("test/runtests.jl")`

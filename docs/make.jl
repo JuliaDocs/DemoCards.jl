@@ -6,7 +6,6 @@ theme = cardtheme()
 
 # 2. generate demo files
 quickstart, postprocess_cb = makedemos("quickstart")
-# Juno.@enter makedemos("quickstart")
 
 # 3. normal Documenter usage
 format = Documenter.HTML(edit_link = "master",

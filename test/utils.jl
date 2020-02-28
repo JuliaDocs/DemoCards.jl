@@ -43,4 +43,24 @@ using DemoCards: democard
             @test card.description == "This is a description that spreads along multiple lines"
         end
     end
+
+
+    # check if upstream changes on "Edit On GitHub" button breaks the redirect_url logic
+    try
+        example_url = "https://juliadocs.github.io/Documenter.jl/stable/"
+        regex_url = r"http[s]?://.*index\.md"
+
+        contents = String(HTTP.get(example_url; readtimeout=3, retry=false).body)
+
+        m = match(DemoCards.regex_edit_on_github, contents)
+        @test isa(m, RegexMatch)
+        if m isa RegexMatch
+            @test isa(match(regex_url, m.captures[1]), RegexMatch)
+        end
+    catch err
+        # if network is down...
+        @warn err
+    end
+
+
 end
