@@ -5,7 +5,8 @@ using HTTP
 using Test, ReferenceTests, Suppressor
 
 # support both `include("runtests.jl")` and `include("test/runtests.jl")`
-test_root = basename(pwd()) == "test" ? "." : "test"
+proj_root = basename(pwd()) == "test" ? abspath(pwd(), "..") : pwd()
+test_root = joinpath(proj_root, "test")
 
 cd(test_root) do
     include("types/card.jl")
@@ -15,6 +16,12 @@ cd(test_root) do
     include("generate.jl")
     include("show.jl")
     include("utils.jl")
+end
+
+
+cd(proj_root) do
+    ENV["CI_TEST"] = false
+    include(joinpath(proj_root, "docs/make.jl"))
 end
 
 nothing

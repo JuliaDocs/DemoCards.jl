@@ -25,4 +25,7 @@ makedocs(format = format,
 postprocess_cb()
 
 # 5. deployment
-deploydocs(repo = "github.com/johnnychen94/DemoCards.jl.git")
+if !haskey(ENV, "CI_TEST")
+   # test stage also build the docs but not deploy it
+   deploydocs(repo = "github.com/johnnychen94/DemoCards.jl.git")
+end
