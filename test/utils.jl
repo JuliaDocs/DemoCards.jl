@@ -44,6 +44,21 @@ using DemoCards: democard
         end
     end
 
+    # only lines before body contents can be potential titles
+    config = DemoCards.parse(Val(:Julia), joinpath(root, "title_before_body.jl"))
+    @test haskey(config, "description")
+    @test config["description"] == "This is parsed as a description line --- [1]"
+    @test !haskey(config, "title")
+    @test !haskey(config, "id")
+    @test !haskey(config, "cover")
+
+    config = DemoCards.parse(Val(:Markdown), joinpath(root, "title_before_body.md"))
+    @test haskey(config, "description")
+    @test config["description"] == "This is parsed as a description line --- [1]"
+    @test !haskey(config, "title")
+    @test !haskey(config, "id")
+    @test !haskey(config, "cover")
+
 
     # check if upstream changes on "Edit On GitHub" button breaks the redirect_url logic
     try

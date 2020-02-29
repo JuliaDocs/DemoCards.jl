@@ -72,7 +72,7 @@ function get_regex(::Val{:Markdown}, regex_type)
         # Example: # title
         regex_simple_title = r"\s*#+\s*(?<title>[^#]+)"
 
-        # Note: return complicated one first
+        # Note: return the complete one first
         return (regex_title, regex_simple_title)
     elseif regex_type == :content
         # lines that are not title, image, link, list
@@ -93,12 +93,12 @@ function get_regex(::Val{:Julia}, regex_type)
         # Example: # title
         regex_simple_title = r"\s*#!?\w*\s+#+\s*(?<title>[^#]+)"
 
-        # Note: return complicated one first
+        # Note: return the complete one first
         return (regex_title, regex_simple_title)
     elseif regex_type == :content
         # lines that are not title, image, link, list
         # FIXME: list is also captured by this regex
-        return r"^\s*#!?\w*\s+(?<content>[^#\-\*!]+)"
+        return r"^\s*#!?\w*\s+(?<content>[^#\-\*!]+.*)"
     else
         error("Unrecognized regex type: $(regex_type)")
     end
@@ -161,9 +161,18 @@ function parse(T::Val, contents::AbstractArray{<:AbstractString})::Dict
     config = Dict()
     _, contents = split_frontmatter(contents) # drop frontmatter
 
+    # it's too complicated to regex title correctly from body contents, so a simple
+    # strategy is to limit possible titles to lines before the contents
+    body_matches = map(contents) do line
+        re = get_regex(T, :content)
+        m = match(re, line)
+    end
+    body_lines = findall(map(x->x isa RegexMatch, body_matches))
+    start_of_body = isempty(body_lines) ? 1 : minimum(body_lines)
+
     # The first title line in markdown format is parse out as the title
-    title_matches = map(contents) do line
-        # try to match the most complicated pattern first
+    title_matches = map(contents[1:start_of_body-1]) do line
+        # try to match the most complete pattern first
         for re in get_regex(T, :title)
             m = match(re, line)
             m isa RegexMatch && return m
@@ -171,6 +180,7 @@ function parse(T::Val, contents::AbstractArray{<:AbstractString})::Dict
         return nothing
     end
     title_lines = findall(map(x->x isa RegexMatch, title_matches))
+
     if !isempty(title_lines)
         m = title_matches[title_lines[1]]
         config["title"] = m["title"]
