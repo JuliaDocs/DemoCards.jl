@@ -1,11 +1,11 @@
 """
-    makedemos(source::String;
+    makedemos(source::String, template::Tuple;
               root = "<current-directory>",
               destination = "democards",
               src = "src",
               build = "build",
               branch = "gh-pages",
-              credit = true) -> path, postprocess_cb
+              credit = true) -> page_path, postprocess_cb
 
 Make a demo page for `source` and return the path to the generated index file.
 
@@ -26,13 +26,13 @@ Processing pipeline:
 
 # Outputs
 
-* `path`: path to demo page's index. You can directly pass it to `makedocs`.
+* `page_path`: path to demo page's index. You can directly pass it to `makedocs`.
 * `postprocess_cb`: callback function for postprocess. You can call `postprocess_cb()` _after_ `makedocs`.
 
 # Keywords
 
-* `root::String`: should be equal to `Documenter`'s setting. By default `"docs"`.
-* `destination::String`: The folder name in generated documentation. By default `"democards"`.
+* `root::String`: should be equal to `Documenter`'s setting. By default it's `"docs"`.
+* `destination::String`: The folder name in generated documentation. By default it's `"democards"`.
 * `src::String`: should be equal to `Documenter`'s setting. By default it's `"src"`.
 * `build::String`: should be equal to `Documenter`'s setting. By default it's `"build"`.
 * `branch::String`: should be equal to `Documenter`'s setting. By default it's `"gh-pages"`.
@@ -43,40 +43,28 @@ Processing pipeline:
 The following is a minimal example for you to start
 
 ```julia
-# 1. generate a style sheet and pass it to Documenter
-theme = cardtheme()
+# 1. generate templates and stylesheets with predefined themes
+templates, theme = cardtheme()
+
+# 2. preprocess and generate demo files to docs/src/democards
+examples, postprocess_cb = makedemos("examples", templates)
+
+# 3. pass stylesheet to HTML assets
 format = Documenter.HTML(edit_branch = "master",
                          assets = [theme])
 
-# 2. make demo files
-examples, postprocess_cb = makedemos("examples")
-
+# 4. do the standard Documenter pipeline
 makedocs(format = format,
          pages = [
             "Home" => "index.md",
             "Examples" => examples,
          ])
 
-# 3. postprocessing
+# 5. postprocessing
 postprocess_cb()
 ```
-
-!!! warning
-
-    Currently, there's no guarantee that this function works for unconventional
-    documentation folder structure. By *convention*, it is:
-
-    ```text
-    .
-    ├── Project.toml
-    ├── docs
-    │   ├── make.jl
-    │   └── src
-    ├── src
-    └── test
-    ```
 """
-function makedemos(source::String;
+function makedemos(source::String, templates::Tuple;
                    root::String = Base.source_dir(),
                    destination::String = "democards",
                    src::String = "src",
@@ -119,7 +107,7 @@ function makedemos(source::String;
                    credit = credit,
                    nbviewer_root_url = get_nbviewer_root_url(branch))
     save_cover(joinpath(absolute_root, "covers"), page)
-    generate(joinpath(absolute_root, "index.md"), page)
+    generate(joinpath(absolute_root, "index.md"), page, templates)
 
     # pipeline: generate postprocess callback function
     postprocess_cb = ()->begin
@@ -133,72 +121,60 @@ function makedemos(source::String;
     return out_path, postprocess_cb
 end
 
-"""
-    cardtheme(theme::AbstractString) -> path
-
-Currently supported themes are:
-
-* `minimal`
-"""
-function cardtheme(theme::AbstractString = "minimal";
-                   root::AbstractString = Base.source_dir(),
-                   destination::String = "democards")::String
-    relative_root = destination
-    absolute_root = joinpath(root, "src", relative_root)
-    isdir(absolute_root) || mkpath(absolute_root)
-
-    filename = "cardtheme.css"
-    write(joinpath(absolute_root, filename), read_cardtheme(theme))
-
-    return joinpath(relative_root, filename)
-end
-
-function generate(file::String, page::DemoPage)
+function generate(file::String, page::DemoPage, args...)
     check_ext(file, :markdown)
     open(file, "w") do f
-        generate(f, page::DemoPage)
+        generate(f, page::DemoPage, args...)
     end
 end
-generate(io::IO, page::DemoPage) = write(io, generate(page))
-function generate(page::DemoPage)
-    # TODO: Important: we need to render section by section
-    items = Dict("democards" => generate(page.sections))
+generate(io::IO, page::DemoPage, args...) = write(io, generate(page, args...))
+
+
+function generate(page::DemoPage, templates)
+    items = Dict("democards" => generate(page.sections, templates))
     Mustache.render(page.template, items)
 end
 
-generate(cards::AbstractVector{<:AbstractDemoCard}) =
-    reduce(*, map(generate, cards); init="")
+function generate(cards::AbstractVector{<:AbstractDemoCard}, template)
+    mapreduce(*, cards; init="") do x
+        generate(x, template)
+    end
+end
 
-generate(secs::AbstractVector{DemoSection}; level=1) =
-    reduce(*, map(x->generate(x;level=level), secs); init="")
+function generate(secs::AbstractVector{DemoSection}, templates; level=1)
+    mapreduce(*, secs; init="") do x
+        generate(x, templates;level=level)
+    end
+end
 
-function generate(sec::DemoSection; level=1)
+function generate(sec::DemoSection, templates; level=1)
     header = repeat("#", level) * " " * sec.title * "\n"
     footer = "\n"
     # either cards or subsections are empty
+    # recursively generate the page contents
     if isempty(sec.cards)
-        body = generate(sec.subsections; level=level+1)
+        body = generate(sec.subsections, templates; level=level+1)
     else
-        items = Dict("cards" => generate(sec.cards))
-        body = Mustache.render(card_section_template, items)
+        items = Dict("cards" => generate(sec.cards, templates[1]))
+        body = Mustache.render(templates[2], items)
     end
     header * body * footer
 end
 
-function generate(card::AbstractDemoCard)
+function generate(card::AbstractDemoCard, template)
     if isnothing(card.cover)
         ext = ".png"
     else
         _, ext = splitext(card.cover)
     end
-    name = splitext(basename(card))[1] * ext
+    covername = splitext(basename(card))[1] * ext
     items = Dict(
-        "name" => name,
+        "covername" => covername,
         "id" => card.id,
         "title" => card.title,
         "description" => card.description,
     )
-    Mustache.render(card_template, items)
+    Mustache.render(template, items)
 end
 
 ### save demo card covers
