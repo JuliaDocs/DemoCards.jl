@@ -21,7 +21,7 @@ module CardThemes
 using Mustache
 
 """
-    cardtheme(theme="Grid";
+    cardtheme(theme = "grid";
               root = "<current-directory>",
               destination = "democards") -> templates, stylesheet_path
 
@@ -53,13 +53,14 @@ end
 """
 A list of DemoCards theme presets
 """
-const themelists = ["grid"]
+const themelists = ["grid", "list"]
 
 # TODO: don't hardcode this
 const max_coversize = (220, 200)
 
 # add themes
 include("grid/grid.jl")
+include("list/list.jl")
 
 
 export cardtheme, max_coversize

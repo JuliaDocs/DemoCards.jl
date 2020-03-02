@@ -1,6 +1,6 @@
 ---
 title: Configure your section and page
-cover: assets/democards.png
+cover: assets/logo.svg
 ---
 
 This demo shows you how to manipulate your demo sections.

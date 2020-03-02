@@ -1,5 +1,5 @@
 """
-    makedemos(source::String, template::Tuple;
+    makedemos(source::String, templates::Tuple;
               root = "<current-directory>",
               destination = "democards",
               src = "src",

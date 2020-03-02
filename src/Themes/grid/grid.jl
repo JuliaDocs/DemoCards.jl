@@ -14,7 +14,11 @@ const grid_card_template = mt"""
 ```@raw html
 <div class="card">
 <div class="card-cover">
-<p class="card-description">{{description}}</p>
+<div class="card-description">
+```
+{{description}}
+```@raw html
+</div>
 ```
 [![card-cover-image](covers/{{covername}})](@ref {{id}})
 ```@raw html
