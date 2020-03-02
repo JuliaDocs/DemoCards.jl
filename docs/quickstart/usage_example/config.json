@@ -1,3 +1,6 @@
 {
-    "order": ["basics", "julia demos"]
+  "order": [
+    "basics",
+    "julia_demos"
+  ]
 }

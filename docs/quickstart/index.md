@@ -7,21 +7,21 @@ This section describes how you can set up your demos easily in _five lines of co
 The rules of demo management are super simple:
 
 * you need one demo page to hold all the demo files
-* a [demo page](@ref concepts_page) has several [demo sections](@ref concepts_section)
+* a demo page has several demo sections
 * a demo section either
     * has other demo sections as nested subsections, or,
-    * has the [demo files](@ref concepts_card).
+    * has the demo files
 
 In the following example:
 
-* we have one demo page: "quickstart" ---> The current page
+* we have one demo page: "quickstart" ---> The current page you're looking at
 * "quickstart" has one demo section: "usage example"
-* "usage example" has two demo subsections: "markdown" and "julia"
-  * "markdown" section holds all markdown demos
-  * "julia" section holds all julia demos
+* "usage example" has two demo subsections: "basics" and "julia_demos"
+  * "basics" section holds all markdown demos
+  * "julia_demos" section holds all julia demos
 * "assets" folders are ignored by `DemoCards.jl`
-* "index.md" is where all demo cards are organized in
-* "config.json" are configuration files
+* "index.md" is where all demo cards are organized in (aka page template)
+* "config.json" are configuration files (there're many)
 
 ```text
 docs/quickstart
@@ -34,7 +34,7 @@ docs/quickstart
     │   ├── configure_sec_and_page.md
     │   └── simple_markdown_demo.md
     ├── config.json
-    └── julia demos
+    └── julia_demos
         ├── 1.julia_demo.jl
         ├── 2.cover_on_the_fly.jl
         └── assets
@@ -45,7 +45,7 @@ using DemoCards
 using DemoCards: DemoPage
 ```
 
-Democards can read the demo structure from your folder structure:
+_Democards_ can read the demo structure from your folder structure:
 
 ```@repl simplest_demopage
 cd("../../../..") do
