@@ -81,15 +81,8 @@ The following is an example of `config.json`:
 
 ## [DemoCard](@id concepts_card)
 
-In simple words, a demo card consists of a cover image, a one-line description, and
+In simple words, a demo card consists of a cover image, a description, and
 a link to its content -- just like a card.
-
-!!! info
-
-    🚧 Currently, `DemoCards.jl` supports only markdown files. In the future it will
-
-    * support julia source codes using [`Literate.jl`](https://github.com/fredrikekre/Literate.jl)
-    * support simple URL link to other websites
 
 ### [`MarkdownDemoCard`](@id concepts_mdcard)
 

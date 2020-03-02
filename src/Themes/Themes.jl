@@ -21,6 +21,19 @@ module CardThemes
 using Mustache
 
 """
+A list of DemoCards theme presets
+"""
+const themelists = ["grid", "list"]
+
+# TODO: don't hardcode this
+const max_coversize = (220, 200)
+
+# add themes
+include("grid/grid.jl")
+include("list/list.jl")
+
+
+"""
     cardtheme(theme = "grid";
               root = "<current-directory>",
               destination = "democards") -> templates, stylesheet_path
@@ -28,6 +41,9 @@ using Mustache
 For given theme, return the templates and path to stylesheet.
 
 `root` and `destination` should have the same value to that passed to [`makedemos`](@ref).
+
+Available themes are:
+\n - "$(join(themelists, "\"\n  - \""))"
 """
 function cardtheme(theme::AbstractString="grid";
                    root::AbstractString = Base.source_dir(),
@@ -49,18 +65,6 @@ function cardtheme(theme::Val{T}) where T
     themes_str = join(themelists, ", ")
     error("unrecognized card theme: $T\nAvaiable theme options are: $themes_str")
 end
-
-"""
-A list of DemoCards theme presets
-"""
-const themelists = ["grid", "list"]
-
-# TODO: don't hardcode this
-const max_coversize = (220, 200)
-
-# add themes
-include("grid/grid.jl")
-include("list/list.jl")
 
 
 export cardtheme, max_coversize
