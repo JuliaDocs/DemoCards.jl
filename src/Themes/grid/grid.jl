@@ -39,5 +39,9 @@ const grid_card_template = mt"""
 """
 
 function cardtheme(::Val{:grid})
-    return (grid_card_template, grid_section_template), abspath(@__DIR__, "style.css")
+    templates = Dict(
+        "card" => grid_card_template,
+        "section" => grid_section_template
+    )
+    return templates, abspath(@__DIR__, "style.css")
 end

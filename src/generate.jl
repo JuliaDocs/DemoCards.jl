@@ -1,5 +1,5 @@
 """
-    makedemos(source::String, templates::Tuple;
+    makedemos(source::String, templates::Dict;
               root = "<current-directory>",
               destination = "democards",
               src = "src",
@@ -64,7 +64,7 @@ makedocs(format = format,
 postprocess_cb()
 ```
 """
-function makedemos(source::String, templates::Tuple;
+function makedemos(source::String, templates::Dict;
                    root::String = Base.source_dir(),
                    destination::String = "democards",
                    src::String = "src",
@@ -157,10 +157,10 @@ function generate(sec::DemoSection, templates; level=1)
         body = generate(sec.subsections, templates; level=level+1)
     else
         items = Dict(
-            "cards" => generate(sec.cards, templates[1]),
+            "cards" => generate(sec.cards, templates["card"]),
             "description" => sec.description
         )
-        body = Mustache.render(templates[2], items)
+        body = Mustache.render(templates["section"], items)
     end
     header * body * footer
 end
@@ -333,7 +333,7 @@ function get_build_file(source_file, source, destination, build)
     _, prefix_to_subsection = split(source_dir, source_root; limit=2)
     if !isempty(prefix)
         # add trailing / to remove leading / for prefix_to_subsection
-        # otherwise, joinpath of two absolution path would be a no op
+        # otherwise, joinpath of two absolute path would simply drop the first one
         _, prefix_to_subsection = split(prefix_to_subsection, prefix * sep; limit=2)
     end
     build_dir = joinpath(build_root, prefix_to_subsection)

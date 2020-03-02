@@ -39,5 +39,9 @@ const list_card_template = mt"""
 """
 
 function cardtheme(::Val{:list})
-    return (list_card_template, list_section_template), abspath(@__DIR__, "style.css")
+    templates = Dict(
+        "card" => list_card_template,
+        "section" => list_section_template
+    )
+    return templates, abspath(@__DIR__, "style.css")
 end

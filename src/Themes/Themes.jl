@@ -4,7 +4,9 @@ module CardThemes
 #
 # Steps to write new card theme:
 #   1. specialize `cardtheme`, it should return two items:
-#     * `templates`: a tuple of Mustache templates (card_template, section_template)
+#     * `templates`: a dict with following fields:
+#        * "card": a Mustache template
+#        * "section": a Mustache template
 #     * `stylesheet_path`: absolute filepath to the stylesheet.
 #   2. add the new theme name to `themelists`
 #
