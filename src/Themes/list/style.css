@@ -1,8 +1,8 @@
-.card:hover{
+.list-card:hover{
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
 }
 
-.card {
+.list-card {
     width: 800px;
     max-height: 250px;
     margin: 25px 10px;
@@ -11,17 +11,17 @@
     border-radius: 5px;
 }
 
-.card-text {
+.list-card-text {
     padding: 10px 5px;
     font-style: oblique 40deg;
     font-size: large;
 }
 
-img[alt="card-cover-image"] {
+img[alt="list-card-cover-image"] {
     width: 100%;
 }
 
-.card-cover {
+.list-card-cover {
     width: 140px;
     max-height: 160px;
     padding: 5px;
@@ -30,7 +30,7 @@ img[alt="card-cover-image"] {
     border-radius: 5px;
 }
 
-.card-description {
+.list-card-description {
     width: 550px;
     max-height: 250px;
     line-height: 1.5;

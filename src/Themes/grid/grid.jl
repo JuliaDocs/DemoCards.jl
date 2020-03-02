@@ -1,4 +1,5 @@
-grid_section_template = mt"""
+# FIXME: if rename everything with "grid-" prefix, description won't show up correctly
+const grid_section_template = mt"""
 {{{description}}}
 
 ```@raw html
@@ -12,7 +13,7 @@ grid_section_template = mt"""
 ```
 """
 
-grid_card_template = mt"""
+const grid_card_template = mt"""
 ```@raw html
 <div class="card">
 <div class="card-cover">
