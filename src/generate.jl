@@ -168,11 +168,22 @@ function generate(card::AbstractDemoCard, template)
         _, ext = splitext(card.cover)
     end
     covername = splitext(basename(card))[1] * ext
+
+    description = card.description
+    cut_idx = 500
+    if length(card.description) >= cut_idx
+        # cut descriptions into ~500 characters
+        offset = findfirst(' ', description[cut_idx:end])
+        offset == nothing && (offset = 0)
+        offset = cut_idx + offset - 2
+        description = description[1:cut_idx] * "..."
+    end
+
     items = Dict(
         "covername" => covername,
         "id" => card.id,
         "title" => card.title,
-        "description" => card.description,
+        "description" => description,
     )
     Mustache.render(template, items)
 end
