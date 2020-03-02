@@ -1,4 +1,6 @@
 const list_section_template = mt"""
+{{{description}}}
+
 ```@raw html
 <div class="card-section">
 ```

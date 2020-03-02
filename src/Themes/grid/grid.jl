@@ -1,4 +1,6 @@
-const grid_section_template = mt"""
+grid_section_template = mt"""
+{{{description}}}
+
 ```@raw html
 <div class="card-section">
 ```
@@ -10,7 +12,7 @@ const grid_section_template = mt"""
 ```
 """
 
-const grid_card_template = mt"""
+grid_card_template = mt"""
 ```@raw html
 <div class="card">
 <div class="card-cover">

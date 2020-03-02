@@ -18,22 +18,20 @@ Supported items are:
 
 * `order`: specify the cards order or subsections order. By default, it's case-insensitive alphabetic order.
 * `title`: specify the title of this demo section. By default, it's the folder name of `root`.
+* `description`: some header description that you want to add before demo cards.
 
 The following is an example of `config.json`:
 
 ```json
 {
-    "title": "learn by examples"
+    "title": "learn by examples",
+    "description": "some one-line description can be useful.",
     "order": [
         "quickstart.md",
         "array.md"
     ]
 }
 ```
-
-!!! warning
-
-    You can't specify files or foldernames in other folders.
 
 # Examples
 
@@ -51,7 +49,7 @@ section
 └── demo_8.md
 ```
 
-The following is a typical folder structure of a `DemoSection`:
+The following is a typical nested folder structure of a `DemoSection`:
 
 ```text
 section
@@ -76,6 +74,7 @@ struct DemoSection
     cards::Vector # Why would `Vector{<:AbstractDemoCard}` fail here?
     subsections::Vector{DemoSection}
     title::String
+    description::String
 end
 
 basename(sec::DemoSection) = basename(sec.root)
@@ -99,6 +98,7 @@ function DemoSection(root::String)::DemoSection
     section = DemoSection(root,
                           map(democard, card_paths),
                           map(DemoSection, section_paths),
+                          "",
                           "")
 
     ordered_paths = joinpath.(root, load_config(section, "order"))
@@ -111,7 +111,8 @@ function DemoSection(root::String)::DemoSection
     end
 
     title = load_config(section, "title")
-    DemoSection(root, cards, subsections, title)
+    description = load_config(section, "description")
+    DemoSection(root, cards, subsections, title, description)
 end
 
 
@@ -127,6 +128,8 @@ function load_config(sec::DemoSection, key)
         return order
     elseif key == "title"
         get(config, key, get_default_title(sec))
+    elseif key == "description"
+        get(config, key, "")
     else
         throw(ArgumentError("Unrecognized key $(key) for DemoSection"))
     end

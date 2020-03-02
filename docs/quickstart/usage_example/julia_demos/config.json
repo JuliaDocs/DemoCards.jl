@@ -1,0 +1,3 @@
+{
+  "description": "It also supports julia source codes (powered by [Literate.jl](https://github.com/fredrikekre/Literate.jl)). With this you can not only show typical mardown demo to readers but also provide a downloadable source code and an online notebook link. Another advantage is that you can generate demo assets on the fly(e.g., cover pages, artifacts), which is not an easy task for typical markdown demos using Documenter alone."
+}
