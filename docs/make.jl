@@ -2,10 +2,10 @@ using Documenter, DemoCards
 
 
 # 1. generate a DemoCard theme
-theme = cardtheme()
+templates, theme = cardtheme()
 
 # 2. generate demo files
-quickstart, postprocess_cb = makedemos("quickstart")
+quickstart, postprocess_cb = makedemos("quickstart", templates)
 
 # 3. normal Documenter usage
 format = Documenter.HTML(edit_link = "master",

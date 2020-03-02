@@ -1,5 +1,5 @@
 # ---
-# title: write your demo in julia
+# title: Write your demo in julia
 # cover: assets/literate.png
 # description: This demo shows you how to write your demo in julia
 # ---

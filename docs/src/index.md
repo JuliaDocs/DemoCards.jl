@@ -10,13 +10,17 @@ A plugin package to [`Documenter.jl`](https://github.com/JuliaDocs/Documenter.jl
     Please read the [`Documenter.jl` documentation](https://juliadocs.github.io/Documenter.jl/stable/) first if you're unfamiliar with the julia documentation system.
 
 
-## Package features
+## Package Features
 
 * a plugin package to `Documenter.jl` to manage all your demos.
 * folder structure is demo structure.
 * minimal configuration.
 * all demos can be tested by CI.
 * support demos in markdown and julia format.
+
+## Usage Examples
+
+* [Images](https://juliaimages.org/latest/democards/examples/)
 
 ## Manual Outline
 

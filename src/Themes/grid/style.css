@@ -1,40 +1,3 @@
-# TODO: we can manage themes like TestImages.jl
-
-const card_section_template = mt"""
-```@raw html
-<div class="card-section">
-```
-
-{{{cards}}}
-
-```@raw html
-</div>
-```
-"""
-
-const card_template = mt"""
-```@raw html
-<div class="card">
-<div class="card-cover">
-<p class="card-description">{{description}}</p>
-```
-[![card-cover-image](covers/{{name}})](@ref {{id}})
-```@raw html
-</div>
-<div class="card-text">
-```
-
-[{{title}}](@ref {{id}})
-
-```@raw html
-</div>
-</div>
-```
-
-"""
-
-const max_coversize = (220, 200)
-const theme_minimal = """
 .card-section {
   display: flex;
   flex-direction: row;
@@ -64,8 +27,8 @@ img[alt="card-cover-image"] {
 }
 
 .card-cover {
-    width: $(max_coversize[2])px;
-    height: $(max_coversize[1])px;
+    width: 200px;
+    height: 220px;
     padding: 5px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
@@ -94,13 +57,3 @@ img[alt="card-cover-image"] {
     z-index: 3;
     opacity: 1;
 }
-
-"""
-
-function read_cardtheme(theme::AbstractString)
-    if theme == "minimal"
-        return theme_minimal
-    else
-        throw(ArgumentError("no theme $(theme) found."))
-    end
-end

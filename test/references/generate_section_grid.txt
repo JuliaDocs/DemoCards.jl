@@ -7,7 +7,11 @@
 ```@raw html
 <div class="card">
 <div class="card-cover">
-<p class="card-description">Card 1</p>
+<div class="card-description">
+```
+Card 1
+```@raw html
+</div>
 ```
 [![card-cover-image](covers/card_1.png)](@ref Card-1)
 ```@raw html
@@ -25,7 +29,11 @@
 ```@raw html
 <div class="card">
 <div class="card-cover">
-<p class="card-description">Card 2</p>
+<div class="card-description">
+```
+Card 2
+```@raw html
+</div>
 ```
 [![card-cover-image](covers/card_2.png)](@ref Card-2)
 ```@raw html
@@ -54,7 +62,11 @@
 ```@raw html
 <div class="card">
 <div class="card-cover">
-<p class="card-description">Card 3</p>
+<div class="card-description">
+```
+Card 3
+```@raw html
+</div>
 ```
 [![card-cover-image](covers/card_3.png)](@ref Card-3)
 ```@raw html
@@ -72,7 +84,11 @@
 ```@raw html
 <div class="card">
 <div class="card-cover">
-<p class="card-description">Card 4</p>
+<div class="card-description">
+```
+Card 4
+```@raw html
+</div>
 ```
 [![card-cover-image](covers/card_4.png)](@ref Card-4)
 ```@raw html

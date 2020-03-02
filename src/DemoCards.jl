@@ -20,8 +20,11 @@ include("types/page.jl")
 
 include("utils.jl")
 include("show.jl")
+
+include("Themes/Themes.jl")
+using .CardThemes
+
 include("generate.jl")
-include("cardthemes.jl")
 
 export makedemos, cardtheme
 
