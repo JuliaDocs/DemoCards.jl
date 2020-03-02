@@ -10,7 +10,7 @@ module CardThemes
 #
 # available placeholders for section template:
 #   * `cards`: the card table/list/whatever contents
-#   * (WIP)`description`: section description contents
+#   * `description`: section description contents
 #
 # available placeholders for card template:
 #  * `description`: card description

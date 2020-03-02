@@ -66,12 +66,14 @@ file, supported configuration keys are:
 
 * `order`: specify the cards order or subsections order. By default, it's case-insensitive alphabetic order.
 * `title`: specify the title of this demo section.
+* `description`: words that would rendered under the section title.
 
 The following is an example of `config.json`:
 
 ```json
 {
     "title": "learn by examples",
+    "description": "some one-line description can be useful.",
     "order": [
         "quickstart.md",
         "array.md"

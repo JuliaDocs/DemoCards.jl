@@ -155,7 +155,10 @@ function generate(sec::DemoSection, templates; level=1)
     if isempty(sec.cards)
         body = generate(sec.subsections, templates; level=level+1)
     else
-        items = Dict("cards" => generate(sec.cards, templates[1]))
+        items = Dict(
+            "cards" => generate(sec.cards, templates[1]),
+            "description" => sec.description
+        )
         body = Mustache.render(templates[2], items)
     end
     header * body * footer
