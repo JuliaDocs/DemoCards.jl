@@ -7,8 +7,8 @@ list_templates, list_theme = cardtheme("list")
 
 # 2. generate demo files
 quickstart, postprocess_cb = makedemos("quickstart", grid_templates)
-grid_demopage, grid_cb = makedemos("theme_gallery/grid", grid_templates)
-list_demopage, list_cb = makedemos("theme_gallery/list", list_templates)
+grid_demopage, grid_cb = makedemos(joinpath("theme_gallery", "grid"), grid_templates)
+list_demopage, list_cb = makedemos(joinpath("theme_gallery", "list"), list_templates)
 
 
 # 3. normal Documenter usage
