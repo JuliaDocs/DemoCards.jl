@@ -37,6 +37,6 @@ list_cb()
 # 5. deployment
 if !haskey(ENV, "CI_TEST")
    # test stage also build the docs but not deploy it
-   deploydocs(repo = "github.com/johnnychen94/DemoCards.jl.git"
+   deploydocs(repo = "github.com/johnnychen94/DemoCards.jl.git",
               push_preview = true)
 end
