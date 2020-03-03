@@ -76,6 +76,16 @@ using DemoCards: democard
         # if network is down...
         @warn err
     end
+end
 
+@testset "url_redirect" begin
+    source = "quickstart"
+    build_url = "https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/src/democards/quickstart/usage_example/julia_demos/2.cover_on_the_fly.md"
+    src_url = "https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/quickstart/usage_example/julia_demos/2.cover_on_the_fly.jl"
+    @test src_url == DemoCards.get_source_url(build_url, source, "2.cover_on_the_fly.jl", "src", "democards")
 
+    source = Sys.iswindows() ? raw"theme_gallery\grid" : "theme_gallery/grid"
+    build_url = "https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/src/democards/grid/grid_section_1/grid_subsection_1/grid_card_1.md"
+    src_url = "https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/theme_gallery/grid/grid_section_1/grid_subsection_1/grid_card_1.md"
+    @test src_url == DemoCards.get_source_url(build_url, source, "grid_card_1.md", "src", "democards")
 end
