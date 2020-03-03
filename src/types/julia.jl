@@ -131,18 +131,23 @@ function save_democards(card_dir::String,
     _, body = split_frontmatter(read(src_path, String))
 
     # insert header badge
-    if !isempty(nbviewer_root_url)
-        # reach here in CI environment
-        # remove root/src prefix
-        _card_dir = replace(card_dir, Base.Filesystem.path_separator => "/") # windows CI support
-        _, nbviewer_folder = split(_card_dir, "$project_dir/$src"; limit=2)
-        nbviewer_folder = strip(nbviewer_folder, '/')
-        nbviewer_url = "$(nbviewer_root_url)/$(nbviewer_folder)/$(cardname).ipynb"
-    else
-        # local build
-        nbviewer_url = "$(cardname).ipynb"
+    header = "#md # [![]($download_badge)]($(cardname).jl)"
+    if !Sys.iswindows()
+        # FIXME: there're some unidentified issues in windows platform, but since all documentation
+        #        ecosystem supports linux only, we can just skip this now -- I don't have windows :P
+        if !isempty(nbviewer_root_url)
+            # reach here in CI environment
+
+            # remove root/src prefix
+            _, nbviewer_folder = split(card_dir, "$project_dir/$src"; limit=2)
+            nbviewer_folder = strip(nbviewer_folder, '/')
+            nbviewer_url = "$(nbviewer_root_url)/$(nbviewer_folder)/$(cardname).ipynb"
+        else
+            # local build
+            nbviewer_url = "$(cardname).ipynb"
+        end
+        header *= " [![]($nbviewer_badge)]($nbviewer_url)"
     end
-    header = "#md # [![]($download_badge)]($(cardname).jl) [![]($nbviewer_badge)]($nbviewer_url)"
     header *= "\n\n"
 
     write(src_path, header, body)
