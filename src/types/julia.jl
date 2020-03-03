@@ -134,7 +134,8 @@ function save_democards(card_dir::String,
     if !isempty(nbviewer_root_url)
         # reach here in CI environment
         # remove root/src prefix
-        _, nbviewer_folder = split(card_dir, "$project_dir/$src"; limit=2)
+        _card_dir = replace(card_dir, Base.Filesystem.path_separator => "/") # windows CI support
+        _, nbviewer_folder = split(_card_dir, "$project_dir/$src"; limit=2)
         nbviewer_folder = strip(nbviewer_folder, '/')
         nbviewer_url = "$(nbviewer_root_url)/$(nbviewer_folder)/$(cardname).ipynb"
     else
