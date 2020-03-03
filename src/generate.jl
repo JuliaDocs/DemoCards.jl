@@ -108,6 +108,8 @@ function makedemos(source::String, templates::Dict;
     copy_assets(absolute_root, page)
     # WARNING: julia cards are reconfigured here
     save_democards(absolute_root, page;
+                   project_root = root,
+                   src = src,
                    credit = credit,
                    nbviewer_root_url = get_nbviewer_root_url(branch))
     save_cover(joinpath(absolute_root, "covers"), page)
@@ -239,18 +241,14 @@ end
 
 recursively process and save source demo file
 """
-function save_democards(root::String, page::DemoPage; credit, nbviewer_root_url)
-    save_democards.(root, page.sections;
-                    credit = credit,
-                    nbviewer_root_url = nbviewer_root_url)
+function save_democards(root::String, page::DemoPage; kwargs...)
+    save_democards.(root, page.sections; kwargs...)
 end
-function save_democards(root::String, sec::DemoSection; credit, nbviewer_root_url)
+function save_democards(root::String, sec::DemoSection; kwargs...)
     save_democards.(joinpath(root, basename(sec.root)), sec.subsections;
-                    credit = credit,
-                    nbviewer_root_url = nbviewer_root_url)
+                    kwargs...)
     save_democards.(joinpath(root, basename(sec.root)), sec.cards;
-                    credit = credit,
-                    nbviewer_root_url = nbviewer_root_url)
+                    kwargs...)
 end
 
 ### copy assets

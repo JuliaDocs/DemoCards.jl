@@ -71,7 +71,7 @@ end
 
 
 """
-    save_democards(root::String, card::MarkdownDemoCard)
+    save_democards(card_dir::String, card::MarkdownDemoCard)
 
 process the original markdown file and save it.
 
@@ -80,13 +80,13 @@ The processing pipeline is:
 1. strip the front matter
 2. insert a level-1 title and id
 """
-function save_democards(root::String,
+function save_democards(card_dir::String,
                         card::MarkdownDemoCard;
                         credit,
                         kwargs...)
-    isdir(root) || mkpath(root)
+    isdir(card_dir) || mkpath(card_dir)
 
-    markdown_path = joinpath(root, basename(card))
+    markdown_path = joinpath(card_dir, basename(card))
 
     _, body = split_frontmatter(read(card.path, String))
     config = parse(Val(:Markdown), body)
