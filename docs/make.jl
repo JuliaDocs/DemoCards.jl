@@ -1,4 +1,4 @@
-using Documenter, DemoCards
+using Documenter, DemoCards, JSON
 
 
 # 1. generate a DemoCard theme
@@ -34,8 +34,19 @@ postprocess_cb()
 grid_cb()
 list_cb()
 
+# a workdaround to github action that only push preview when PR has "push_preview" labels
+# issue: https://github.com/JuliaDocs/Documenter.jl/issues/1225
+function should_push_preview(event_path = get(ENV, "GITHUB_EVENT_PATH", nothing))
+   event_path === nothing && return false
+   event = JSON.parsefile(event_path)
+   haskey(event, "pull_request") || return false
+   labels = [x["name"] for x in event["pull_request"]["labels"]]
+   return "push_preview" in labels
+end
+
 # 5. deployment
 if !haskey(ENV, "CI_TEST")
    # test stage also build the docs but not deploy it
-   deploydocs(repo = "github.com/johnnychen94/DemoCards.jl.git")
+   deploydocs(repo = "github.com/johnnychen94/DemoCards.jl.git",
+              push_preview = should_push_preview())
 end
