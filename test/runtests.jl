@@ -19,9 +19,9 @@ cd(test_root) do
 end
 
 
-cd(proj_root) do
-    ENV["CI_TEST"] = false
-    include(joinpath(proj_root, "docs/make.jl"))
-end
+# cd(proj_root) do
+#     ENV["CI_TEST"] = false
+#     include(joinpath(proj_root, "docs/make.jl"))
+# end
 
 nothing
