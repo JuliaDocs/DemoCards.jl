@@ -2,6 +2,7 @@ const julia_exts = [".jl",]
 const nbviewer_badge = "https://img.shields.io/badge/show-nbviewer-579ACA.svg"
 const download_badge = "https://img.shields.io/badge/download-julia-brightgreen.svg"
 const julia_footer = raw"""
+
 ---
 
 *This page was generated using [DemoCards.jl](https://github.com/johnnychen94/DemoCards.jl) and [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
@@ -170,8 +171,8 @@ function save_democards(card_dir::String,
     config = parse(Val(:Julia), body)
     need_header = !haskey(config, "title")
     # @ref syntax: https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@ref-link-1
-    header = need_header ? "# [$(card.title)](@id $(card.id))\n" : ""
-    footer = credit ? julia_footer : ""
+    header = need_header ? "# [$(card.title)](@id $(card.id))\n" : "\n"
+    footer = credit ? julia_footer : "\n"
     write(md_path, header, body, footer)
 
     # 5. filter out source file
