@@ -296,10 +296,7 @@ function redirect_link(source_file, source, root, destination, src, build, edit_
     else
         # otherwise, redirect the url links
         m = match(regex_edit_on_github, contents)
-        if isnothing(m)
-            warning("can't find \"Edit on GitHub\" button from $(build_file)")
-            return nothing
-        end
+        isnothing(m) && return nothing
         build_url = m.captures[1]
 
         src_url = get_source_url(build_url, source, basename(source_file), src, destination)

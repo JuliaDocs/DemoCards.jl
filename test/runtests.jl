@@ -19,9 +19,12 @@ cd(test_root) do
 end
 
 
-# cd(proj_root) do
-#     ENV["CI_TEST"] = false
-#     include(joinpath(proj_root, "docs/make.jl"))
-# end
+ENV["CI_TEST"] = false
+mktempdir() do dirpath
+    cp(joinpath(proj_root, "docs"), joinpath(dirpath, "docs"))
+    cd(dirpath) do
+        include(joinpath(dirpath, "docs/make.jl"))
+    end
+end
 
 nothing
