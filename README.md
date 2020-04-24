@@ -11,12 +11,12 @@ _Let's focus on writing demos_
 ## Overview
 
 * a plugin package to `Documenter.jl` to manage all your demos.
-* folder structure is demo structure.
 * minimal configuration.
 * all demos can be tested by CI.
 * support demos in markdown and julia format.
 
-Organize your folders in the following way, and let `DemoCards.jl` manage the demo page for you.
+The philosophy of DemoCards is "folder structure is structure of demos"; organizing folders and files in
+the following way, then `DemoCards.jl` will help manage the layouts of the index page.
 
 ```text
 docs/demos/simplest_demopage
