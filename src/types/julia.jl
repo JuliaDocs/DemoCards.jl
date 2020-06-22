@@ -176,5 +176,8 @@ function save_democards(card_dir::String,
     write(md_path, header, body, footer)
 
     # 5. filter out source file
-    @suppress Literate.script(src_path, card_dir; credit=credit)
+    mktempdir(card_dir) do tmpdir
+        @suppress Literate.script(src_path, tmpdir; credit=credit)
+        mv(joinpath(tmpdir, basename(src_path)), src_path, force=true)
+    end
 end
