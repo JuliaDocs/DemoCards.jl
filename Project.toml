@@ -1,7 +1,7 @@
 name = "DemoCards"
 uuid = "311a05b2-6137-4a5a-b473-18580a3d38b5"
 authors = ["Johnny Chen <johnnychen94@hotmail.com>"]
-version = "0.2.2"
+version = "0.2.3"
 
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
@@ -14,7 +14,7 @@ Suppressor = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
 YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 
 [compat]
-Documenter = "0.22, 0.23, 0.24"
+Documenter = "0.22, 0.23, 0.24, 0.25"
 FileIO = "1"
 ImageCore = "0.7, 0.8"
 JSON = "0.20, 0.21"
