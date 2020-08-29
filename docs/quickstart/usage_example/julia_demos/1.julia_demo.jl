@@ -36,3 +36,16 @@ img = testimage("lena")
 # # description: <description>
 # # ---
 # ```
+
+# You should be careful about the leading whitespaces after the first #. Frontmatter as weird as the
+# following is not guaranteed to work and it is very likely to hit a YAML parsing error.
+
+# ```
+# # ---
+# # title: <title>
+# #  cover: <cover>
+# #  id: <id>
+# # description: <description>
+# # ---
+# ```
+

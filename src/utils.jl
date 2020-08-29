@@ -253,7 +253,22 @@ function split_frontmatter(contents::AbstractArray{<:AbstractString})
     offsets = findall(offsets)
     if !isempty(offsets) && offsets[1] == 1 # only first line is treated as frontmatter
         # anything before frontmatter is thrown away
-        frontmatter = map(x->lstrip(x, ('#', ' ')), contents[offsets[1]: offsets[2]])
+
+        # infer how many spaces we need to trim from the start line. E.g.,  "# ---" => 1
+        start_line = contents[offsets[1]]
+        m = match(r"^#?(\s*)", start_line)
+        # make sure we strip the same amount of whitespaces -- preserve indentation
+        indent_spaces = isnothing(m) ? "" : m.captures[1]
+        frontmatter = map(contents[offsets[1]: offsets[2]]) do line
+            m = match(Regex("^#?$(indent_spaces)(.*)"), line)
+            if isnothing(m)
+                @warn "probably incorrect YAML syntax or indentation" line
+                # we don't know much about what `line` is, so do nothing here and let YAML complain about it
+                line
+            else
+                m.captures[1]
+            end
+        end
         body = contents[offsets[2]+1:end]
     else
         frontmatter = ""
