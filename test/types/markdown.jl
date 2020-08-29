@@ -39,6 +39,16 @@
             @test title_6.id == "custom_id"
             @test title_6.title == "Custom Title"
             @test title_6.description == "This is the content"
+
+            description_1 = MarkdownDemoCard("description_1.md")
+            @test description_1.id == "Custom-Title"
+            @test description_1.title == "Custom Title"
+            @test description_1.description == "this is a single line destiption that spans over multiple lines\n"
+            
+            description_2 = MarkdownDemoCard("description_2.md")
+            @test description_2.id == "Custom-Title"
+            @test description_2.title == "Custom Title"
+            @test description_2.description == "this is a multi line\ndestiption that spans\nover multiple lines\n"
         end
 
         @testset "cover" begin

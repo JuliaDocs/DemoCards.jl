@@ -44,6 +44,16 @@
             @test title_7.id == "custom_id"
             @test title_7.title == "Custom Title"
             @test title_7.description == "This is the content"
+
+            description_1 = JuliaDemoCard("description_1.jl")
+            @test description_1.id == "Custom-Title"
+            @test description_1.title == "Custom Title"
+            @test description_1.description == "this is a single line destiption that spans over multiple lines\n"
+            
+            description_2 = JuliaDemoCard("description_2.jl")
+            @test description_2.id == "Custom-Title"
+            @test description_2.title == "Custom Title"
+            @test description_2.description == "this is a multi line\ndestiption that spans\nover multiple lines\n"
         end
 
         @testset "cover" begin
