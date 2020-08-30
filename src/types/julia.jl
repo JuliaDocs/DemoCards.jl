@@ -129,7 +129,8 @@ function save_democards(card_dir::String,
     end
 
     # remove YAML frontmatter
-    _, body = split_frontmatter(read(src_path, String))
+    src_header, _, body = split_frontmatter(read(src_path, String))
+    isempty(strip(src_header)) || (src_header *= "\n\n")
 
     # insert header badge
     header = "#md # [![]($download_badge)]($(cardname).jl)"
@@ -178,6 +179,6 @@ function save_democards(card_dir::String,
     # 5. filter out source file
     mktempdir(card_dir) do tmpdir
         @suppress Literate.script(src_path, tmpdir; credit=credit)
-        mv(joinpath(tmpdir, basename(src_path)), src_path, force=true)
+        write(src_path, src_header, read(joinpath(tmpdir, basename(src_path)), String))
     end
 end

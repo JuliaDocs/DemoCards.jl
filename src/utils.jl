@@ -129,7 +129,7 @@ Currently supported items are: `title`, `id`, `cover`, `description`.
     They also need to validate the values.
 """
 function parse(T::Val, card::AbstractDemoCard)
-    frontmatter, body = split_frontmatter(readlines(card.path))
+    header, frontmatter, body = split_frontmatter(readlines(card.path))
     config = parse(T, body)
     # frontmatter has higher priority
     if !isempty(frontmatter)
@@ -159,7 +159,8 @@ function parse(T::Val, contents::String)
 end
 function parse(T::Val, contents::AbstractArray{<:AbstractString})::Dict
     config = Dict()
-    _, contents = split_frontmatter(contents) # drop frontmatter
+    # only parse relevant information from the main contents body
+    _, _, contents = split_frontmatter(contents)
 
     # it's too complicated to regex title correctly from body contents, so a simple
     # strategy is to limit possible titles to lines before the contents
@@ -241,40 +242,40 @@ stripped for julia codes.
 `contents` can be `String` or vector of `String`. Outputs have the same type of `contents`.
 """
 function split_frontmatter(contents::String)
-    frontmatter, body = split_frontmatter(split(contents, "\n"))
-    return join(frontmatter, "\n"), join(body, "\n")
+    header, frontmatter, body = split_frontmatter(split(contents, "\n"))
+    return join(header, "\n"), join(frontmatter, "\n"), join(body, "\n")
 end
 function split_frontmatter(contents::AbstractArray{<:AbstractString})
-    # TODO: remove magic comments
     offsets = map(contents) do line
         m = match(regex_yaml, line)
         m isa RegexMatch
     end
     offsets = findall(offsets)
-    if !isempty(offsets) && offsets[1] == 1 # only first line is treated as frontmatter
-        # anything before frontmatter is thrown away
-
-        # infer how many spaces we need to trim from the start line. E.g.,  "# ---" => 1
-        start_line = contents[offsets[1]]
-        m = match(r"^#?(\s*)", start_line)
-        # make sure we strip the same amount of whitespaces -- preserve indentation
-        indent_spaces = isnothing(m) ? "" : m.captures[1]
-        frontmatter = map(contents[offsets[1]: offsets[2]]) do line
-            m = match(Regex("^#?$(indent_spaces)(.*)"), line)
-            if isnothing(m)
-                @warn "probably incorrect YAML syntax or indentation" line
-                # we don't know much about what `line` is, so do nothing here and let YAML complain about it
-                line
-            else
-                m.captures[1]
-            end
-        end
-        body = contents[offsets[2]+1:end]
-    else
-        frontmatter = ""
-        body = contents
+    
+    length(offsets) < 2 && return "", "", contents
+    if offsets[1] != 1 && !all(x->isempty(strip(x)) || startswith(strip(x), "#"), contents[1:offsets[1]-1])
+        # For julia demo, comments and empty lines are allowed before frontmatter
+        # For markdown demo, only empty lines are allowed before frontmatter
+        return "", "", contents
     end
-    return frontmatter, body
+
+    # infer how many spaces we need to trim from the start line. E.g.,  "# ---" => 1
+    start_line = contents[offsets[1]]
+    m = match(r"^#?(\s*)", start_line)
+    # make sure we strip the same amount of whitespaces -- preserve indentation
+    indent_spaces = isnothing(m) ? "" : m.captures[1]
+    frontmatter = map(contents[offsets[1]: offsets[2]]) do line
+        m = match(Regex("^#?$(indent_spaces)(.*)"), line)
+        if isnothing(m)
+            @warn "probably incorrect YAML syntax or indentation" line
+            # we don't know much about what `line` is, so do nothing here and let YAML complain about it
+            line
+        else
+            m.captures[1]
+        end
+    end
+
+    return contents[1:offsets[1]-1], frontmatter, contents[offsets[2]+1:end]
 end
 
 

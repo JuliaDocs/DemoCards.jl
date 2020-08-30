@@ -45,6 +45,11 @@
             @test title_7.title == "Custom Title"
             @test title_7.description == "This is the content"
 
+            title_8 = JuliaDemoCard("title_8.jl")
+            @test title_8.id == "custom_id"
+            @test title_8.title == "Custom Title"
+            @test title_8.description == "This is the content"
+
             description_1 = JuliaDemoCard("description_1.jl")
             @test description_1.id == "Custom-Title"
             @test description_1.title == "Custom Title"
