@@ -1,3 +1,7 @@
+#! /usr/bin/julia
+
+# comments are allowed before YAML frontmatter
+
 # ---
 # title: Write your demo in julia
 # cover: assets/literate.png
@@ -49,3 +53,7 @@ img = testimage("lena")
 # # ---
 # ```
 
+# !!! tip
+#     Comments are allowed before frontmatter, but it would only be appeared in the julia source
+#     codes. Normally, you may only want to add magic comments and license information before the
+#     YAML frontmatter.

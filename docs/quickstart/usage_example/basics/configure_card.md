@@ -18,3 +18,6 @@ description: This demo show you how to pass additional meta info of card to Demo
 
 ---
 ```
+
+Of course, you have to make sure the `---` flag shows at the first line of the markdown file,
+otherwise DemoCards would just read them as normal contents.

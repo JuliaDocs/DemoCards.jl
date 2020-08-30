@@ -40,6 +40,11 @@
             @test title_6.title == "Custom Title"
             @test title_6.description == "This is the content"
 
+            title_7 = MarkdownDemoCard("title_7.md")
+            @test title_7.id == "custom_id"
+            @test title_7.title == "Custom Title"
+            @test title_7.description == "This is the content"
+
             description_1 = MarkdownDemoCard("description_1.md")
             @test description_1.id == "Custom-Title"
             @test description_1.title == "Custom Title"
