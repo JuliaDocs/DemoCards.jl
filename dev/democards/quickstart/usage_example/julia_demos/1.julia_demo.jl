@@ -1,3 +1,8 @@
+#! /usr/bin/julia
+
+# comments are allowed before YAML frontmatter
+
+
 x = 1//3
 y = 2//5
 x + y
