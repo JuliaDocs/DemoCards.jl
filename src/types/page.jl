@@ -97,6 +97,19 @@ function DemoPage(root::String)::DemoPage
     path = joinpath.(root, filter(x->!startswith(x, "."), readdir(root))) # filter out hidden files
     section_paths = filter(x->isdir(x)&&!(basename(x) in ignored_dirnames),
                            path)
+    
+    if isempty(section_paths)
+        # This is an edge and trivial case that we need to disallow; we want the following
+        # folder structure be uniquely parsed as a demo section and not a demo page without
+        # ambiguity.
+        # ```
+        # demos/
+        # └── demo1.jl
+        # ```
+        msg = "can not find a valid page structure in page dir \"$root\"\nit should have at least one folder as section inside it"
+        throw(ArgumentError(msg))
+    end
+    
     sections = map(DemoSection, section_paths)
 
 
@@ -167,4 +180,63 @@ function get_default_template(page::DemoPage)
     content = "{{{democards}}}" # render by Mustache
     footer = ""
     return header * content * footer
+end
+
+# page utils
+
+"""
+    infer_pagedir(card_path; rootdir="")
+
+Given a demo card path, infer the *outmost* dir path that makes it a valid demo page. If it fails to
+find such dir path, return `nothing`.
+
+The inference is done recursively, `rootdir` sets a stop condition for the inference process.
+
+!!! warning
+    This inference may not be the exact page dir in trivial cases, for example:
+
+    ```
+    testdir/
+    └── examples
+        └── sections
+            └── demo1.md
+    ```
+
+    Both `testdir` and `examples` can be valid dir path for a demo page, this function would
+    just return `testdir` as it is the outmost match.
+
+"""
+function infer_pagedir(path; rootdir::String=first(splitdrive(path)))
+    # the last root path that `DemoPage(root)` successfully parses
+    if is_demopage(path)
+        root, dir = splitdir(path) # we need the outmost folder, so not return right here
+    elseif is_demosection(path)
+        root, dir = splitdir(path)
+    elseif is_democard(path)
+        root, dir = splitdir(dirname(path))
+    else
+        return nothing
+    end
+
+    while true
+        if is_demopage(root)
+            root, dir = splitdir(root)
+        else
+            pagedir = joinpath(root, dir)
+            return is_demopage(pagedir) ? pagedir : nothing # in case it fails at the first try
+        end
+
+        root in push!(["/", ""], rootdir) && return nothing
+    end
+end
+
+function is_demopage(dir)
+    try
+        # if fails to parse, then it is not a valid demo page
+        @suppress_err DemoPage(dir)
+        return true
+    catch err
+        @debug err
+        return false
+    end
 end

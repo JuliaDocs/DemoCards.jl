@@ -88,7 +88,7 @@ function save_democards(card_dir::String,
 
     markdown_path = joinpath(card_dir, basename(card))
 
-    _, body = split_frontmatter(read(card.path, String))
+    _, _, body = split_frontmatter(read(card.path, String))
     config = parse(Val(:Markdown), body)
     need_header = !haskey(config, "title")
     # @ref syntax: https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@ref-link-1

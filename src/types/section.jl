@@ -87,9 +87,7 @@ function DemoSection(root::String)::DemoSection
     card_paths = filter(x->isfile(x) && !endswith(x, config_filename), path)
     section_paths = filter(x->isdir(x)&&!(basename(x) in ignored_dirnames), path)
 
-    if isempty(card_paths) && isempty(section_paths)
-        throw(ArgumentError("emtpy section folder $(root)"))
-    elseif !xor(isempty(card_paths), isempty(section_paths))
+    if !isempty(card_paths) && !isempty(section_paths)
         throw(ArgumentError("section folder $(root) should only hold either cards or subsections"))
     end
 
@@ -139,4 +137,15 @@ end
 function get_default_order(sec::DemoSection)
     order = isempty(sec.cards) ? basename.(sec.subsections) : basename.(sec.cards)
     sort(order, by = x->lowercase(x))
+end
+
+function is_demosection(dir)
+    try
+        # if fails to parse, then it is not a valid demo page
+        @suppress_err DemoSection(dir)
+        return true
+    catch err
+        @debug err
+        return false
+    end
 end

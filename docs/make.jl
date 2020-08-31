@@ -21,6 +21,9 @@ makedocs(format = format,
             "Home" => "index.md",
             "QuickStart" => quickstart,
             "Concepts" => "concepts.md",
+            "Advanced Usages" => [
+               "Preview only one demo" => "preview.md",
+            ],
             "Theme Gallery" => [
                grid_demopage,
                list_demopage
