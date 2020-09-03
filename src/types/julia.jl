@@ -122,6 +122,10 @@ function save_democards(card_dir::String,
             card.path = cardname*".jl"
             card.cover = load_config(card, "cover")
             card.path = src_path
+
+            foreach(ignored_dirnames) do x
+                isempty(readdir(x)) && rm(x; recursive=true, force=true)
+            end
         catch err
             # throw warnings when generating notebooks
             err isa LoadError || rethrow(err)

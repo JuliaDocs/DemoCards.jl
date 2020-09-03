@@ -23,14 +23,8 @@
 
         page_dir = dirname(md_index)
         @test readdir(page_dir) == ["covers", "index.md", "scripts"]
-<<<<<<< HEAD
-        @test readdir(joinpath(page_dir, "covers")) == ["demo1.png", "demo2.png"]
-        @test readdir(joinpath(page_dir, "scripts")) == ["assets", "demo1.ipynb", "demo1.jl", "demo1.md", "demo2.md"]
-        @test readdir(joinpath(page_dir, "scripts", "assets")) |> isempty
-=======
         @test readdir(joinpath(page_dir, "covers")) == ["demo1.png", "demo2.svg"]
         @test readdir(joinpath(page_dir, "scripts")) == ["assets", "demo1.ipynb", "demo1.jl", "demo1.md", "demo2.md"]
->>>>>>> c52e40b... increase test coverage
     end
 
     @testset "section with page structure" begin
