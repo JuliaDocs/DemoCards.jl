@@ -38,12 +38,17 @@ function preview_demos(demo_path::String;
     src = "src"
     destination = "democards"
 
-    demo_path = abspath(rstrip(demo_path, '/'))
+    demo_path = abspath(rstrip(demo_path, ['/', '\\']))
     ispath(demo_path) || throw(ArgumentError("demo path does not exists: $demo_path"))
 
     build_dir = preview_build_dir()
     
-    clean && (rm(build_dir; force=true, recursive=true); mkpath(build_dir))
+    if clean
+        # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
+        Base.Sys.iswindows() && GC.gc()
+        rm(build_dir; force=true, recursive=true)
+        mkpath(build_dir)
+    end
 
     page_dir = generate_or_copy_pagedir(demo_path, build_dir)
     copy_assets_and_configs(page_dir, build_dir)
@@ -179,11 +184,20 @@ function copy_assets_and_configs(src_page_dir, dst_build_dir=pwd())
             config = JSON.parsefile(src_config_path)
             config_dir = dirname(dst_config_path)
             if haskey(config, "order")
-                config["order"] = [x for x in config["order"] if x in readdir(config_dir)]
+                order =  [x for x in config["order"] if x in readdir(config_dir)]
+                if isempty(order)
+                    delete!(config, "order")
+                else
+                    config["order"] = order
+                end
             end
 
-            open(dst_config_path, "w") do io
-                JSON.print(io, config)
+            if !isempty(config)
+                # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
+                Base.Sys.iswindows() && GC.gc()
+                open(dst_config_path, "w") do io
+                    JSON.print(io, config)
+                end
             end
         end
     end
