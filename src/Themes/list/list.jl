@@ -18,7 +18,7 @@ const list_card_template = mt"""
 <table>
   <td valign="bottom"><div class="list-card-cover">
 ```
-[![list-card-cover-image](covers/{{covername}})](@ref {{id}})
+[![list-card-cover-image]({{{coverpath}}})](@ref {{id}})
 ```@raw html
   </div></td>
   <td><div class="list-card-text">

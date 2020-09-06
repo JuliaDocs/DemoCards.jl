@@ -283,3 +283,6 @@ function get_default_title(x::Union{AbstractDemoCard, DemoSection, DemoPage})
     name_without_ext = splitext(basename(x))[1]
     strip(replace(uppercasefirst(name_without_ext), r"[_-]" => " "))
 end
+
+
+is_remote_url(path) = startswith(path, r"https?://")

@@ -171,13 +171,16 @@ function generate(sec::DemoSection, templates; level=1)
 end
 
 function generate(card::AbstractDemoCard, template)
-    if isnothing(card.cover)
-        ext = ".png"
-    else
-        _, ext = splitext(card.cover)
-    end
-    covername = splitext(basename(card))[1] * ext
+    covername = get_covername(card)
 
+    if isnothing(covername)
+        # `generate` are called after `save_cover`, we assume that this default cover file is
+        # already generated
+        coverpath = "covers/" * basename(get_logopath())
+    else
+        coverpath = is_remote_url(card.cover) ? covername : "covers/" * covername
+    end
+    
     description = card.description
     cut_idx = 500
     if length(card.description) >= cut_idx
@@ -189,7 +192,7 @@ function generate(card::AbstractDemoCard, template)
     end
 
     items = Dict(
-        "covername" => covername,
+        "coverpath" => coverpath,
         "id" => card.id,
         "title" => card.title,
         "description" => description,
@@ -201,8 +204,6 @@ end
 
 save_cover(path::String, page::DemoPage) = save_cover.(path, page.sections)
 function save_cover(path::String, sec::DemoSection)
-    # TODO: we can perserve the folder structure when creating covers
-    #       this helps avoid name conflicts
     save_cover.(path, sec.subsections)
     save_cover.(path, sec.cards)
 end
@@ -213,26 +214,43 @@ end
 process the cover image and save it.
 """
 function save_cover(path::String, card::AbstractDemoCard)
-    if isnothing(card.cover)
-        cover_path = joinpath(path, splitext(basename(card))[1] * ".png")
+    covername = get_covername(card)
+    if isnothing(covername)
+        default_coverpath = get_logopath()
+        cover_path = joinpath(path, basename(default_coverpath))
+        !isfile(cover_path) && cp(default_coverpath, cover_path)
+
+        # now card uses default cover file as a fallback
+        card.cover = basename(default_coverpath)
+        return nothing
+    end
+
+    is_remote_url(card.cover) && return nothing
+
+    # only save cover image if it is a existing local file
+    src_path = joinpath(dirname(card.path), card.cover)
+    if !isfile(src_path)
+        @warn "cover file doesn't exists" cover_path=src_path
+
+        # reset it back to nothing and fallback to use default cover
+        card.cover = nothing
+        save_cover(path, card)
+    else
+        cover_path = joinpath(path, covername)
         if isfile(cover_path)
             @warn "cover file already exists, perhaps you have demos of the same filename" cover_path
         end
-        save(cover_path, Gray.(ones(max_coversize)))
-    else
-        src_path = joinpath(dirname(card.path), card.cover)
-        if isfile(src_path)
-            _, ext = splitext(card.cover)
-            cover_path = joinpath(path, splitext(basename(card))[1] * ext)
-            if isfile(cover_path)
-                @warn "cover file already exists, perhaps you have demos of the same filename" cover_path
-            end
-            cp(src_path, cover_path)
-        else
-            @warn "cover file doesn't exists" cover_path=src_path
-        end
+        !isfile(cover_path) && cp(src_path, cover_path)
     end
 end
+
+function get_covername(card::AbstractDemoCard)
+    isnothing(card.cover) && return nothing
+    is_remote_url(card.cover) && return card.cover
+    return splitext(basename(card))[1] * splitext(card.cover)[2]
+end
+
+get_logopath() = joinpath(pkgdir(DemoCards), "assets", "logo.svg")
 
 ### save markdown files
 
