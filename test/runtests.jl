@@ -22,14 +22,4 @@ cd(test_root) do
     include("utils.jl")
 end
 
-
-ENV["CI_TEST"] = false
-mktempdir() do dirpath
-    cp(joinpath(proj_root, "docs"), joinpath(dirpath, "docs"))
-    chmod(dirpath, 0o777; recursive=true)
-    cd(dirpath) do
-        include(joinpath(dirpath, "docs/make.jl"))
-    end
-end
-
 nothing
