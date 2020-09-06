@@ -142,7 +142,13 @@ function generate(page::DemoPage, templates)
 end
 
 function generate(cards::AbstractVector{<:AbstractDemoCard}, template)
-    mapreduce(*, cards; init="") do x
+    # for those hidden cards, only generate the necessary assets and files, but don't add them into
+    # the index.md page
+    foreach(filter(x->x.hidden, cards)) do x
+        generate(x, template)
+    end
+
+    mapreduce(*, filter(x->!x.hidden, cards); init="") do x
         generate(x, template)
     end
 end

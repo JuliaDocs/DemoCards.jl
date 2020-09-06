@@ -34,6 +34,7 @@ Supported items are:
 * `description`: a multi-line description to this file, will be displayed when the demo card is hovered. By default it uses `title`.
 * `id`: specify the `id` tag for cross-references. By default it's infered from the filename, e.g., `simple_demo` from `simple demo.md`.
 * `title`: one-line description to this file, will be displayed under the cover image. By default, it's the name of the file (without extension).
+* `hidden`: whether this card is shown in the layout of index page. The default value is `false`.
 
 An example of the front matter:
 
@@ -54,11 +55,12 @@ mutable struct MarkdownDemoCard <: AbstractDemoCard
     id::String
     title::String
     description::String
+    hidden::Bool
 end
 
 function MarkdownDemoCard(path::String)::MarkdownDemoCard
     # first consturct an incomplete democard, and then load the config
-    card = MarkdownDemoCard(path, "", "", "", "")
+    card = MarkdownDemoCard(path, "", "", "", "", false)
 
     card.cover = load_config(card, "cover")
     card.title = load_config(card, "title")
@@ -66,6 +68,7 @@ function MarkdownDemoCard(path::String)::MarkdownDemoCard
     card.id    = load_config(card, "id")
     # default description requires a title
     card.description = load_config(card, "description")
+    card.hidden = load_config(card, "hidden")
     return card
 end
 
