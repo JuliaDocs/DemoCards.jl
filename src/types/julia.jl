@@ -122,6 +122,10 @@ function save_democards(card_dir::String,
             card.path = cardname*".jl"
             card.cover = load_config(card, "cover")
             card.path = src_path
+
+            foreach(ignored_dirnames) do x
+                isempty(readdir(x)) && rm(x; recursive=true, force=true)
+            end
         catch err
             # throw warnings when generating notebooks
             err isa LoadError || rethrow(err)
@@ -134,22 +138,19 @@ function save_democards(card_dir::String,
 
     # insert header badge
     header = "#md # [![]($download_badge)]($(cardname).jl)"
-    if !Sys.iswindows()
-        # FIXME: there're some unidentified issues in windows platform, but since all documentation
-        #        ecosystem supports linux only, we can just skip this now -- I don't have windows :P
-        if !isempty(nbviewer_root_url)
-            # reach here in CI environment
+    if !isempty(nbviewer_root_url)
+        # reach here in CI environment
 
-            # remove root/src prefix
-            _, nbviewer_folder = split(card_dir, "$project_dir/$src"; limit=2)
-            nbviewer_folder = strip(nbviewer_folder, '/')
-            nbviewer_url = "$(nbviewer_root_url)/$(nbviewer_folder)/$(cardname).ipynb"
-        else
-            # local build
-            nbviewer_url = "$(cardname).ipynb"
-        end
-        header *= " [![]($nbviewer_badge)]($nbviewer_url)"
+        # remove root/src prefix
+        nbviewer_folder = relpath(card_dir, "$project_dir/$src")
+        nbviewer_url = "$(nbviewer_root_url)/$(nbviewer_folder)/$(cardname).ipynb"
+
+        @show nbviewer_folder nbviewer_url nbviewer_root_url nbviewer_folder cardname project_dir src
+    else
+        # local build
+        nbviewer_url = "$(cardname).ipynb"
     end
+    header *= " [![]($nbviewer_badge)]($nbviewer_url)"
     header *= "\n\n"
 
     write(src_path, header, body)

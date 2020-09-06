@@ -37,6 +37,16 @@ function validate_id(id::AbstractString, card::AbstractDemoCard)
     end
 end
 
+function is_democard(file)
+    try
+        @suppress_err democard(file)
+        return true
+    catch err
+        @debug err
+        return false
+    end
+end
+
 function load_config(card::T, key) where T <: AbstractDemoCard
     config = parse(card)
 

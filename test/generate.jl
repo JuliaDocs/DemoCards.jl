@@ -5,10 +5,10 @@
         templates = DemoCards.cardtheme(Val(Symbol(theme)))[1]
 
         sec = DemoSection(joinpath(root, "section", "default"))
-        @test_reference joinpath("references", "generate_section_$theme.txt") generate(sec, templates)
+        @test_reference joinpath("references", "generate_section_$theme.txt") generate(sec, templates) by=ignore_CR
 
         page = DemoPage(joinpath(root, "page", "default"))
-        @test_reference joinpath("references", "generate_page_$theme.txt") generate(page, templates)
+        @test_reference joinpath("references", "generate_page_$theme.txt") generate(page, templates) by=ignore_CR
     end
 
     abs_root = joinpath(pwd(), root, "page", "default")
