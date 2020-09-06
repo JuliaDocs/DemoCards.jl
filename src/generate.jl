@@ -247,10 +247,14 @@ end
 function get_covername(card::AbstractDemoCard)
     isnothing(card.cover) && return nothing
     is_remote_url(card.cover) && return card.cover
+
+    default_covername = basename(get_logopath())
+    card.cover == default_covername && return default_covername
+    
     return splitext(basename(card))[1] * splitext(card.cover)[2]
 end
 
-get_logopath() = joinpath(pkgdir(DemoCards), "assets", "logo.svg")
+get_logopath() = joinpath(pkgdir(DemoCards), "assets", "democards_logo.svg")
 
 ### save markdown files
 

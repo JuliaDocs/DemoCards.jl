@@ -16,7 +16,7 @@ Demo1
 ```@raw html
 </div>
 ```
-[![card-cover-image](covers/demo1.svg)](@ref Demo1)
+[![card-cover-image](covers/democards_logo.svg)](@ref Demo1)
 ```@raw html
 </div>
 <div class="card-text">

@@ -23,7 +23,7 @@
 
         page_dir = dirname(md_index)
         @test readdir(page_dir) == ["covers", "index.md", "scripts"]
-        @test readdir(joinpath(page_dir, "covers")) == ["demo2.svg", "logo.svg"]
+        @test readdir(joinpath(page_dir, "covers")) == ["demo2.svg", "democards_logo.svg"]
         @test readdir(joinpath(page_dir, "scripts")) == ["assets", "demo1.ipynb", "demo1.jl", "demo1.md", "demo2.md"]
     end
 
@@ -55,7 +55,7 @@
 
         page_dir = dirname(md_index)
         @test readdir(page_dir) == ["covers", "index.md", "preview_section"]
-        @test readdir(joinpath(page_dir, "covers")) == ["logo.svg"]
+        @test readdir(joinpath(page_dir, "covers")) == ["democards_logo.svg"]
         @test readdir(joinpath(page_dir, "preview_section")) == ["preview_demo1.ipynb", "preview_demo1.jl", "preview_demo1.md"]
     end
 

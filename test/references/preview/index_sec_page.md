@@ -16,7 +16,7 @@ Card 3
 ```@raw html
 </div>
 ```
-[![card-cover-image](covers/card_3.svg)](@ref Card-3)
+[![card-cover-image](covers/democards_logo.svg)](@ref Card-3)
 ```@raw html
 </div>
 <div class="card-text">
@@ -38,7 +38,7 @@ Card 4
 ```@raw html
 </div>
 ```
-[![card-cover-image](covers/card_4.svg)](@ref Card-4)
+[![card-cover-image](covers/democards_logo.svg)](@ref Card-4)
 ```@raw html
 </div>
 <div class="card-text">
