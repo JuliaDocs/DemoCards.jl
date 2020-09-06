@@ -285,4 +285,4 @@ function get_default_title(x::Union{AbstractDemoCard, DemoSection, DemoPage})
 end
 
 
-is_remote_url(path) = startswith(path, r"https?://")
+is_remote_url(path) = !isnothing(match(r"^https?://", path))
