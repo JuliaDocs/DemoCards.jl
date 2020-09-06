@@ -48,8 +48,5 @@ function should_push_preview(event_path = get(ENV, "GITHUB_EVENT_PATH", nothing)
 end
 
 # 5. deployment
-if !haskey(ENV, "CI_TEST")
-   # test stage also build the docs but not deploy it
-   deploydocs(repo = "github.com/johnnychen94/DemoCards.jl.git",
-              push_preview = should_push_preview())
-end
+deploydocs(repo = "github.com/johnnychen94/DemoCards.jl.git",
+            push_preview = should_push_preview())
