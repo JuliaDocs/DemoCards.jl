@@ -15,7 +15,7 @@ Card 1
 ```@raw html
 </div>
 ```
-[![card-cover-image](covers/logo.svg)](@ref Card-1)
+[![card-cover-image](covers/democards_logo.svg)](@ref Card-1)
 ```@raw html
 </div>
 <div class="card-text">
@@ -37,7 +37,7 @@ Card 2
 ```@raw html
 </div>
 ```
-[![card-cover-image](covers/logo.svg)](@ref Card-2)
+[![card-cover-image](covers/democards_logo.svg)](@ref Card-2)
 ```@raw html
 </div>
 <div class="card-text">
@@ -72,7 +72,7 @@ Card 3
 ```@raw html
 </div>
 ```
-[![card-cover-image](covers/logo.svg)](@ref Card-3)
+[![card-cover-image](covers/democards_logo.svg)](@ref Card-3)
 ```@raw html
 </div>
 <div class="card-text">
@@ -94,7 +94,7 @@ Card 4
 ```@raw html
 </div>
 ```
-[![card-cover-image](covers/logo.svg)](@ref Card-4)
+[![card-cover-image](covers/democards_logo.svg)](@ref Card-4)
 ```@raw html
 </div>
 <div class="card-text">
