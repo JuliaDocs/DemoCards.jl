@@ -23,7 +23,7 @@ const grid_card_template = mt"""
 ```@raw html
 </div>
 ```
-[![card-cover-image](covers/{{covername}})](@ref {{id}})
+[![card-cover-image]({{{coverpath}}})](@ref {{id}})
 ```@raw html
 </div>
 <div class="card-text">
