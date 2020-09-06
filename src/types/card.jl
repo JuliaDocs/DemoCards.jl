@@ -66,6 +66,8 @@ function load_config(card::T, key) where T <: AbstractDemoCard
         return get(config, key, get_default_title(card))
     elseif key == "description"
         return get(config, key, card.title)
+    elseif key == "hidden"
+        return get(config, key, false)
     else
         throw(ArgumentError("Unrecognized key $(key) for $(T)"))
     end

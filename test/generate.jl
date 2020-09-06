@@ -21,4 +21,16 @@
         @test @suppress_err path == joinpath("democards", "default", "index.md")
         @test theme == joinpath("democards", "gridtheme.css")
     end
+
+    @testset "hidden" begin
+        index_md = @suppress_err preview_demos(joinpath(root, "page", "hidden"); require_html=false)
+        # test only one card is shown in index.md
+        @test_reference joinpath("references", "hidden_index.txt") read(index_md, String)
+
+        # check that assets are still normally generated even if they are hidden from index.md
+        page_dir = dirname(index_md)
+        @test readdir(page_dir) == ["covers", "index.md", "sec"]
+        @test readdir(joinpath(page_dir, "covers")) == ["democards_logo.svg"]
+        @test readdir(joinpath(page_dir, "sec")) == ["hidden1.ipynb", "hidden1.jl", "hidden1.md", "hidden2.md", "normal.md"]
+    end
 end

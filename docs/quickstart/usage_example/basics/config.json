@@ -3,6 +3,8 @@
   "order": [
     "simple_markdown_demo.md",
     "configure_card.md",
-    "configure_sec_and_page.md"
+    "configure_sec_and_page.md",
+    "hide_your_card_from_index.md",
+    "hidden_card.jl"
   ]
 }
