@@ -144,8 +144,6 @@ function save_democards(card_dir::String,
         # remove root/src prefix
         nbviewer_folder = relpath(card_dir, "$project_dir/$src")
         nbviewer_url = "$(nbviewer_root_url)/$(nbviewer_folder)/$(cardname).ipynb"
-
-        @show nbviewer_folder nbviewer_url nbviewer_root_url nbviewer_folder cardname project_dir src
     else
         # local build
         nbviewer_url = "$(cardname).ipynb"
