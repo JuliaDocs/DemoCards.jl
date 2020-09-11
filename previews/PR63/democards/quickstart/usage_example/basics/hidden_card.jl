@@ -1,4 +1,4 @@
-using Images, TestImages
+using ImageCore, ImageTransformations, TestImages
 
 imresize(testimage("camera"); ratio=0.25)
 
