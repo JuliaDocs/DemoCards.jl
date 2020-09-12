@@ -35,16 +35,76 @@ function validate_order(order::AbstractArray, x::Union{DemoPage, DemoSection})
     end
 end
 
-"""return a flattened list of democards"""
-flatten(page::DemoPage) = vcat(flatten.(page.sections)...)
-function flatten(sec::DemoSection)
-    if isempty(sec.cards)
-        return vcat(flatten.(sec.subsections)...)
-    else
-        return sec.cards
-    end
+"""
+    walkpage([f=identity], page; flatten=true, max_depth=Inf)
+
+Walk through the page structure and apply function f to each of the item.
+
+By default, the page structure is not preserved in the result. To preserve that, you could pass
+`flatten=false` to the function.
+
+# Examples
+
+This is particulaly useful to generate information for the page structure. For example:
+
+```julia
+julia> page = DemoPage("docs/quickstart/");
+
+julia> walkpage(page; flatten=true) do item
+    basename(item.path)
 end
 
+"Quick Start" => [
+    "simple_markdown_demo.md",
+    "configure_card.md",
+    "configure_sec_and_page.md",
+    "hide_your_card_from_index.md",
+    "hidden_card.jl",
+    "1.julia_demo.jl",
+    "2.cover_on_the_fly.jl"
+]
+```
+
+If `flatten=false`, then it gives you something like this:
+
+```
+"Quick Start" => [
+    "Usage example" => [
+        "Basics" => [
+            "simple_markdown_demo.md",
+            "configure_card.md",
+            "configure_sec_and_page.md",
+            "hide_your_card_from_index.md",
+            "hidden_card.jl"
+        ],
+        "Julia demos" => [
+            "1.julia_demo.jl",
+            "2.cover_on_the_fly.jl"
+        ]
+    ]
+]
+```
+"""
+walkpage(page::DemoPage; kwargs...) = walkpage(identity, page; kwargs...)
+function walkpage(f, page::DemoPage; flatten=true, kwargs...)
+    nodes = _walkpage.(f, page.sections, 1; flatten=flatten, kwargs...)
+    if flatten
+        nodes = reduce(vcat, nodes)
+        # compensate back to a vector when the first level section has only one section and one card
+        nodes isa AbstractArray || (nodes = [nodes])
+    end
+    page.title => nodes
+end
+
+function _walkpage(f, sec::DemoSection, depth; max_depth=Inf, flatten=true)
+    depth+1 > max_depth && return flatten ? f(sec) : [f(sec), ]
+    if !isempty(sec.cards)
+        return flatten ? mapreduce(f, vcat, sec.cards) : sec.title => f.(sec.cards)
+    else
+        map_fun(section) =  _walkpage(f, section, depth+1; max_depth=max_depth, flatten=flatten)
+        return flatten ? mapreduce(map_fun, vcat, sec.subsections) : sec.title => map_fun.(sec.subsections)
+    end
+end
 
 ### regexes and configuration parsers
 

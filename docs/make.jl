@@ -7,6 +7,7 @@ list_templates, list_theme = cardtheme("list")
 
 # 2. generate demo files
 quickstart, postprocess_cb = makedemos("quickstart", grid_templates)
+themeless_demopage, themeless_cb = makedemos(joinpath("theme_gallery", "themeless"))
 grid_demopage, grid_cb = makedemos(joinpath("theme_gallery", "grid"), grid_templates)
 list_demopage, list_cb = makedemos(joinpath("theme_gallery", "list"), list_templates)
 
@@ -19,12 +20,13 @@ format = Documenter.HTML(edit_link = "master",
 makedocs(format = format,
          pages = [
             "Home" => "index.md",
-            "QuickStart" => quickstart,
+            quickstart,
             "Concepts" => "concepts.md",
             "Advanced Usages" => [
                "Preview only one demo" => "preview.md",
             ],
             "Theme Gallery" => [
+               themeless_demopage,
                grid_demopage,
                list_demopage
             ],
@@ -34,6 +36,7 @@ makedocs(format = format,
 
 # 4. postprocess after makedocs
 postprocess_cb()
+themeless_cb()
 grid_cb()
 list_cb()
 

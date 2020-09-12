@@ -1,4 +1,4 @@
-using DemoCards: democard
+using DemoCards: democard, walkpage, DemoPage
 
 @testset "regexes" begin
     root = joinpath("assets", "regexes")
@@ -88,4 +88,26 @@ end
     build_url = "https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/src/democards/grid/grid_section_1/grid_subsection_1/grid_card_1.md"
     src_url = "https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/theme_gallery/grid/grid_section_1/grid_subsection_1/grid_card_1.md"
     @test src_url == DemoCards.get_source_url(build_url, source, "grid_card_1.md", "src", "democards")
+end
+
+@testset "walkpage" begin
+    page = DemoPage(joinpath("assets", "page", "hidden"))
+    reference = "Hidden" => ["hidden1.jl", "hidden2.md", "normal.md"]
+    @test reference == walkpage(page) do item
+        basename(item.path)
+    end
+    reference = "Hidden" => ["Sec" => ["hidden1.jl", "hidden2.md", "normal.md"]]
+    @test reference == walkpage(page; flatten=false) do item
+        basename(item.path)
+    end
+
+    page = DemoPage(joinpath("assets", "page", "one_card"))
+    reference = "One card" => ["card.md"]
+    @test reference == walkpage(page) do item
+        basename(item.path)
+    end
+    reference = "One card" => ["Section" => ["Subsection" => ["card.md"]]]
+    @test reference == walkpage(page; flatten=false) do item
+        basename(item.path)
+    end
 end

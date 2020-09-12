@@ -10,13 +10,14 @@ Generate a docs preview for a single demo card.
 
 # Arguments
 
-* `demo_path`: path to your demo file or folder. It can be path to the demo file, the folder
-  of multiple scripts. If standard demo page folder structure is detected, use it, and otherwise
-  will create a preview version of it.
+* `demo_path`: path to your demo file or folder. It can be path to the demo file, the folder of
+  multiple scripts. If standard demo page folder structure is detected, use it, and otherwise will
+  create a preview version of it.
 
 # Parameters
 
-* `theme = "grid"`: the card theme you want to use in the preview
+* `theme`: the card theme you want to use in the preview. By default, it uses `nothing` and doesn't
+  generate the index page. See also [`cardtheme`](@ref) for theme choices.
 * `assets = String[]`: this is passed to `Documenter.HTML`
 * `edit_branch = "master"`: same to that in `makedemos`
 * `credit = true`: same to that in `makedemos`
@@ -27,7 +28,7 @@ Generate a docs preview for a single demo card.
 
 """
 function preview_demos(demo_path::String;
-                      theme = "grid",
+                      theme = nothing,
                       edit_branch = "master",
                       assets = String[],
                       credit = true,
@@ -54,7 +55,19 @@ function preview_demos(demo_path::String;
     copy_assets_and_configs(page_dir, build_dir)
 
     cd(build_dir) do
-        card_templates, card_theme = cardtheme(theme; root = build_dir)
+        if isnothing(theme)
+            card_templates = nothing
+        else
+            card_templates, card_theme = cardtheme(theme; root = build_dir)
+            push!(assets, card_theme)
+        end
+
+        page_index = joinpath(src, "index.md")
+        mkpath(src)
+        open(page_index, "w") do io
+            println(io, "# Index page")
+        end
+       
         demos, demos_cb = makedemos(
             basename(page_dir), card_templates;
             root = build_dir,
@@ -67,28 +80,27 @@ function preview_demos(demo_path::String;
 
         # In cases that addtional Documenter pipeline is not needed
         # This is mostly for test usage right now and might be changed if there is better solution
-        require_html || return abspath(build_dir, src, demos)
+        require_html || return abspath(build_dir, src, destination, basename(page_dir))
         
         format = Documenter.HTML(
             edit_link = edit_branch,
             prettyurls = get(ENV, "CI", nothing) == "true",
-            assets = push!(assets, card_theme)
+            assets = assets
         )
         makedocs(
             root=build_dir,
             source=src,
             format=format,
-            pages=[demos],
+            pages=[
+                "Index" => relpath(page_index, src),
+                demos
+            ],
             sitename="DemoCards Preview"
         )
 
-        source_file = abspath(build_dir, src, destination, basename(page_dir), template_filename)
-        source = joinpath(src, destination, basename(page_dir))
-        index = get_build_file(source_file, source, destination, build)
-
         demos_cb()
 
-        return index
+        return abspath(build, "index.html")
     end
 end
 
