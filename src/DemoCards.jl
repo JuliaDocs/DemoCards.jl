@@ -13,6 +13,15 @@ const template_filename = "index.md"
 # directly copy these folders without processing
 const ignored_dirnames = ["assets"]
 
+function verbose_mode()
+    if haskey(ENV, "DOCUMENTER_DEBUG")
+        rst = ENV["DOCUMENTER_DEBUG"]
+        return lowercase(strip(rst)) == "true"
+    else
+        return false
+    end
+end
+
 include("compat.jl")
 
 include("types/card.jl")
