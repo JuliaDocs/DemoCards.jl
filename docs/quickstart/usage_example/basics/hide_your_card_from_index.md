@@ -24,3 +24,7 @@ to the hidden page.
 For example, `[hidden card](@ref hidden_card)` generates a reflink to the [hidden page](@ref
 hidden_card), note that it doesn't get displayed in [quickstart index page](@ref quickstart).
 
+!!! note
+    If you don't pass a index template to `makedemos`, i.e., `makedemos(demodir)`, then it does not
+    generate an index page for you. In this case, `hidden` keyword does not change anything, for
+    obvious reasons.
