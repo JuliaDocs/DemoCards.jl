@@ -2,6 +2,8 @@
 title: Configure your card
 cover: assets/logo.svg
 id: configure_your_card
+author: Johnny Chen
+date: 2020-09-13
 description: This demo show you how to pass additional meta info of card to DemoCards.jl
 ---
 
@@ -14,15 +16,26 @@ frontmatter:
 title: Configure your card
 cover: assets/democards.png
 id: configure_your_card
+author: Johnny Chen
+date: 2020-09-13
 description: This demo show you how to pass additional meta info of card to DemoCards.jl
 
 ---
 ```
 
-Of course, you have to make sure the `---` flag shows at the first line of the markdown file,
-otherwise DemoCards would just read them as normal contents.
+!!! tip
+    All these YAML configs are optional. If specified, it has higher priority over the meta info
+    extracted from the demo contents. For example, if you don't like the inferred demo title, then
+    specify one explicitly in the YAML frontmatter.
 
-There are two valid `cover` options:
+    Of course, you have to make sure the `---` flag shows at the first line of the markdown file,
+    otherwise DemoCards would just read them as normal contents.
 
-* a local file specified by relative path to the current file, or,
-* an image file specified by http(s) URL (e.g, `https://johnnychen94.github.io/DemoCards.jl/dev/assets/logo.svg`)
+The rules are simple:
+
+* `author` and `date` badges will only be added if you configure them.
+* If there are multiple authors, they could be splitted by semicolon `;`. For example, `author:
+  Jane Doe; John Roe` would generate two author badges.
+* there are two valid `cover` options:
+  * a local file specified by relative path to the current file, or,
+  * an image file specified by http(s) URL.

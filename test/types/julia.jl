@@ -14,6 +14,9 @@
             @test title_1.id == "Custom-Title"
             @test title_1.title == "Custom Title"
             @test title_1.description == "This is the content"
+            @test title_1.hidden == false
+            @test title_1.author == ""
+            @test title_1.date == DateTime(0)
 
             title_2 = JuliaDemoCard("title_2.jl")
             @test title_2.id == "custom_id_2"
@@ -44,6 +47,10 @@
             @test title_7.id == "custom_id"
             @test title_7.title == "Custom Title"
             @test title_7.description == "This is the content"
+            @test title_7.hidden == false
+            @test title_7.author == "Jane Doe; John Roe"
+            @test title_7.date == DateTime("2020-01-31")
+            @test title_7.cover == "https://juliaimages.org/latest/assets/logo.png"
 
             title_8 = JuliaDemoCard("title_8.jl")
             @test title_8.id == "custom_id"
@@ -73,6 +80,24 @@
 
             cover_4 = JuliaDemoCard("cover_4.jl")
             @test cover_4.cover == joinpath("..", "logo.png")
+        end
+
+        @testset "version" begin
+            card = JuliaDemoCard("version_1.jl")
+            card.julia == v"1.2.3"
+
+            card = JuliaDemoCard("version_2.jl")
+            card.julia == v"999.0.0"
+            warn_msg = @capture_err preview_demos("version_2.jl"; require_html=false)
+            @test occursin("The running Julia version `$(VERSION)` is older than the declared compatible version `$(card.julia)`.", warn_msg)
+        end
+
+        @testset "generate" begin
+            page_dir = @suppress_err preview_demos("title_7.jl", theme="grid", require_html=false)
+            card_dir = joinpath(page_dir, "julia")
+            @test_reference joinpath(test_root, "references", "cards", "julia_md.md") read(joinpath(card_dir, "title_7.md"), String) by=ignore_CR
+            @test_reference joinpath(test_root, "references", "cards", "julia_src.jl") read(joinpath(card_dir, "title_7.jl"), String) by=ignore_CR
+            @test isfile(joinpath(card_dir, "title_7.ipynb"))
         end
     end
 end

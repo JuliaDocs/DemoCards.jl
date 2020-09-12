@@ -14,6 +14,9 @@
             @test title_1.id == ".-Custom-Title"
             @test title_1.title == "1. Custom Title"
             @test title_1.description == "This is the content"
+            @test title_1.hidden == false
+            @test title_1.author == ""
+            @test title_1.date == DateTime(0)
 
             title_2 = MarkdownDemoCard("title_2.md")
             @test title_2.id == "custom_id_2"
@@ -39,6 +42,10 @@
             @test title_6.id == "custom_id"
             @test title_6.title == "Custom Title"
             @test title_6.description == "This is the content"
+            @test title_6.hidden == false
+            @test title_6.author == "Jane Doe; John Roe"
+            @test title_6.date == DateTime("2020-01-31")
+            @test title_6.cover == "https://juliaimages.org/latest/assets/logo.png"
 
             title_7 = MarkdownDemoCard("title_7.md")
             @test title_7.id == "custom_id"
@@ -68,6 +75,12 @@
 
             cover_4 = MarkdownDemoCard("cover_4.md")
             @test cover_4.cover == joinpath("..", "logo.png")
+        end
+
+        @testset "generate" begin
+            page_dir = @suppress_err preview_demos("title_6.md", theme="grid", require_html=false)
+            card_path = joinpath(page_dir, "markdown", "title_6.md")
+            @test_reference joinpath(test_root, "references", "cards", "markdown.md") read(card_path, String) by=ignore_CR
         end
     end
 end

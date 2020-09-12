@@ -68,9 +68,33 @@ function load_config(card::T, key) where T <: AbstractDemoCard
         return get(config, key, card.title)
     elseif key == "hidden"
         return get(config, key, false)
+    elseif key == "author"
+        return get(config, key, "")
+    elseif key == "date"
+        return DateTime(get(config, key, DateTime(0)))
+    elseif key == "julia"
+        version = get(config, key, JULIA_COMPAT)
+        return version isa VersionNumber ? version : VersionNumber(string(version))
     else
         throw(ArgumentError("Unrecognized key $(key) for $(T)"))
     end
+end
+
+function make_badges(card::AbstractDemoCard)
+    badges = []
+    if !isempty(card.author)
+        for author in split(card.author, ';')
+            # TODO: also split on "and"
+            isempty(author) && continue
+            author_str = HTTP.escapeuri(strip(author))
+            push!(badges, "![Author](https://img.shields.io/badge/Author-$(author_str)-blue)")
+        end
+    end
+    if card.date != DateTime(0)
+        date_str = string(round(Int, datetime2unix(card.date)))
+        push!(badges, "![Update time](https://img.shields.io/date/$(date_str))")
+    end
+    isempty(badges) ? "" : join(badges, " ")
 end
 
 
