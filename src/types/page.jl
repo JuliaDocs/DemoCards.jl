@@ -91,7 +91,7 @@ basename(page::DemoPage) = basename(page.root)
 
 function DemoPage(root::String)::DemoPage
     root = replace(root, r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
-    isdir(root) || throw(ArgumentError("page root should be a valid dir, instead it's $(root)"))
+    isdir(root) || throw(ArgumentError("page root does not exist: $(root)"))
     root = rstrip(root, '/') # otherwise basename(root) will returns `""`
 
     path = joinpath.(root, filter(x->!startswith(x, "."), readdir(root))) # filter out hidden files
