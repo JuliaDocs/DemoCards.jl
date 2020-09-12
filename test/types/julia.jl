@@ -95,7 +95,14 @@
         @testset "generate" begin
             page_dir = @suppress_err preview_demos("title_7.jl", theme="grid", require_html=false)
             card_dir = joinpath(page_dir, "julia")
-            @test_reference joinpath(test_root, "references", "cards", "julia_md.md") read(joinpath(card_dir, "title_7.md"), String) by=ignore_CR
+
+            function strip_notebook(contents)
+                # the notebook contents are different in CI and non-CI cases
+                # [![notebook](badge_url)](notebook_url)
+                replace(contents, r"\[!\[notebook\]\(.*\)\]\(.*\.ipynb\) " => "")
+            end
+            isempty(DemoCards.get_nbviewer_root_url("master")) || println(read(joinpath(card_dir, "title_7.md"), String)) # for debug usage
+            @test_reference joinpath(test_root, "references", "cards", "julia_md.md") strip_notebook(read(joinpath(card_dir, "title_7.md"), String)) by=ignore_CR
             @test_reference joinpath(test_root, "references", "cards", "julia_src.jl") read(joinpath(card_dir, "title_7.jl"), String) by=ignore_CR
             @test isfile(joinpath(card_dir, "title_7.ipynb"))
         end

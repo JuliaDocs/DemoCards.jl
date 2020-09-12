@@ -201,8 +201,8 @@ function make_badges(card::JuliaDemoCard; src, card_dir, nbviewer_root_url, proj
 
     if !isempty(nbviewer_root_url)
         # Note: this is only reachable in CI environment
-        nbviewer_folder = relpath(card_dir, "$project_dir/$src")
-        nbviewer_url = "$(nbviewer_root_url)/$(nbviewer_folder)/$(cardname).ipynb"
+        nbviewer_folder = normpath(relpath(card_dir, "$project_dir/$src"))
+        nbviewer_url = replace("$(nbviewer_root_url)/$(nbviewer_folder)/$(cardname).ipynb", Base.Filesystem.path_separator=>'/')
     else
         nbviewer_url = "$(cardname).ipynb"
     end
