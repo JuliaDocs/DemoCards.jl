@@ -51,7 +51,6 @@ function load_config(card::T, key) where T <: AbstractDemoCard
     config = parse(card)
 
     if key == "cover"
-        root = dirname(card.path)
         haskey(config, key) || return nothing
 
         cover_path = config[key]
