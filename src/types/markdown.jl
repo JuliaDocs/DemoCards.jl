@@ -73,10 +73,11 @@ function MarkdownDemoCard(path::String)::MarkdownDemoCard
     # first consturct an incomplete democard, and then load the config
     card = MarkdownDemoCard(path, "", "", "", "", "", DateTime(0), false)
 
-    card.cover = load_config(card, "cover")
-    card.title = load_config(card, "title")
-    card.date = load_config(card, "date")
-    card.author = load_config(card, "author")
+    config = parse(card)
+    card.cover = load_config(card, "cover"; config=config)
+    card.title = load_config(card, "title"; config=config)
+    card.date = load_config(card, "date"; config=config)
+    card.author = load_config(card, "author"; config=config)
 
     # Unlike JuliaDemoCard, Markdown card doesn't accept `julia` compat field. This is because we
     # generally don't know the markdown processing backend. It might be Documenter, but who knows.
@@ -84,10 +85,10 @@ function MarkdownDemoCard(path::String)::MarkdownDemoCard
     # `date` and `author` fields are added just for convinience.
 
     # default id requires a title
-    card.id    = load_config(card, "id")
+    card.id    = load_config(card, "id"; config=config)
     # default description requires a title
-    card.description = load_config(card, "description")
-    card.hidden = load_config(card, "hidden")
+    card.description = load_config(card, "description"; config=config)
+    card.hidden = load_config(card, "hidden"; config=config)
     return card
 end
 

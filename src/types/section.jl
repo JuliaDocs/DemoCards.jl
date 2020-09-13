@@ -71,7 +71,7 @@ See also: [`MarkdownDemoCard`](@ref DemoCards.MarkdownDemoCard), [`DemoPage`](@r
 """
 struct DemoSection
     root::String
-    cards::Vector # Why would `Vector{<:AbstractDemoCard}` fail here?
+    cards::Vector
     subsections::Vector{DemoSection}
     title::String
     description::String
@@ -91,15 +91,16 @@ function DemoSection(root::String)::DemoSection
         throw(ArgumentError("section folder $(root) should only hold either cards or subsections"))
     end
 
-    # first consturct an incomplete section
-    # then load the config and reconstruct a new one
+    config_file = joinpath(root, config_filename)
+    config = isfile(config_file) ? JSON.parsefile(config_file) : Dict()
+
     section = DemoSection(root,
                           map(democard, card_paths),
                           map(DemoSection, section_paths),
                           "",
                           "")
 
-    ordered_paths = joinpath.(root, load_config(section, "order"))
+    ordered_paths = joinpath.(root, load_config(section, "order"; config=config))
     if !isempty(section.cards)
         cards = map(democard, ordered_paths)
         subsections = []
@@ -108,15 +109,18 @@ function DemoSection(root::String)::DemoSection
         subsections = map(DemoSection, ordered_paths)
     end
 
-    title = load_config(section, "title")
-    description = load_config(section, "description")
+    title = load_config(section, "title"; config=config)
+    description = load_config(section, "description"; config=config)
     DemoSection(root, cards, subsections, title, description)
 end
 
 
-function load_config(sec::DemoSection, key)
-    path = joinpath(sec.root, config_filename)
-    config = isfile(path) ? JSON.parsefile(path) : Dict()
+function load_config(sec::DemoSection, key; config=Dict())
+    if isempty(config)
+        config_file = joinpath(sec.root, config_filename)
+        config = isfile(config_file) ? JSON.parsefile(config_file) : Dict()
+    end
+    # config could still be an empty dictionary
 
     if key == "order"
         haskey(config, key) || return get_default_order(sec)

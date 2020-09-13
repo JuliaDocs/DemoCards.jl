@@ -47,13 +47,16 @@ function is_democard(file)
     end
 end
 
-function load_config(card::T, key) where T <: AbstractDemoCard
-    config = parse(card)
+function load_config(card::T, key; config=Dict()) where T <: AbstractDemoCard
+    isempty(config) && (config = parse(card))
 
     if key == "cover"
         haskey(config, key) || return nothing
 
         cover_path = config[key]
+        if !is_remote_url(cover_path)
+            cover_path = replace(cover_path, r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
+        end
         return cover_path
     elseif key == "id"
         haskey(config, key) || return get_default_id(card)
