@@ -16,8 +16,9 @@ Generate a docs preview for a single demo card.
 
 # Parameters
 
-* `theme`: the card theme you want to use in the preview. By default, it uses `nothing` and doesn't
-  generate the index page. See also [`cardtheme`](@ref) for theme choices.
+* `theme`: the card theme you want to use in the preview. By default, it infers from your page
+  config file. To not generate index page, you could pass `nothing` to it. See also
+  [`cardtheme`](@ref) for theme choices.
 * `assets = String[]`: this is passed to `Documenter.HTML`
 * `edit_branch = "master"`: same to that in `makedemos`
 * `credit = true`: same to that in `makedemos`
@@ -28,7 +29,7 @@ Generate a docs preview for a single demo card.
 
 """
 function preview_demos(demo_path::String;
-                      theme = nothing,
+                      theme = missing,
                       edit_branch = "master",
                       assets = String[],
                       credit = true,
@@ -55,6 +56,16 @@ function preview_demos(demo_path::String;
     copy_assets_and_configs(page_dir, build_dir)
 
     cd(build_dir) do
+        page = DemoPage(page_dir)
+
+        if theme === missing
+            theme = page.theme
+        else
+            if page.theme != theme
+                @info "Detect themes in both page config file and keyword `theme`, use \"$(string(theme))\"" config=string(page.theme) keyword=string(theme)
+            end
+        end
+
         if isnothing(theme)
             card_templates = nothing
         else

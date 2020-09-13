@@ -19,6 +19,8 @@ Supported items are:
 
 * `order`: specify the sections order. By default, it's case-insensitive alphabetic order.
 * `template`: path to template filename. By default, it's `"index.md"`. The content of the template file should has one and only one `{{{democards}}}`.
+* `theme`: specify which card theme should be used to generate the index page. If not specified, it
+  will default to `nothing`.
 * `title`: specify the title of this demo page. By default, it's the folder name of `root`. Will be override by `template`.
 
 The following is an example of `config.json`:
@@ -26,6 +28,7 @@ The following is an example of `config.json`:
 ```json
 {
     "template": "template.md",
+    "theme": "grid",
     "order": [
         "basic",
         "advanced"
@@ -80,10 +83,11 @@ demos
 
 See also: [`MarkdownDemoCard`](@ref DemoCards.MarkdownDemoCard), [`DemoSection`](@ref DemoCards.DemoSection)
 """
-struct DemoPage
+mutable struct DemoPage
     root::String
     sections::Vector{DemoSection}
     template::String
+    theme::Union{Nothing, String}
     title::String
 end
 
@@ -111,21 +115,21 @@ function DemoPage(root::String)::DemoPage
     end
     
     sections = map(DemoSection, section_paths)
-
-
-    # first consturct an incomplete page
-    # then load the config and reconstruct a new one
-    page = DemoPage(root, sections, "", "")
+    page = DemoPage(root, sections, "", nothing, "")
+    page.theme = load_config(page, "theme")
 
     section_paths = joinpath.(root, load_config(page, "order"))
     ordered_sections = map(DemoSection, section_paths) # TODO: technically, we don't need to regenerate sections here
 
     title = load_config(page, "title")
-    page = DemoPage(root, ordered_sections, "", title)
+    page.sections = ordered_sections
+    page.title = title
 
     # default template requires a title
     template = load_config(page, "template")
-    DemoPage(root, ordered_sections, template, title)
+    page.template = template
+
+    return page
 end
 
 function load_config(page::DemoPage, key)
@@ -146,6 +150,12 @@ function load_config(page::DemoPage, key)
         return get(config, key, get_default_title(page))
     elseif key == "template"
         return load_template(page, config)
+    elseif key == "theme"
+        theme = get(config, key, nothing)
+        if !isnothing(theme) && lowercase(theme) == "nothing"
+            theme = nothing
+        end
+        return theme
     else
         throw(ArgumentError("Unrecognized key $(key) for DemoPage"))
     end
