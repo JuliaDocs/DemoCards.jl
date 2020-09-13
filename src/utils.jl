@@ -196,13 +196,6 @@ function parse(T::Val, card::AbstractDemoCard)
         merge!(config, YAML.load(join(frontmatter, "\n")))
     end
 
-    if haskey(config, "cover")
-        if !is_remote_url(config["cover"])
-            config["cover"] = replace(config["cover"],
-                                    r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
-        end
-    end
-
     return config
 end
 parse(card::JuliaDemoCard) = parse(Val(:Julia), card)

@@ -113,32 +113,45 @@ function DemoPage(root::String)::DemoPage
         msg = "can not find a valid page structure in page dir \"$root\"\nit should have at least one folder as section inside it"
         throw(ArgumentError(msg))
     end
-    
+
+    json_path = joinpath(root, config_filename)
+    json_config = isfile(json_path) ? JSON.parsefile(json_path) : Dict()
+
+    template_file = joinpath(root, get(json_config, "template", template_filename))
+    config = parse(Val(:Markdown), template_file)
+    config = merge(json_config, config) # template has higher priority over config file
+
     sections = map(DemoSection, section_paths)
     page = DemoPage(root, sections, "", nothing, "")
-    page.theme = load_config(page, "theme")
+    page.theme = load_config(page, "theme"; config=config)
 
-    section_paths = joinpath.(root, load_config(page, "order"))
-    ordered_sections = map(DemoSection, section_paths) # TODO: technically, we don't need to regenerate sections here
+    section_orders = load_config(page, "order"; config=config)
+    section_orders = map(sections) do sec
+        findfirst(x-> x == basename(sec.root), section_orders)
+    end
+    ordered_sections = sections[section_orders]
 
-    title = load_config(page, "title")
+    title = load_config(page, "title"; config=config)
     page.sections = ordered_sections
     page.title = title
 
     # default template requires a title
-    template = load_config(page, "template")
+    template = load_config(page, "template"; config=config)
     page.template = template
 
     return page
 end
 
-function load_config(page::DemoPage, key)
-    json_path = joinpath(page.root, config_filename)
-    json_config = isfile(json_path) ? JSON.parsefile(json_path) : Dict()
+function load_config(page::DemoPage, key; config=Dict())
+    if isempty(config)
+        json_path = joinpath(page.root, config_filename)
+        json_config = isfile(json_path) ? JSON.parsefile(json_path) : Dict()
 
-    template_file = joinpath(page.root, get(json_config, "template", template_filename))
-    config = parse(Val(:Markdown), template_file)
-    config = merge(json_config, config) # template has higher priority over config file
+        template_file = joinpath(page.root, get(json_config, "template", template_filename))
+        config = parse(Val(:Markdown), template_file)
+        config = merge(json_config, config) # template has higher priority over config file
+    end
+    # config could still be an empty dictionary
 
     if key == "order"
         haskey(config, key) || return get_default_order(page)
