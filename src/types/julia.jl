@@ -119,7 +119,8 @@ function save_democards(card_dir::String,
             # modules created with Module() does not have include defined
             # abspath is needed since this will call `include_relative`
             Core.eval(m, :(include(x) = Base.include($m, abspath(x))))
-            Core.eval(m, :(include($cardname * ".jl")))
+            gen_assets() = Core.eval(m, :(include($cardname * ".jl")))
+            verbose_mode() ? gen_assets() : @suppress gen_assets()
 
             # WARNING: card.path is modified here
             card.path = cardname*".jl"
