@@ -197,8 +197,10 @@ function parse(T::Val, card::AbstractDemoCard)
     end
 
     if haskey(config, "cover")
-        config["cover"] = replace(config["cover"],
-                                  r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
+        if !is_remote_url(config["cover"])
+            config["cover"] = replace(config["cover"],
+                                    r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
+        end
     end
 
     return config

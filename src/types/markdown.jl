@@ -24,7 +24,10 @@ Besides `path`, this struct has some other fields:
 * `cover`: path to the cover image
 * `id`: cross-reference id
 * `title`: one-line description of the demo card
+* `author`: author(s) of this demo.
+* `date`: the update date of this demo.
 * `description`: multi-line description of the demo card
+* `hidden`: whether this card is shown in the generated index page
 
 # Configuration
 
@@ -35,6 +38,8 @@ Supported items are:
 * `description`: a multi-line description to this file, will be displayed when the demo card is hovered. By default it uses `title`.
 * `id`: specify the `id` tag for cross-references. By default it's infered from the filename, e.g., `simple_demo` from `simple demo.md`.
 * `title`: one-line description to this file, will be displayed under the cover image. By default, it's the name of the file (without extension).
+* `author`: author name. If there are multiple authors, split them with semicolon `;`.
+* `date`: any string contents that can be passed to `Dates.DateTime`. For example, `2020-09-13`.
 * `hidden`: whether this card is shown in the layout of index page. The default value is `false`.
 
 An example of the front matter:
@@ -44,7 +49,10 @@ An example of the front matter:
 title: passing extra information
 cover: cover.png
 id: non_ambiguious_id
-description: this demo shows how you can pass extra demo information to DemoCards package.
+author: Jane Doe; John Roe
+date: 2020-01-31
+description: this demo shows how you can pass extra demo information to DemoCards package. All these are optional.
+hidden: false
 ---
 ```
 
@@ -56,15 +64,25 @@ mutable struct MarkdownDemoCard <: AbstractDemoCard
     id::String
     title::String
     description::String
+    author::String
+    date::DateTime
     hidden::Bool
 end
 
 function MarkdownDemoCard(path::String)::MarkdownDemoCard
     # first consturct an incomplete democard, and then load the config
-    card = MarkdownDemoCard(path, "", "", "", "", false)
+    card = MarkdownDemoCard(path, "", "", "", "", "", DateTime(0), false)
 
     card.cover = load_config(card, "cover")
     card.title = load_config(card, "title")
+    card.date = load_config(card, "date")
+    card.author = load_config(card, "author")
+
+    # Unlike JuliaDemoCard, Markdown card doesn't accept `julia` compat field. This is because we
+    # generally don't know the markdown processing backend. It might be Documenter, but who knows.
+    # More generally, any badges can just be manually added by demo writter, if they want.
+    # `date` and `author` fields are added just for convinience.
+
     # default id requires a title
     card.id    = load_config(card, "id")
     # default description requires a title
@@ -97,6 +115,7 @@ function save_democards(card_dir::String,
     need_header = !haskey(config, "title")
     # @ref syntax: https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@ref-link-1
     header = need_header ? "# [$(card.title)](@id $(card.id))\n" : "\n"
+
     footer = credit ? markdown_footer : "\n"
-    write(markdown_path, header, body, footer)
+    write(markdown_path, header, make_badges(card)*"\n\n", body, footer)
 end

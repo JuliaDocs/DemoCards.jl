@@ -27,7 +27,11 @@ Besides `path`, this struct has some other fields:
 * `cover`: path to the cover image
 * `id`: cross-reference id
 * `title`: one-line description of the demo card
+* `author`: author(s) of this demo.
+* `date`: the update date of this demo.
 * `description`: multi-line description of the demo card
+* `julia`: Julia version compatibility
+* `hidden`: whether this card is shown in the generated index page
 
 # Configuration
 
@@ -38,6 +42,9 @@ Supported items are:
 * `description`: a multi-line description to this file, will be displayed when the demo card is hovered. By default it uses `title`.
 * `id`: specify the `id` tag for cross-references. By default it's infered from the filename, e.g., `simple_demo` from `simple demo.md`.
 * `title`: one-line description to this file, will be displayed under the cover image. By default, it's the name of the file (without extension).
+* `author`: author name. If there are multiple authors, split them with semicolon `;`.
+* `date`: any string contents that can be passed to `Dates.DateTime`. For example, `2020-09-13`.
+* `julia`: Julia version compatibility. Any string that can be converted to `VersionNumber`
 * `hidden`: whether this card is shown in the layout of index page. The default value is `false`.
 
 An example of the front matter (note the leading `#`):
@@ -47,7 +54,11 @@ An example of the front matter (note the leading `#`):
 # title: passing extra information
 # cover: cover.png
 # id: non_ambiguious_id
-# description: this demo shows how you can pass extra demo information to DemoCards package.
+# author: Jane Doe; John Roe
+# date: 2020-01-31
+# description: this demo shows how you can pass extra demo information to DemoCards package. All these are optional.
+# julia: 1.0
+# hidden: false
 # ---
 ```
 
@@ -59,15 +70,21 @@ mutable struct JuliaDemoCard <: AbstractDemoCard
     id::String
     title::String
     description::String
+    author::String
+    date::DateTime
+    julia::VersionNumber
     hidden::Bool
 end
 
 function JuliaDemoCard(path::String)::JuliaDemoCard
     # first consturct an incomplete democard, and then load the config
-    card = JuliaDemoCard(path, "", "", "", "", false)
+    card = JuliaDemoCard(path, "", "", "", "", "", DateTime(0), JULIA_COMPAT, false)
 
     card.cover = load_config(card, "cover")
     card.title = load_config(card, "title")
+    card.date = load_config(card, "date")
+    card.author = load_config(card, "author")
+    card.julia = load_config(card, "julia")
     # default id requires a title
     card.id    = load_config(card, "id")
     # default description requires a title
@@ -106,6 +123,11 @@ function save_democards(card_dir::String,
     nb_path = joinpath(card_dir, "$(cardname).ipynb")
     src_path = joinpath(card_dir, "$(cardname).jl")
 
+    if VERSION < card.julia
+        # It may work, it may not work; I hope it would work.
+        @warn "The running Julia version `$(VERSION)` is older than the declared compatible version `$(card.julia)`. You might need to upgrade your Julia."
+    end
+
     # 1. generating assets
     cp(card.path, src_path; force=true)
     cd(card_dir) do
@@ -141,21 +163,8 @@ function save_democards(card_dir::String,
     isempty(strip(src_header)) || (src_header *= "\n\n")
 
     # insert header badge
-    header = "#md # [![]($download_badge)]($(cardname).jl)"
-    if !isempty(nbviewer_root_url)
-        # reach here in CI environment
-
-        # remove root/src prefix
-        nbviewer_folder = relpath(card_dir, "$project_dir/$src")
-        nbviewer_url = "$(nbviewer_root_url)/$(nbviewer_folder)/$(cardname).ipynb"
-    else
-        # local build
-        nbviewer_url = "$(cardname).ipynb"
-    end
-    header *= " [![]($nbviewer_badge)]($nbviewer_url)"
-    header *= "\n\n"
-
-    write(src_path, header, body)
+    badges = make_badges(card; src=src, card_dir=card_dir, nbviewer_root_url=nbviewer_root_url, project_dir=project_dir) * "\n\n"
+    write(src_path, badges, body)
 
     # 2. notebook
     try
@@ -184,4 +193,29 @@ function save_democards(card_dir::String,
         @suppress Literate.script(src_path, tmpdir; credit=credit)
         write(src_path, src_header, read(joinpath(tmpdir, basename(src_path)), String))
     end
+end
+
+function make_badges(card::JuliaDemoCard; src, card_dir, nbviewer_root_url, project_dir)
+    cardname = splitext(basename(card.path))[1]
+    badges = ["#md #"]
+    push!(badges, "[![Source code]($download_badge)]($(cardname).jl)")
+
+    if !isempty(nbviewer_root_url)
+        # Note: this is only reachable in CI environment
+        nbviewer_folder = normpath(relpath(card_dir, "$project_dir/$src"))
+        nbviewer_url = replace("$(nbviewer_root_url)/$(nbviewer_folder)/$(cardname).ipynb", Base.Filesystem.path_separator=>'/')
+    else
+        nbviewer_url = "$(cardname).ipynb"
+    end
+    push!(badges, "[![notebook]($nbviewer_badge)]($nbviewer_url)")
+    if card.julia != JULIA_COMPAT
+        # It might be over verbose to insert a compat badge for every julia card, only add one for
+        # cards that users should care about
+        # Question: Is this too conservative?
+        push!(badges, "![compat](https://img.shields.io/badge/julia-$(card.julia)-blue.svg)")
+    end
+
+    push!(badges, invoke(make_badges, Tuple{AbstractDemoCard}, card))
+
+    join(badges, " ")
 end

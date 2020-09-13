@@ -5,6 +5,9 @@
 # ---
 # title: Write your demo in julia
 # cover: assets/literate.png
+# date: 2020-09-13
+# author: Johnny Chen
+# julia: 1.0.1
 # description: This demo shows you how to write your demo in julia
 # ---
 
@@ -37,9 +40,17 @@ img = testimage("lena")
 # # title: <title>
 # # cover: <cover>
 # # id: <id>
+# # date: 2020-09-13
+# # author: Johnny Chen
+# # julia: 1.3
 # # description: <description>
 # # ---
 # ```
+
+# Julia format demos accept one extra frontmatter config: `julia`. It allows you to specify the
+# compat version of your demo. `DemoCards` would 1) throw a warning if your demos are generated
+# using a lower version of Julia 2) insert a compat version badge. The warning is something like
+# "The running Julia version `1.0.5` is older than the declared compatible version `1.3.0`."
 
 # You should be careful about the leading whitespaces after the first #. Frontmatter as weird as the
 # following is not guaranteed to work and it is very likely to hit a YAML parsing error.

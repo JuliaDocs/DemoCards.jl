@@ -3,6 +3,7 @@ using DemoCards: democard, MarkdownDemoCard, JuliaDemoCard, DemoSection, DemoPag
 using DemoCards: generate
 using HTTP
 using Test, ReferenceTests, Suppressor
+using Dates
 
 include("compat.jl")
 include("testutils.jl")

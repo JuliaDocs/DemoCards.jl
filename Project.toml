@@ -4,8 +4,10 @@ authors = ["Johnny Chen <johnnychen94@hotmail.com>"]
 version = "0.2.3"
 
 [deps]
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 ImageCore = "a09fc81d-aa75-5fe9-8630-4744c3626534"
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
@@ -16,6 +18,7 @@ YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 [compat]
 Documenter = "0.22, 0.23, 0.24, 0.25"
 FileIO = "1"
+HTTP = "0.6, 0.7, 0.8"
 ImageCore = "0.7, 0.8"
 JSON = "0.20, 0.21"
 Literate = "2"
@@ -25,7 +28,6 @@ YAML = "0.3, 0.4"
 julia = "1"
 
 [extras]
-HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
 ImageShow = "4e3cecfd-b093-5904-9786-8bbb286a6a31"
 ReferenceTests = "324d217c-45ce-50fc-942e-d289b448e8cf"
@@ -33,4 +35,4 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TestImages = "5e47fb64-e119-507b-a336-dd2b206d9990"
 
 [targets]
-test = ["HTTP", "ImageMagick", "ImageShow", "ReferenceTests", "Test", "TestImages"]
+test = ["ImageMagick", "ImageShow", "ReferenceTests", "Test", "TestImages"]
