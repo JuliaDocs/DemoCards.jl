@@ -33,20 +33,20 @@ cover
 # The [`#src` flag](https://fredrikekre.github.io/Literate.jl/v2/fileformat/#Filtering-Lines) is used as a filter to tell Literate that this line is reserved only in the
 # original source codes.
 #
-# ```julia #md
-# save("assets/cover.png", img_noise) #src #md
-# ``` #md
+# ```julia
+# save("assets/cover.png", img_noise) #src
+# ```
 #
 # Gif image is also supported via `ImageMagick`:
 #
-# ```julia #md
-# # --- save covers --- #src #md
-# using ImageMagick #src #md
-# imgs = map(10:5:50) do k #src #md
-#     colorview(RGB, rank_approx.(svdfactors, k)...) #src #md
-# end #src #md
-# ImageMagick.save("assets/color_separations_svd.gif", cat(imgs...; dims=3); fps=2) #src #md
-# ``` #md
+# ```julia
+# # --- save covers --- #src
+# using ImageMagick #src
+# imgs = map(10:5:50) do k #src
+#     colorview(RGB, rank_approx.(svdfactors, k)...) #src
+# end #src
+# ImageMagick.save("assets/color_separations_svd.gif", cat(imgs...; dims=3); fps=2) #src
+# ```
 #
 # ### Hide the output result
 # 
@@ -57,10 +57,10 @@ cover
 # flag](https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@example-block) to the line you
 # don't want the user see. For example, if you write your source file in this way
 #
-# ```julia #md
-# cover = testimage("lena_color_256") #md
-# save("assets/lena_color_256.png", cover) #hide #md
-# ``` #md
+# ```julia
+# cover = testimage("lena_color_256")
+# save("assets/lena_color_256.png", cover) #hide
+# ```
 #
 # it will show up in the generated HTML page as
 
@@ -70,11 +70,11 @@ save("assets/lena_color_256.png", cover) #hide
 # The return value is still `0`. Sometimes it is wanted, sometime it is not. To also hide the return
 # value `0`, you could insert a trivial `nothing #hide #md` to work it around.
 #
-# ```julia #md
-# cover = testimage("lena_color_256") #md
-# save("assets/lena_color_256.png", cover) #hide #md
-# nothing #hide #md
-# ``` #md
+# ```julia
+# cover = testimage("lena_color_256")
+# save("assets/lena_color_256.png", cover) #hide
+# nothing #hide #md #md
+# ```
 #
 # generates
 
@@ -82,14 +82,15 @@ cover = testimage("lena_color_256")
 save("assets/lena_color_256.png", cover)
 nothing #hide #md
 
-# No output at all. You could, of course, insert `cover #hide #md` to show the image result:
+# No output at all. You could, of course, insert `cover #hide #md` or others you would like readers
+# to see:
 #
 #
-# ```julia #md
-# cover = testimage("lena_color_256") #md
-# save("assets/lena_color_256.png", cover) #hide #md
-# cover #hide #md
-# ``` #md
+# ```julia
+# cover = testimage("lena_color_256")
+# save("assets/lena_color_256.png", cover) #hide
+# cover #hide #md #md
+# ```
 #
 # generates
 
@@ -99,3 +100,42 @@ cover #hide #md
 
 # The `#md` flag is used to keep a clean `.jl` file provided by the download-julia badge:
 # ![](https://img.shields.io/badge/download-julia-brightgreen.svg)
+
+# ### Be careful about the spaces and identation
+#
+# Both Documenter and Literate has specifications on spaces, so you'd probably hit this issue sooner
+# or later.
+#
+# Let's say, you want to create a `warning` box using the `!!! warning` syntax, and you'd probably
+# ends up with something like this:
+#
+# ```text
+# # !!! warning
+# #    This is inside the warning box
+# # 
+# # This is out side the warning box
+# ```
+#
+# !!! warning
+#    This is inside the warning box
+#
+# This is out side the warning box
+#
+# ---
+#
+# The reason that contents are not shown correctly inside the warning box is that you need to insert
+# *five* (not four) spaces to the following lines: `Literate` consumes one space, and `Documenter`
+# consumes the other four.
+#
+# ```diff
+#  # !!! warning
+# -#    This is inside the warning box
+# +#     This is inside the warning box
+#  # 
+#  # This is out side the warning box
+# ```
+#
+# !!! warning
+#     This is inside the warning box
+#
+# This is out side the warning box
