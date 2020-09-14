@@ -1,4 +1,4 @@
-# Preview only one demo
+# [Preview only one demo](@id preview)
 
 Typically, when you write up examples and demos using `DemoCards`, you'll need to do
 `include("docs/make.jl)` to trigger a rebuild for many times. This is okay, just not that fast as

@@ -1,8 +1,9 @@
 # [Concepts](@id concepts)
 
-This page is a brief introduction on the core types provided by `DemoCards.jl`.
-Knowing them helps you configure your demo pages. For detailed description, please
-refer to the [Package References](@ref package_references).
+This page is a brief introduction on the internal core types provided by `DemoCards.jl`. Generally,
+you don't need to use them directly, but knowing them helps you to better organize and configure
+your demo pages. For detailed description, please refer to the [Package References](@ref
+package_references).
 
 ## [DemoPage](@id concepts_page)
 
@@ -12,9 +13,12 @@ else is contained in it directly or indirectly.
 You can configure your `DemoPage` by maintaining a `config.json` file, supported
 configuration keys are:
 
-* `order`: specify the section orders. By default, it's case-insensitive alphabetic order.
-* `title`: specify the title of this demo page.
-* `template`: template filename.
+* `"order"`: specify the section orders. By default, it's case-insensitive alphabetic order.
+* `"title"`: specify the title of this demo page.
+* `"theme"`: specify the index theme to use.
+* `"template"`: filename to template that will be used to generate the index page. This option
+  doesn't work if `"theme"` is unconfigured or is `"nothing"`, in which case no index page will be
+  generated.
 
 A valid template is a markdown file that contains one and only one `{{{democards}}}`. For example,
 
@@ -33,6 +37,7 @@ Here's an example of `config.json` for `DemoPage`:
 ```json
 {
     "template": "index.md",
+    "theme": "grid",
     "order": [
         "basic",
         "advanced"
@@ -41,12 +46,9 @@ Here's an example of `config.json` for `DemoPage`:
 ```
 
 !!! note
-
-    Key `template` has higher priority over other keys.
-
-    For example, if you provide both `template` and `title` in your `config.json`
-    and the template file happens to have a title, `title` in `config.json` will
-    be suppressed.
+    Key `template` has higher priority over other keys. For example, if you provide both
+    `template` and `title` in your `config.json` and the template file happens to have a title,
+    `title` in `config.json` will be suppressed.
 
 ## [DemoSection](@id concepts_section)
 
@@ -64,9 +66,9 @@ It has the following fields:
 Similar to `DemoPage`, you can configure your `DemoSection` by maintaining a `config.json`
 file, supported configuration keys are:
 
-* `order`: specify the cards order or subsections order. By default, it's case-insensitive alphabetic order.
-* `title`: specify the title of this demo section.
-* `description`: words that would rendered under the section title.
+* `"order"`: specify the cards order or subsections order. By default, it's case-insensitive alphabetic order.
+* `"title"`: specify the title of this demo section.
+* `"description"`: words that would rendered under the section title.
 
 The following is an example of `config.json`:
 
@@ -81,60 +83,23 @@ The following is an example of `config.json`:
 }
 ```
 
+!!! note
+    🚧 Unlike `DemoPage`, a `DemoSection` does not yet support `"theme"` and `"template"` keys. A
+    drawback of this design is that you have to put template contents into the `"description"` key,
+    even if it contains hundreds of words.
+
 ## [DemoCard](@id concepts_card)
 
-In simple words, a demo card consists of a cover image, a description, and
-a link to its content -- just like a card.
+In simple words, a demo card consists of a link to its content and other relavent informations. In
+`"grid"` theme, it looks just like a card.
 
-### [`MarkdownDemoCard`](@id concepts_mdcard)
+Depending on how your demos are written, there are two types of demo cards:
 
-[`MarkdownDemoCard`](@ref DemoCards.MarkdownDemoCard) is a demo card whose contents
-are written in the markdown format.
+* [`MarkdownDemoCard`](@ref configure_your_card) for markdown files, and
+* [`JuliaDemoCard`](@ref juliademocard_example) for julia files.
 
-The markdown files are almost directly passed to `Documenter.jl`, check the
-[syntax of Documenter.jl](https://juliadocs.github.io/Documenter.jl/stable/man/syntax/)
-if you are unfamiliar with the Julia flavor markdown syntax.
-
-You can configure your markdown demos by adding a [YAML format front matter](https://jekyllrb.com/docs/front-matter/).
-
-* `cover`: path to the cover image. By default, it will use the first available image link.
-* `description`: a multi-line description to this file, will be displayed when the demo card is hovered. By default it uses `title`.
-* `id`: specify the `id` tag for cross-references.
-* `title`: one-line description to this file, will be displayed under the cover image.
-
-An example of the front matter:
-
-```markdown
----
-title: Configure your demo with front matter
-cover: cover.png
-id: non_ambiguious_id
-description: this demo shows how you can pass extra demo information to DemoCards package.
----
-
-You don't need to add a title in the body. DemoCards.jl fills it for you.
-```
-
-### [`JuliaDemoCard`](@id concepts_juliacard)
-
-[`JuliaDemoCard`](@ref DemoCards.JuliaDemoCard) is a demo card whose contents
-are written as julia source file.
-
-Conversion from `.jl` to `.md` and `.ipynb` are powered by [`Literate.jl`](https://github.com/fredrikekre/Literate.jl),
-please refer to [Literate Syntax](https://fredrikekre.github.io/Literate.jl/stable/fileformat/) if you're not familar.
-
-An additional YAML format is added to existing Literate format, for example:
-
-```julia
-# ---
-# title: Configure your demo with front matter
-# cover: cover.png
-# id: non_ambiguious_id
-# description: this demo shows how you can pass extra demo information to DemoCards package.
-# ---
-
-# You don't need to add a title in the body. DemoCards.jl fills it for you.
-```
+`JuliaDemoCard`s are julia files that are specially handled by DemoCards to generate associated
+assets, for example, markdown files (.md) and jupyter notebooks (.ipynb).
 
 ## Remarks
 

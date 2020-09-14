@@ -2,6 +2,6 @@
 
 
 ```@autodocs
-Modules = [DemoCards]
+Modules = [DemoCards, DemoCards.CardThemes]
 Order   = [:type, :function]
 ```
