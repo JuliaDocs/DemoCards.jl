@@ -18,7 +18,7 @@ Generate a docs preview for a single demo card.
 
 * `theme`: the card theme you want to use in the preview. By default, it infers from your page
   config file. To not generate index page, you could pass `nothing` to it. See also
-  [`cardtheme`](@ref) for theme choices.
+  [`cardtheme`](@ref DemoCards.cardtheme) for theme choices.
 * `assets = String[]`: this is passed to `Documenter.HTML`
 * `edit_branch = "master"`: same to that in `makedemos`
 * `credit = true`: same to that in `makedemos`

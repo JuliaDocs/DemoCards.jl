@@ -42,7 +42,7 @@ include("list/list.jl")
 
 For given theme, return the templates and path to stylesheet.
 
-`root` and `destination` should have the same value to that passed to [`makedemos`](@ref).
+`root` and `destination` should have the same value to that passed to `makedemos`.
 
 Available themes are:
 \n - "$(join(themelists, "\"\n  - \""))"

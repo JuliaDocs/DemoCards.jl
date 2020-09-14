@@ -11,30 +11,44 @@ _Let's focus on writing demos_
 ## Overview
 
 * a plugin package to `Documenter.jl` to manage all your demos.
+* folder structure is the demo structure.
 * minimal configuration.
-* all demos can be tested by CI.
+* CI friendly
 * support demos in markdown and julia format.
 
-The philosophy of DemoCards is "folder structure is structure of demos"; organizing folders and files in
-the following way, then `DemoCards.jl` will help manage the layouts of the index page.
+![democards workflow](docs/quickstart/assets/democards_workflow.png)
+
+The philosophy of DemoCards is "folder structure is the structure of demos"; organizing folders and files in
+the a structural way, then `DemoCards.jl` will help manage how you navigate through the pages.
 
 ```text
-docs/demos/simplest_demopage
-└── examples
-    ├── part1
-    │   ├── assets
-    │   ├── demo_1.md
-    │   ├── demo_2.md
-    │   └── demo_3.md
-    └── part2
-        ├── assets
-        ├── demo_4.jl
-        └── demo_5.jl
+examples
+├── part1
+│   ├── assets
+│   ├── demo_1.md
+│   ├── demo_2.md
+│   └── demo_3.md
+└── part2
+    ├── demo_4.jl
+    └── demo_5.jl
+```
+
+DemoCards would understand it in the following way:
+
+```text
+# Examples
+  ## Part1
+    demo_1.md
+    demo_2.md
+    demo_3.md
+  ## Part2
+    demo_4.jl
+    demo_5.jl
 ```
 
 Read the [Quick Start](https://johnnychen94.github.io/DemoCards.jl/stable/democards/quickstart/index.html) for more instructions.
 
-# Caveat Emptor
+## Caveat Emptor
 
 The use of this package heavily relies on [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl),
 [Literate.jl](https://github.com/fredrikekre/Literate.jl), [Mustache.jl](https://github.com/jverzani/Mustache.jl)

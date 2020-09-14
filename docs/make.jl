@@ -19,9 +19,8 @@ makedocs(format = format,
             "Home" => "index.md",
             quickstart,
             "Concepts" => "concepts.md",
-            "Advanced Usages" => [
-               "Preview only one demo" => "preview.md",
-            ],
+            "Partial build" => "preview.md",
+            "Structure manipulation" => "structure.md",
             "Theme Gallery" => [
                themeless_demopage,
                grid_demopage,

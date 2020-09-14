@@ -38,7 +38,7 @@ Besides `path`, this struct has some other fields:
 You can pass additional information by adding a YAML front matter to the julia file.
 Supported items are:
 
-* `cover`: relative path to the cover image. If not specified, it will use the first available image link, or all-white image if there's no image links.
+* `cover`: an URL or a relative path to the cover image. If not specified, it will use the first available image link, or all-white image if there's no image links.
 * `description`: a multi-line description to this file, will be displayed when the demo card is hovered. By default it uses `title`.
 * `id`: specify the `id` tag for cross-references. By default it's infered from the filename, e.g., `simple_demo` from `simple demo.md`.
 * `title`: one-line description to this file, will be displayed under the cover image. By default, it's the name of the file (without extension).

@@ -2,7 +2,8 @@
 
 _Let's focus on writing good demos._
 
-A plugin package to [`Documenter.jl`](https://github.com/JuliaDocs/Documenter.jl) that dynamically generate a demo gallery for you.
+A plugin package to [`Documenter.jl`](https://github.com/JuliaDocs/Documenter.jl) that dynamically
+generate demos and associated assets for you.
 
 
 !!! note
@@ -13,17 +14,12 @@ A plugin package to [`Documenter.jl`](https://github.com/JuliaDocs/Documenter.jl
 ## Package Features
 
 * a plugin package to `Documenter.jl` to manage all your demos.
-* folder structure is demo structure.
+* folder structure is the demo structure.
 * minimal configuration.
-* all demos can be tested by CI.
+* CI friendly
 * support demos in markdown and julia format.
 
 ## Usage Examples
 
 * [Images](https://juliaimages.org/latest/democards/examples/)
-
-## Manual Outline
-
-* [Quick Start](@ref quickstart) helps you set up this package easily.
-* [Concepts](@ref concepts) explains the basic bulding block of this package.
-* [Package References](@ref package_references) are detailed documentation of this package.
+* [Augmentor](https://evizero.github.io/Augmentor.jl/dev/democards/operations/)

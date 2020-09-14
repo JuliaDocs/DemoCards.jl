@@ -1,15 +1,17 @@
-# Preview only one demo
+# [Partial build](@id preview)
+
+## The REPL way
 
 Typically, when you write up examples and demos using `DemoCards`, you'll need to do
 `include("docs/make.jl)` to trigger a rebuild for many times. This is okay, just not that fast as
 you need to rebuild the whole documentation even if you are just making some trivial typo checks.
 This page shows how you could make this experience smoother, especially for julia demos.
 
-`DemoCards` uses [`Literate.jl`][Literate] as the backend to transform your julia files to markdown
-and jupyter notebook. This means that you can code up your example file with whatever programming
-environment you like. For example, you can use `Ctrl-Enter` to execute your codes line by line in
-Juno/VSCode, check the output, add comments, and so on; all these can be done without the need to
-build the documentation. 
+`DemoCards` uses [`Literate.jl`](https://github.com/fredrikekre/Literate.jl) as the backend to
+transform your julia files to markdown and jupyter notebook. This means that you can code up your
+example file with whatever programming environment you like. For example, you can use `Ctrl-Enter`
+to execute your codes line by line in Juno/VSCode, check the output, add comments, and so on; all
+these can be done without the need to build the documentation. 
 
 For example, assume that you are writing a `demos/sec1/demo1.jl`
 
@@ -23,32 +25,36 @@ img = testimage("camera") # `Ctrl-Enter` again, and see the output in the plot p
 # and add more example codes in a REPL way
 ```
 
+## Beyond REPL
+
 This REPL workflow works pretty well and responsive until you start to building the documentation.
-For example, There are a lot of demos in [JuliaImages demos] and it takes several minutes to build
-the documentation. If we're only to make many some small modifications to one of the demo, then it
-would be pretty painful to wait the whole build pipeline ends. Fortunately, `DemoCards` provides a
-sandbox environment for you to preview your demos without doing so.
+For example, There are a lot of demos in [JuliaImages
+demos](https://juliaimages.org/latest/democards/examples/) and it takes several minutes to build the
+whole documentation. If we're only to make many some small modifications to one of the demo, then it
+would be pretty painful to wait the whole build pipeline ends. After all, why should we build demos
+we don't care about? Fortunately, `DemoCards` provides a sandbox environment for you to preview your
+demos without doing so, which is [`preview_demos`](@ref).
 
 Assume that your `docs/make.jl` is written up like the following:
 
 ```julia
-# 1. generate a DemoCard theme
-templates, theme = cardtheme("grid")
+# 1. generate demo files
+demopage, postprocess_cb, demo_assets = makedemos("demos") # this is the relative path to docs/
 
-# 2. generate demo files
-demopage, postprocess_cb = makedemos("demos", templates) # relative path to docs/
+# if there are generated css assets, pass it to Documenter.HTML
+assets = []
+isnothing(demo_assets) || (push!(assets, demo_assets))
 
-# 3. normal Documenter usage
-format = Documenter.HTML(edit_branch = "master",
-                         assets = [theme, ])
+# 2. normal Documenter usage
+format = Documenter.HTML(assets = assets)
 makedocs(format = format,
          pages = [
             "Home" => "index.md",
-            "Examples" => demopage,
+            demopage,
          ],
          sitename = "Awesome demos")
 
-# 4. postprocess after makedocs
+# 3. postprocess after makedocs
 postprocess_cb()
 ```
 
@@ -68,19 +74,25 @@ this:
 Open this file in your favorite browser, and you'll see a reduced version of the demo page, which
 only contains one demo file. Other unrelated contents are not included in this page.
 
-`preview_demos` does not do anything magic, it simply copies the single demo file and its assets into a
-sandbox folder, and trigger the `Documenter.makedocs` in that folder. Because it doesn't contain any
-other files, this process becomes way faster than `include("docs/make.jl")` workflow.
-
-Compared to rebuild the whole documentation, building a preview version only adds about 1 extra second
-to `include("demo1.jl")`.
-
-If the file is placed in a typical demo page folder structure, `preview_demos(file)` will preserve that
-structure. In cases that demo page folder structure is not detected, it will instead create such a
-folder structure.
-
 This `preview_demos` function is not reserved for single file, it works for folders, too. For
-example, you could use it with `preview_demos("demos/sec1")`, or `preview_demos("demos")`.
+example, you could use it with `preview_demos("demos/sec1")`, or just `preview_demos("demos")`.
+
+
+`preview_demos` does not do anything magic, it simply copies the single demo file and its assets
+into a sandbox folder, and trigger the `Documenter.makedocs` in that folder. Because it doesn't
+contain any other files, this process becomes much faster than `include("docs/make.jl")` workflow.
+Compared to rebuild the whole documentation, building a preview version only adds about 1 extra
+second to `include("demo1.jl")`.
+
+If the file is placed in a typical demo page folder structure, `preview_demos(file)` will preserve
+that structure. In cases that demo page folder structure is not detected, it will instead create
+such a folder structure. You can check the following JuliaImages example to see how it looks like.
+
+!!! tip
+    `prewview_demos`  accepts an additional `theme` keyword, that you can use this to override the
+    page theme specified in `config.json`. For example, if `"grid"` theme is specified in
+    `config.json` file, calling `preview_demos("demos", theme="list")` would just get you to the
+    list style look without any changes.
 
 !!! note
     `preview_demos` does not include any other part of the documentation in the preview, hence
@@ -88,6 +100,69 @@ example, you could use it with `preview_demos("demos/sec1")`, or `preview_demos(
     you still need to `include("docs/make.jl")` to rebuild the whole documentation if reflinks are
     what you concern about.
 
-[Literate]: https://github.com/fredrikekre/Literate.jl
-[Literate Syntax]: https://fredrikekre.github.io/Literate.jl/v2/fileformat
-[JuliaImages demos]: https://juliaimages.org/latest/democards/examples/
+## Example -- JuliaImages
+
+Let's take the docs of JuliaImages as a live example, and illustrate how `preview_demos` can be used
+in practice.
+
+First, let's clone the JuliaImages docs repo:
+
+```bash
+git clone https://github.com/JuliaImages/juliaimages.github.io.git
+cd juliaimages.github.io.git
+```
+
+The result might change, but you can still get the idea.
+
+### preview the whole demo page
+
+The following page is generated by `preview_demos("docs/examples")`, note that all other
+documentation contents are not generated in this page. It only contains the contents in
+`"docs/examples"`.
+
+![preview
+page](https://user-images.githubusercontent.com/8684355/92012486-165c5200-ed7f-11ea-90bf-3047a8b79f7c.png)
+
+### Preview one section in the demo page
+
+This is the page generated by `preview_demos("docs/examples/color_channels")`, it only generates the
+"Color Channels" section:
+
+![preview
+section](https://user-images.githubusercontent.com/8684355/92012519-2116e700-ed7f-11ea-9ce6-eb1a271a44ed.png)
+
+### Preview only one file in the demo page
+
+This is the page generated by `preview_demos("docs/examples/color_separations_svd.jl")` with only one
+demo generated.
+
+![preview one
+demo](https://user-images.githubusercontent.com/8684355/92012304-da28f180-ed7e-11ea-8546-9dd8c61d0751.png)
+
+### Preview files without demo page structure
+
+Assume that you have the following folder structure:
+
+```text
+testimages/
+├── cameraman.jl
+└── mandril.jl
+```
+
+with each file written in this way:
+
+```julia
+# This shows how you can load the mandril test image
+
+using Images, TestImages
+img = testimage("mandril")
+save("assets/mandril.png", img); #hide #md
+
+# ![](assets/mandril.png)
+```
+
+Doing this with `make_demos("testimages")` would just fails because it is not a recognizable folder
+structure, but `preview_demos("testimages")` works nicely with this by creating a wrapper folder
+preview page:
+
+![preview random files](https://user-images.githubusercontent.com/8684355/92015507-79e87e80-ed83-11ea-8f1a-6adf4c6c6b81.png)

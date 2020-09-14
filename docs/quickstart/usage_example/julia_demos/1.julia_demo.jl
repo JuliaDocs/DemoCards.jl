@@ -4,6 +4,7 @@
 
 # ---
 # title: Write your demo in julia
+# id: juliademocard_example
 # cover: assets/literate.png
 # date: 2020-09-13
 # author: Johnny Chen
@@ -20,8 +21,9 @@
 #
 # Links to nbviewer and source files are provided as well.
 #
-# The conversions from source demo files to other files are mainly handled by Literate.
-# The syntax to control/filter the outputs can be found [here](https://fredrikekre.github.io/Literate.jl/stable/fileformat/)
+# The conversions from source demo files to `.jl`, `.md` and `.ipynb` files are mainly handled by
+# [`Literate.jl`](https://github.com/fredrikekre/Literate.jl). The syntax to control/filter the
+# outputs can be found [here](https://fredrikekre.github.io/Literate.jl/stable/fileformat/)
 
 x = 1//3
 y = 2//5
@@ -47,22 +49,28 @@ img = testimage("lena")
 # # ---
 # ```
 
-# Julia format demos accept one extra frontmatter config: `julia`. It allows you to specify the
-# compat version of your demo. `DemoCards` would 1) throw a warning if your demos are generated
-# using a lower version of Julia 2) insert a compat version badge. The warning is something like
-# "The running Julia version `1.0.5` is older than the declared compatible version `1.3.0`."
+# In addition to the keywords supported by markdown files, Julia format demos accept one extra
+# frontmatter config: `julia`. It allows you to specify the compat version of your demo. With this,
+# `DemoCards` would:
+#
+#   - throw a warning if your demos are generated using a lower version of Julia
+#   - insert a compat version badge.
+#
+# The warning is something like "The running Julia version `1.0.5` is older than the declared
+# compatible version `1.3.0`."
 
-# You should be careful about the leading whitespaces after the first #. Frontmatter as weird as the
-# following is not guaranteed to work and it is very likely to hit a YAML parsing error.
+# !!! warning
+#     You should be careful about the leading whitespaces after the first `#`. Frontmatter as weird as the
+#     following is not guaranteed to work and it is very likely to hit a YAML parsing error.
 
-# ```
-# # ---
-# # title: <title>
-# #  cover: <cover>
-# #  id: <id>
-# # description: <description>
-# # ---
-# ```
+#     ```yaml
+#     #---
+#     # title: <title>
+#     #  cover: <cover>
+#     #  id: <id>
+#     # description: <description>
+#     #---
+#     ```
 
 # !!! tip
 #     Comments are allowed before frontmatter, but it would only be appeared in the julia source
