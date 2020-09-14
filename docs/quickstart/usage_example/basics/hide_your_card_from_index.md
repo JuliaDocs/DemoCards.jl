@@ -1,7 +1,10 @@
 ---
 title: Hide your card from page index layout
 description: This demo shows you how to hide your card in page layout.
+hidden: false
 ---
+
+[![](https://img.shields.io/badge/jump%20to-a%20hidden%20demo-blue)](@ref hidden_card)
 
 There are cases that you want to hide one card in the generated page layout and only provide the
 entrance via reflink. For example, you have multiple version of demos and you only want to set the

@@ -88,7 +88,7 @@ The following is an example of `config.json`:
     drawback of this design is that you have to put template contents into the `"description"` key,
     even if it contains hundreds of words.
 
-## [DemoCard](@id concepts_card)
+## [Demo card](@id concepts_card)
 
 In simple words, a demo card consists of a link to its content and other relavent informations. In
 `"grid"` theme, it looks just like a card.

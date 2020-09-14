@@ -17,15 +17,16 @@ if you are unfamiliar with the Julia flavor markdown syntax.
 
 DemoCards extracts potential information from the file to build the index page, e.g., name, title,
 reference id, cover image file/URL. If that's not available, then you would need to configure them
-by adding a [YAML format front matter](https://jekyllrb.com/docs/front-matter/). Supported keywords
-are list as follows:
+by adding a [YAML format front matter](https://jekyllrb.com/docs/front-matter/).
+
+Supported YAML keywords are list as follows:
 
 * `cover`: an URL or a relative path to the cover image. If not configured, it would use the DemoCard logo.
 * `description`: a multi-line description to this file, will be displayed when the demo card is hovered.
 * `id`: specify the `id` tag for cross-references.
 * `title`: one-line description to this file, will be displayed under the cover image.
 * `author`: author name. If there are multiple authors, split them with semicolon `;`.
-* `date`: any string contents that can be passed to `Dates.DateTime`. For example, `2020-09-13`.
+* `date`: any string contents that can be passed to `Dates.DateTime`.
 * `hidden`: whether this card is shown in the layout of index page.
 
 !!! tip
@@ -33,8 +34,8 @@ are list as follows:
     extracted from the demo contents. For example, if you don't like the inferred demo title, then
     specify one explicitly in the YAML frontmatter.
 
-    Of course, you have to make sure the `---` flag shows at the first line of the markdown file,
-    otherwise DemoCards would just read them as normal contents.
+Of course, you have to make sure the `---` flag shows at the first line of the markdown file,
+otherwise DemoCards would just read them as normal contents.
 
 For example, the markdown file of this page uses the following frontmatter:
 
@@ -50,11 +51,6 @@ description: This demo show you how to pass additional meta info of card to Demo
 
 ```
 
-Some general rules about the frontmatter items:
-
-* `author` and `date` badges will only be added if you configure them.
-* If there are multiple authors, they could be splitted by semicolon `;`. For example, `author:
-  Jane Doe; John Roe` would generate two author badges.
-* there are two valid `cover` options:
-  * a local file specified by relative path to the current file, or,
-  * an image file specified by http(s) URL.
+As you can see, if configured, there will be badges for `author` and `date` info. If there are
+multiple authors, they could be splitted by semicolon `;`. For example, `author: Jane Doe; John Roe`
+would generate two author badges.

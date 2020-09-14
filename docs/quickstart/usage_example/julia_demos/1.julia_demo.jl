@@ -59,17 +59,18 @@ img = testimage("lena")
 # The warning is something like "The running Julia version `1.0.5` is older than the declared
 # compatible version `1.3.0`."
 
-# You should be careful about the leading whitespaces after the first #. Frontmatter as weird as the
-# following is not guaranteed to work and it is very likely to hit a YAML parsing error.
+# !!! warning
+#     You should be careful about the leading whitespaces after the first `#`. Frontmatter as weird as the
+#     following is not guaranteed to work and it is very likely to hit a YAML parsing error.
 
-# ```
-# #---
-# # title: <title>
-# #  cover: <cover>
-# #  id: <id>
-# # description: <description>
-# #---
-# ```
+#     ```yaml
+#     #---
+#     # title: <title>
+#     #  cover: <cover>
+#     #  id: <id>
+#     # description: <description>
+#     #---
+#     ```
 
 # !!! tip
 #     Comments are allowed before frontmatter, but it would only be appeared in the julia source
