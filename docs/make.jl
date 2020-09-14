@@ -20,6 +20,7 @@ makedocs(format = format,
             quickstart,
             "Concepts" => "concepts.md",
             "Partial build" => "preview.md",
+            "Structure manipulation" => "structure.md",
             "Theme Gallery" => [
                themeless_demopage,
                grid_demopage,
