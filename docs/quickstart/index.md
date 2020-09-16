@@ -139,12 +139,9 @@ The pipeline of [`makedemos`](@ref DemoCards.makedemos) is:
 Since all files are generated to `docs/src`, the next step is to leave everything else
 to `Documenter.jl` 💯
 
-!!! tip
-
-    By default, `makedemos` generates all the necessary files to `docs/src/democards`,
-    so it's recommended to put your source files into folders outside `docs/src`,
-    otherwise it will be processed by Documenter _twice_. Also, it's often the case that
-    you need to add `docs/src/democards` to `.gitignore`.
+!!! warning
+    By default, `makedemos` generates all the necessary files to `docs/src`, this means that the
+    data you pass to `makedemos` should not be placed at `docs/src`.
 
 For advanced usage of `DemoCards.jl`, you need to understand the core [concepts](@ref concepts) of it.
 

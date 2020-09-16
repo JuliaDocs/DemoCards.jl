@@ -38,7 +38,6 @@ function preview_demos(demo_path::String;
     # hard code these args in a sandbox environment -- there's no need for customization
     build = "build"
     src = "src"
-    destination = "democards"
 
     demo_path = abspath(rstrip(demo_path, ['/', '\\']))
     ispath(demo_path) || throw(ArgumentError("demo path does not exists: $demo_path"))
@@ -84,14 +83,13 @@ function preview_demos(demo_path::String;
             root = build_dir,
             src = src,
             build = build,
-            destination = destination,
             edit_branch = edit_branch,
             credit = credit
         )
 
         # In cases that addtional Documenter pipeline is not needed
         # This is mostly for test usage right now and might be changed if there is better solution
-        require_html || return abspath(build_dir, src, destination, basename(page_dir))
+        require_html || return abspath(build_dir, src, basename(page_dir))
         
         format = Documenter.HTML(
             edit_link = edit_branch,

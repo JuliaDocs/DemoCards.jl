@@ -18,7 +18,7 @@
         cp(abs_root, tmp_root, force=true)
         templates, theme = cardtheme(root=root)
         path, post_process_cb = @suppress_err makedemos(tmp_root, templates, root=root)
-        @test @suppress_err path == joinpath("democards", "default", "index.md")
+        @test @suppress_err path == joinpath("default", "index.md")
         @test theme == joinpath("democards", "gridtheme.css")
     end
 
