@@ -90,6 +90,14 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
                    edit_branch::String = "master",
                    credit = true)
 
+    if !(basename(pwd()) == "docs" || basename(root) == "docs" || root == preview_build_dir())
+        # special cases that warnings are not printed:
+        # 1. called from `docs/make.jl`
+        # 2. called from `preview_demos`
+        # 3. pwd() in `docs` -- REPL
+        @warn "Suspicious `root` setting: typically `makedemos` should be called from `docs/make.jl`. " pwd=pwd() root
+    end
+    
     root = abspath(root)
     page_root = abspath(root, source)
 
