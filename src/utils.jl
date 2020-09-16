@@ -341,3 +341,24 @@ end
 
 
 is_remote_url(path) = !isnothing(match(r"^https?://", path))
+
+
+"""
+    input_bool(prompt)::Bool
+
+Print `prompt` message and trigger user input for confirmation.
+"""
+function input_bool(prompt)
+    while true
+        println(prompt, " [y/n]")
+        response = readline()
+        length(response) == 0 && continue
+        reply = lowercase(first(strip(response)))
+        if reply == 'y'
+            return true
+        elseif reply =='n'
+            return false
+        end
+        # Otherwise loop and repeat the prompt
+    end
+end

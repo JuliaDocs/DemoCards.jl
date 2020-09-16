@@ -14,7 +14,7 @@
             demo_file = joinpath(joinpath(page_dir, "subsection_2"), demo_file)
             @test_reference joinpath("references", "preview", basename(demo_file)) read(demo_file, String) by=ignore_CR
         end
-        @test "gridtheme.css" in readdir(dirname(page_dir))
+        @test "gridtheme.css" in readdir(joinpath(dirname(page_dir), "democards"))
     end
 
     @testset "section with non page structure" begin
