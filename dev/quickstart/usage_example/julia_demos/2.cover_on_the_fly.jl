@@ -9,10 +9,9 @@ cover = testimage("lena_color_256")
 save("assets/lena_color_256.png", cover) #hide
 
 cover = testimage("lena_color_256")
-save("assets/lena_color_256.png", cover)
+save("assets/lena_color_256.png", cover) #hide
 
 cover = testimage("lena_color_256")
-save("assets/lena_color_256.png", cover) #hide
 
 # This file was generated using Literate.jl, https://github.com/fredrikekre/Literate.jl
 
