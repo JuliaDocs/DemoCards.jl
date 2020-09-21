@@ -87,7 +87,7 @@ postprocess_cb()
 
 In this example, there are three returned objects from `makedemos`:
 
-* `demopage`: this is the relative path to the generated demos (typically in `src/democards`), you
+* `demopage`: this is the relative path to the generated demos (typically in `src`), you
   can pass it to `makedocs`'s `pages`.
 * `postprocess_cb`: this is the callback function that you'll need to call after `makedocs`.
 * `demo_assets`: if available, it is the path to css file which you could pass to `Documenter.HTML`

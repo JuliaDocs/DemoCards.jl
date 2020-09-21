@@ -30,28 +30,28 @@ cover
 # There are cases that you want to hide the codes related to asset generation, e.g., the
 # `save(...)` line. Fortunately, this is doable by combining the syntax of Documenter and Literate.
 # For example, the following code can be inserted to whereever you need to generate the assets.
-# The [`#src` flag](https://fredrikekre.github.io/Literate.jl/v2/fileformat/#Filtering-Lines) is used as a filter to tell Literate that this line is reserved only in the
-# original source codes.
+# The [`#src` flag](https://fredrikekre.github.io/Literate.jl/v2/fileformat/#Filtering-Lines) is
+# used as a filter to tell Literate that this line is reserved only in the original source codes.
 #
 # ```julia
-# save("assets/cover.png", img_noise) #src
+# save("assets/cover.png", img_noise) #src #md
 # ```
 #
 # Gif image is also supported via `ImageMagick`:
 #
 # ```julia
-# # --- save covers --- #src
-# using ImageMagick #src
-# imgs = map(10:5:50) do k #src
-#     colorview(RGB, rank_approx.(svdfactors, k)...) #src
-# end #src
-# ImageMagick.save("assets/color_separations_svd.gif", cat(imgs...; dims=3); fps=2) #src
+# # --- save covers --- #src #md
+# using ImageMagick #src #md
+# imgs = map(10:5:50) do k #src #md
+#     colorview(RGB, rank_approx.(svdfactors, k)...) #src #md
+# end #src #md
+# ImageMagick.save("assets/color_separations_svd.gif", cat(imgs...; dims=3); fps=2) #src #md
 # ```
 #
 # ### Hide the output result
 # 
 # It does not look good to show the `0` result in the above code block as it does not provide
-# anything that the reader cares.There are two ways to fix this.
+# anything that the reader cares. There are two ways to fix this.
 #
 # The first way is to insert a [`#hide`
 # flag](https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@example-block) to the line you
@@ -72,14 +72,14 @@ save("assets/lena_color_256.png", cover) #hide
 #
 # ```julia
 # cover = testimage("lena_color_256")
-# save("assets/lena_color_256.png", cover) #hide
+# save("assets/lena_color_256.png", cover) #hide #md
 # nothing #hide #md #md
 # ```
 #
 # generates
 
 cover = testimage("lena_color_256")
-save("assets/lena_color_256.png", cover)
+save("assets/lena_color_256.png", cover) #hide
 nothing #hide #md
 
 # No output at all. You could, of course, insert `cover #hide #md` or others you would like readers
@@ -88,14 +88,14 @@ nothing #hide #md
 #
 # ```julia
 # cover = testimage("lena_color_256")
-# save("assets/lena_color_256.png", cover) #hide
+# save("assets/lena_color_256.png", cover) #hide #md #md
 # cover #hide #md #md
 # ```
 #
 # generates
 
 cover = testimage("lena_color_256")
-save("assets/lena_color_256.png", cover) #hide
+save("assets/lena_color_256.png", cover) #hide #md
 cover #hide #md
 
 # The `#md` flag is used to keep a clean `.jl` file provided by the download-julia badge:

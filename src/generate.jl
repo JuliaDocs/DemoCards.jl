@@ -49,7 +49,7 @@ Processing pipeline:
 The following is the simplest example for you to start with:
 
 ```julia
-# 1. preprocess and generate demo files to docs/src/democards
+# 1. preprocess and generate demo files to docs/src
 examples, postprocess_cb, demo_assets = makedemos("examples")
 
 assets = []
@@ -430,7 +430,7 @@ function get_source_url(build_url, source, cardname, src)
     #   - build_dir:            "$build_root/$prefix/$page/$section/$subsection"
     #   - build_url:            "$build_dir/$cardfile"
     # example of build_url:
-    #  "https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/src/democards/quickstart/usage_example/julia_demos/2.cover_on_the_fly.md"
+    #  "https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/src/quickstart/usage_example/julia_demos/2.cover_on_the_fly.md"
     # we need to generate:
     #   - src_root:             "$projct_root/$docs_root/$src"
     #   - src_dir:              "$src_root/$prefix/$page/$section/$subsection"

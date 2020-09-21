@@ -10,7 +10,7 @@ There are cases that you want to hide one card in the generated page layout and 
 entrance via reflink. For example, you have multiple version of demos and you only want to set the
 latest one as the default and provide legacy versions as reflink in the latest page.
 
-This can be done by setting `hidden: false` in the frontmatter, for example:
+This can be done by setting `hidden: true` in the frontmatter, for example:
 
 ```markdown
 ---
