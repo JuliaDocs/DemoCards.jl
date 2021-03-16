@@ -23,7 +23,7 @@ ImageCore = "0.7, 0.8"
 JSON = "0.20, 0.21"
 Literate = "2"
 Mustache = "0.5, 1.0"
-Suppressor = "0"
+Suppressor = "0.2"
 YAML = "0.3, 0.4"
 julia = "1"
 
