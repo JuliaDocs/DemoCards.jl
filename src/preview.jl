@@ -162,7 +162,7 @@ function generate_or_copy_pagedir(src_path, build_dir)
         page_dir = src_path
         cp(page_dir, abspath(build_dir, basename(page_dir)); force=true)
     else
-        throw(ArgumentError("failed to parse demo page structure from path: $src_path"))
+        throw(ArgumentError("failed to parse demo page structure from path: $src_path. There might be some invalid demo files."))
     end
 
     return page_dir

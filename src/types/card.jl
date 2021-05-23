@@ -90,8 +90,19 @@ function make_badges(card::AbstractDemoCard)
         for author in split(card.author, ';')
             # TODO: also split on "and"
             isempty(author) && continue
-            author_str = HTTP.escapeuri(strip(author))
-            push!(badges, "![Author](https://img.shields.io/badge/Author-$(author_str)-blue)")
+
+            m = match(regex_md_url, author)
+            if isnothing(m)
+                author_str = HTTP.escapeuri(strip(author))
+                push!(badges, "![Author](https://img.shields.io/badge/Author-$(author_str)-blue)")
+            else
+                # when markdown url is detected, create a link for it
+                # author: [Johnny Chen](https://github.com/johnnychen94)
+                name, url = strip.(m.captures)
+                name = HTTP.escapeuri(name)
+                badge_str = "[![Author](https://img.shields.io/badge/Author-$(name)-blue)]($url)"
+                push!(badges, badge_str)
+            end
         end
     end
     if card.date != DateTime(0)

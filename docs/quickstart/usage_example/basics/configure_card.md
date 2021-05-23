@@ -2,7 +2,7 @@
 title: Configure your card
 cover: assets/logo.svg
 id: configure_your_card
-author: Johnny Chen
+author: "[Johnny Chen](https://github.com/johnnychen94); Jane Doe"
 date: 2020-09-13
 description: This demo show you how to pass additional meta info of card to DemoCards.jl
 ---
@@ -44,13 +44,20 @@ For example, the markdown file of this page uses the following frontmatter:
 title: Configure your card
 cover: assets/logo.svg
 id: configure_your_card
-author: Johnny Chen
+author: "[Johnny Chen](https://github.com/johnnychen94); Jane Doe"
 date: 2020-09-13
 description: This demo show you how to pass additional meta info of card to DemoCards.jl
 ---
-
 ```
 
 As you can see, if configured, there will be badges for `author` and `date` info. If there are
 multiple authors, they could be splitted by semicolon `;`. For example, `author: Jane Doe; John Roe`
 would generate two author badges.
+
+!!! tip
+    If `author` is configured as markdown url format, then the generated badge will be clickable.
+
+!!! warning
+    A badly formatted YAML frontmatter will currently trigger a build failure with perhaps hard to
+    understand error. Sometimes, you need to assist YAML parser by explicitly quoting the content
+    with `""`. See the author field above as an instance.
