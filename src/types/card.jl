@@ -9,6 +9,8 @@ The return type `T` is determined by the extension of the path
 to your demofile. Currently supported types are:
 
 * [`MarkdownDemoCard`](@ref)
+* [`JuliaDemoCard`](@ref)
+
 """
 function democard(path::String)::AbstractDemoCard
     validate_file(path)

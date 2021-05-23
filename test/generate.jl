@@ -33,4 +33,8 @@
         @test readdir(joinpath(page_dir, "covers")) == ["democards_logo.svg"]
         @test readdir(joinpath(page_dir, "sec")) == ["hidden1.ipynb", "hidden1.jl", "hidden1.md", "hidden2.md", "normal.md"]
     end
+
+    @testset "throw_error" begin
+        @suppress_err @test_throws LoadError preview_demos(joinpath(root, "broken_demo.jl"); throw_error=true)
+    end
 end
