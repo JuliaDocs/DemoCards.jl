@@ -117,6 +117,7 @@ function save_democards(card_dir::String,
                         nbviewer_root_url,
                         project_dir=Base.source_dir(),
                         src="src",
+                        throw_error = false,
                         kwargs...)
     isdir(card_dir) || mkpath(card_dir)
     cardname = splitext(basename(card.path))[1]
@@ -154,8 +155,17 @@ function save_democards(card_dir::String,
                 isempty(readdir(x)) && rm(x; recursive=true, force=true)
             end
         catch err
-            # throw warnings when generating notebooks
-            err isa LoadError || rethrow(err)
+            if err isa LoadError
+                # TODO: provide more informative debug message
+                @warn "something wrong during the assets generation for demo $cardname.jl"
+                if throw_error
+                    rethrow(err)
+                else
+                    @warn err
+                end
+            else
+                rethrow(err)
+            end
         end
     end
 
@@ -171,7 +181,7 @@ function save_democards(card_dir::String,
     try
         @suppress Literate.notebook(src_path, card_dir; credit=credit)
     catch err
-        @warn err.msg
+        nothing # early warning in the asserts generation
     end
 
     # 3. markdown

@@ -22,6 +22,7 @@ Generate a docs preview for a single demo card.
 * `assets = String[]`: this is passed to `Documenter.HTML`
 * `edit_branch = "master"`: same to that in `makedemos`
 * `credit = true`: same to that in `makedemos`
+* `throw_error = false`: same to that in `makedemos`
 * `require_html = true`: if it needs to trigger the Documenter workflow and generate HTML preview.
   If set to `false`, the return value is then the path to the generated `index.md` file. This is an
   experimental keyword and should not be considered stable.
@@ -33,6 +34,7 @@ function preview_demos(demo_path::String;
                       edit_branch = "master",
                       assets = String[],
                       credit = true,
+                      throw_error = false,
                       require_html = true,
                       clean = true)
     # hard code these args in a sandbox environment -- there's no need for customization
@@ -84,7 +86,8 @@ function preview_demos(demo_path::String;
             src = src,
             build = build,
             edit_branch = edit_branch,
-            credit = credit
+            credit = credit,
+            throw_error = throw_error,
         )
 
         # In cases that addtional Documenter pipeline is not needed
