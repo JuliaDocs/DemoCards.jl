@@ -37,4 +37,20 @@
     @testset "throw_error" begin
         @suppress_err @test_throws LoadError preview_demos(joinpath(root, "broken_demo.jl"); throw_error=true)
     end
+
+    @testset "badges" begin
+        @testset "author" begin
+            for (dir, file) in [
+                ("julia", joinpath(root, "card", "julia", "author_with_md_url.jl")),
+                ("markdown", joinpath(root, "card", "markdown", "author_with_md_url.md"))
+            ]
+                page_dir = @suppress_err preview_demos(file; theme="grid", require_html=false)
+                md_file = joinpath(page_dir, dir, "author_with_md_url.md")
+                @test isfile(md_file)
+                line = read(md_file, String)
+                @test occursin("[![Author](https://img.shields.io/badge/Author-Johnny%20Chen-blue)](https://github.com/johnnychen94)", line)
+                @test occursin("![Author](https://img.shields.io/badge/Author-Jane%20Doe-blue)", line)
+            end
+        end
+    end
 end

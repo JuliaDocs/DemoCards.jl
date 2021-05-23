@@ -193,7 +193,14 @@ function parse(T::Val, card::AbstractDemoCard)
     config = parse(T, body)
     # frontmatter has higher priority
     if !isempty(frontmatter)
-        merge!(config, YAML.load(join(frontmatter, "\n")))
+        yaml_config = try
+            YAML.load(join(frontmatter, "\n"))
+        catch err
+            @warn "failed to parse YAML frontmatter, please double check the format"
+            println(stderr, frontmatter)
+            rethrow(err)
+        end
+        merge!(config, yaml_config)
     end
 
     return config
