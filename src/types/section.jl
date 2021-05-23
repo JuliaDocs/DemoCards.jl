@@ -94,8 +94,23 @@ function DemoSection(root::String)::DemoSection
     config_file = joinpath(root, config_filename)
     config = isfile(config_file) ? JSON.parsefile(config_file) : Dict()
 
+    # For files that `democard` fails to recognized, dummy
+    # `UnmatchedCard` will be generated. Currently, we only
+    # throw warnings for it.
+    cards = map(democard, card_paths)
+    unmatches = filter(cards) do x
+        x isa UnmatchedCard
+    end
+    if !isempty(unmatches)
+        msg = join(map(basename, unmatches), "\", \"")
+        @warn "skip unmatched file: \"$msg\"" section_dir=root
+    end
+    cards = filter!(cards) do x
+        !(x isa UnmatchedCard)
+    end
+
     section = DemoSection(root,
-                          map(democard, card_paths),
+                          cards,
                           map(DemoSection, section_paths),
                           "",
                           "")

@@ -36,4 +36,13 @@
     # invalid cases
     @test_throws ArgumentError @suppress_err DemoSection(joinpath(root, "partial_order"))
     @test_throws ArgumentError @suppress_err DemoSection(joinpath(root, "cards_and_subsections"))
+
+    @testset "unmatched dirty files" begin
+        msg = @capture_err DemoSection(joinpath(root, "dirty"))
+        @test occursin("skip unmatched file: \"data.csv\", \"script.py\"", msg)
+        sec = @suppress_err DemoSection(joinpath(root, "dirty"))
+
+        # unmatched files are excluded during the structure building stage.
+        @test length(sec.cards) == 1
+    end
 end
