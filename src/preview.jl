@@ -57,7 +57,7 @@ function preview_demos(demo_path::String;
     copy_assets_and_configs(page_dir, build_dir)
 
     cd(build_dir) do
-        page = DemoPage(page_dir)
+        page = @suppress_err DemoPage(page_dir)
 
         if theme === missing
             theme = page.theme

@@ -1,5 +1,9 @@
 abstract type AbstractDemoCard end
 
+struct UnmatchedCard <: AbstractDemoCard
+    path::String
+end
+
 """
     democard(path::String)::T
 
@@ -8,8 +12,9 @@ Constructs a concrete AbstractDemoCard instance.
 The return type `T` is determined by the extension of the path
 to your demofile. Currently supported types are:
 
-* [`MarkdownDemoCard`](@ref)
-* [`JuliaDemoCard`](@ref)
+* [`MarkdownDemoCard`](@ref) for markdown files
+* [`JuliaDemoCard`](@ref) for julia files
+* [`UnmatchedCard`](@ref) for unmatched files
 
 """
 function democard(path::String)::AbstractDemoCard
@@ -20,7 +25,7 @@ function democard(path::String)::AbstractDemoCard
     elseif ext in julia_exts
         return JuliaDemoCard(path)
     else
-        throw(ArgumentError("unrecognized democard format $(path)"))
+        return UnmatchedCard(path)
     end
 end
 
