@@ -260,6 +260,8 @@ function rewrite_localremote_path(page_dir, build_dir)
             config = JSON.parsefile(src_config_path)
             config["remote"][card.name] = card.path
 
+            # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
+            Base.Sys.iswindows() && GC.gc()
             open(src_config_path, "w") do io
                 JSON.print(io, config)
             end

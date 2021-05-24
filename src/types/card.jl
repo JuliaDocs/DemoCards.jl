@@ -1,5 +1,12 @@
 abstract type AbstractDemoCard end
 
+"""
+    UnmatchedCard(path)
+
+A dummy placeholder card for files that DemoCards doesn't support
+yet. No operation will be applied on this type of file, except for
+warnings.
+"""
 struct UnmatchedCard <: AbstractDemoCard
     path::String
 end

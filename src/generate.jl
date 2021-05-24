@@ -145,7 +145,8 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
     if isnothing(templates)
         out_path = walkpage(page; flatten=false) do dir, item
             joinpath(
-                relpath(dir, root),
+                basename(source),
+                relpath(dir, page_root),
                 splitext(basename(item))[1] * ".md"
             )
         end
