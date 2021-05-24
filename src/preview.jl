@@ -55,6 +55,7 @@ function preview_demos(demo_path::String;
 
     page_dir = generate_or_copy_pagedir(demo_path, build_dir)
     copy_assets_and_configs(page_dir, build_dir)
+    rewrite_localremote_path(page_dir, build_dir)
 
     cd(build_dir) do
         page = @suppress_err DemoPage(page_dir)
@@ -218,7 +219,12 @@ function copy_assets_and_configs(src_page_dir, dst_build_dir=pwd())
             config = JSON.parsefile(src_config_path)
             config_dir = dirname(dst_config_path)
             if haskey(config, "order")
-                order =  [x for x in config["order"] if x in readdir(config_dir)]
+                files = readdir(config_dir)
+                remote_files = keys(get(config, "remote", Dict()))
+                order = filter(config["order"]) do x
+                    x in files || x in remote_files
+                end
+
                 if isempty(order)
                     delete!(config, "order")
                 else
@@ -235,4 +241,29 @@ function copy_assets_and_configs(src_page_dir, dst_build_dir=pwd())
             end
         end
     end
+end
+
+function rewrite_localremote_path(page_dir, build_dir)
+    # To support relpath for LocalRemoteCard, we have to
+    # eagerly rewrite the relpath with abspath so that
+    # later build can correctly find the remote filepath.
+    # This only affects LocalRemoteCard with relpath.
+
+    page = @suppress_err DemoPage(page_dir)
+    walkpage(page) do dir, card
+        if card isa LocalRemoteCard
+            # find out the corresponding config file, and rewrite the remote entry
+            # with abspath
+            build_carddir = joinpath(build_dir, basename(page_dir), relpath(dir, page_dir))
+            src_config_path = joinpath(build_carddir, config_filename)
+
+            config = JSON.parsefile(src_config_path)
+            config["remote"][card.name] = card.path
+
+            open(src_config_path, "w") do io
+                JSON.print(io, config)
+            end
+        end
+    end
+
 end

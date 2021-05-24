@@ -150,6 +150,8 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
             )
         end
     else
+        # For themes that requires an index page
+        # This will not generate a multi-level structure in the sidebar
         out_path = joinpath(relative_root, "index.md")
     end
 
@@ -201,6 +203,9 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
             @info "Redirect page URL: redirect docs-edit-link for demos in \"$(source)\" directory."
             isnothing(templates) || push!(source_files, joinpath(page_root, "index.md"))
             foreach(source_files) do source_file
+                # LocalRemoteCard is a virtual placeholder and does not exist here
+                isfile(source_file) && return
+                # only redirect to "real" files
                 redirect_link(source_file, source, root, src, build, edit_branch)
             end
 
@@ -249,14 +254,14 @@ function generate(page::DemoPage, templates)
     Mustache.render(page.template, items)
 end
 
-function generate(cards::AbstractVector{<:AbstractDemoCard}, template; properties=Dict{String, Any}())
+function generate(cards::AbstractVector{<:Union{AbstractDemoCard, LocalRemoteCard}}, template; properties=Dict{String, Any}())
     # for those hidden cards, only generate the necessary assets and files, but don't add them into
     # the index.md page
-    foreach(filter(x->x.hidden, cards)) do x
+    foreach(filter(ishidden, cards)) do x
         generate(x, template; properties=properties)
     end
 
-    mapreduce(*, filter(x->!x.hidden, cards); init="") do x
+    mapreduce(*, filter(x->!ishidden(x), cards); init="") do x
         generate(x, template; properties=properties)
     end
 end
@@ -326,7 +331,7 @@ function save_cover(path::String, sec::DemoSection)
 end
 
 """
-    save_cover(path::String, card::AbstractDemoCard)
+    save_cover(path::String, card)
 
 process the cover image and save it.
 """
@@ -361,7 +366,7 @@ function save_cover(path::String, card::AbstractDemoCard)
     end
 end
 
-function get_covername(card::AbstractDemoCard)
+function get_covername(card)
     isnothing(card.cover) && return nothing
     is_remote_url(card.cover) && return card.cover
 

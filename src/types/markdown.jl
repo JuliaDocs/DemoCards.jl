@@ -133,3 +133,5 @@ function save_democards(card_dir::String,
     footer = credit ? markdown_footer : "\n"
     write(markdown_path, header, make_badges(card)*"\n\n", body, footer)
 end
+
+ishidden(x::MarkdownDemoCard) = x.hidden

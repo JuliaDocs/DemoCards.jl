@@ -1,0 +1,6 @@
+{
+    "remote": {
+        "julia_card": "../../card/julia/title_1.jl",
+        "markdown_card": "../../card/markdown/title_3.md"
+    }
+}

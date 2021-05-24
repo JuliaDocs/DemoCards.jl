@@ -289,3 +289,5 @@ function make_badges(card::JuliaDemoCard; src, card_dir, nbviewer_root_url, proj
 
     join(badges, " ")
 end
+
+ishidden(x::JuliaDemoCard) = x.hidden

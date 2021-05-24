@@ -1,0 +1,11 @@
+{
+    "remote": {
+        "julia_card.jl": "../../card/julia/title_1.jl",
+        "markdown_card.md": "../../card/markdown/title_3.md"
+    },
+    "order": [
+        "julia_card.jl",
+        "markdown_card.md",
+        "title_2.md"
+    ]
+}

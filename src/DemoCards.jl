@@ -35,6 +35,7 @@ include("compat.jl")
 include("types/card.jl")
 include("types/section.jl")
 include("types/page.jl")
+include("remote.jl")
 
 include("utils.jl")
 include("show.jl")

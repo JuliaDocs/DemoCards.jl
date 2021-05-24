@@ -106,7 +106,7 @@ function DemoSection(root::String)::DemoSection
     # For files that `democard` fails to recognized, dummy
     # `UnmatchedCard` will be generated. Currently, we only
     # throw warnings for it.
-    cards = map(democard, card_paths)
+    cards = Union{AbstractDemoCard, LocalRemoteCard}[democard(x) for x in card_paths]
     unmatches = filter(cards) do x
         x isa UnmatchedCard
     end
@@ -114,6 +114,7 @@ function DemoSection(root::String)::DemoSection
         msg = join(map(basename, unmatches), "\", \"")
         @warn "skip unmatched file: \"$msg\"" section_dir=root
     end
+
     cards = filter!(cards) do x
         !(x isa UnmatchedCard)
     end
@@ -134,6 +135,20 @@ function DemoSection(root::String)::DemoSection
         subsections = map(DemoSection, ordered_paths)
     end
 
+    if haskey(config, "remote")
+        remote_cards = LocalRemoteCard[]
+        for (cardname, cardpath) in config["remote"]
+            # if possible, store the abspath
+            cardpath = isabspath(cardpath) ? cardpath : normpath(joinpath(root, cardpath))
+            push!(remote_cards, LocalRemoteCard(cardname, cardpath, democard(cardpath)))
+        end
+        append!(cards, remote_cards)
+    end
+
+    subsections = map(DemoSection, section_paths)
+    section = DemoSection(root, cards, subsections, "", "")
+    cards, subsections = sort_by_order(section, config)
+
     title = load_config(section, "title"; config=config)
     description = load_config(section, "description"; config=config)
 
@@ -146,6 +161,31 @@ function DemoSection(root::String)::DemoSection
     DemoSection(root, cards, subsections, title, description, properties)
 end
 
+function sort_by_order(sec::DemoSection, config)
+    cards = sec.cards
+    subsections = sec.subsections
+
+    ordered_paths = load_config(sec, "order"; config=config)
+    if !isempty(sec.cards)
+        indices = map(ordered_paths) do ref
+            findfirst(cards) do card
+                basename(card) == ref
+            end
+        end
+        cards = cards[indices]
+        subsections = []
+    else
+        indices = map(ordered_paths) do ref
+            findfirst(subsections) do sec
+                basename(sec) == ref
+            end
+        end
+        subsections = subsections[indices]
+        cards = []
+    end
+
+    return cards, subsections
+end
 
 function load_config(sec::DemoSection, key; config=Dict())
     if isempty(config)

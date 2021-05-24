@@ -19,6 +19,7 @@ cd(test_root) do
 
     include("generate.jl")
     include("preview.jl")
+    include("remote.jl")
     include("show.jl")
     include("utils.jl")
 
