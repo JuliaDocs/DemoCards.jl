@@ -1,9 +1,3 @@
-function validate_file(path, filetype = :text)
-    isfile(path) || throw(ArgumentError("$(path) is not a valid file"))
-    check_ext(path, filetype)
-end
-
-
 function check_ext(path, filetype = :text)
     _, ext = splitext(path)
     if filetype == :text
@@ -19,6 +13,7 @@ end
 ### common utils for DemoPage and DemoSection
 
 function validate_order(order::AbstractArray, x::Union{DemoPage, DemoSection})
+    length(unique(order)) == length(order) || throw(ArgumentError("`\"order\"` entry should be unique."))
     default_order = get_default_order(x)
     if intersect(order, default_order) == union(order, default_order)
         return true

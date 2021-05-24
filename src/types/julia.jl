@@ -76,6 +76,21 @@ mutable struct JuliaDemoCard <: AbstractDemoCard
     julia::VersionNumber
     hidden::Bool
     notebook::Union{Nothing, Bool}
+    function JuliaDemoCard(
+        path::String,
+        cover::Union{String, Nothing},
+        id::String,
+        title::String,
+        description::String,
+        author::String,
+        date::DateTime,
+        julia::VersionNumber,
+        hidden::Bool,
+        notebook::Union{Nothing, Bool}
+    )
+        isfile(path) || throw(ArgumentError("$(path) is not a valid file"))
+        new(path, cover, id, title, description, author, date, julia, hidden, notebook)
+    end
 end
 
 function JuliaDemoCard(path::String)::JuliaDemoCard

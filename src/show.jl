@@ -3,7 +3,7 @@ import Base: show
 const indent_spaces = "  "
 
 function show(io::IO, card::AbstractDemoCard)
-    println(io, basename(card))
+    print(io, basename(card))
 end
 
 function show(io::IO, sec::DemoSection; level=1)
@@ -15,6 +15,7 @@ function show(io::IO, sec::DemoSection; level=1)
     foreach(sec.cards) do x
         print(io, repeat(indent_spaces, level))
         show(io, x)
+        println(io)
     end
 
     foreach(x->show(io, x; level=level+1), sec.subsections)
