@@ -93,21 +93,21 @@ end
 @testset "walkpage" begin
     page = DemoPage(joinpath("assets", "page", "hidden"))
     reference = "Hidden" => ["hidden1.jl", "hidden2.md", "normal.md"]
-    @test reference == walkpage(page) do item
+    @test reference == walkpage(page) do dir, item
         basename(item.path)
     end
     reference = "Hidden" => ["Sec" => ["hidden1.jl", "hidden2.md", "normal.md"]]
-    @test reference == walkpage(page; flatten=false) do item
+    @test reference == walkpage(page; flatten=false) do dir, item
         basename(item.path)
     end
 
     page = DemoPage(joinpath("assets", "page", "one_card"))
     reference = "One card" => ["card.md"]
-    @test reference == walkpage(page) do item
+    @test reference == walkpage(page) do dir, item
         basename(item.path)
     end
     reference = "One card" => ["Section" => ["Subsection" => ["card.md"]]]
-    @test reference == walkpage(page; flatten=false) do item
+    @test reference == walkpage(page; flatten=false) do dir, item
         basename(item.path)
     end
 end

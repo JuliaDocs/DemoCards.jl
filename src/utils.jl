@@ -50,7 +50,7 @@ This is particulaly useful to generate information for the page structure. For e
 ```julia
 julia> page = DemoPage("docs/quickstart/");
 
-julia> walkpage(page; flatten=true) do item
+julia> walkpage(page; flatten=true) do dir, item
     basename(item.path)
 end
 
@@ -85,7 +85,7 @@ If `flatten=false`, then it gives you something like this:
 ]
 ```
 """
-walkpage(page::DemoPage; kwargs...) = walkpage(identity, page; kwargs...)
+walkpage(page::DemoPage; kwargs...) = walkpage((dir, item)->item, page; kwargs...)
 function walkpage(f, page::DemoPage; flatten=true, kwargs...)
     nodes = _walkpage.(f, page.sections, 1; flatten=flatten, kwargs...)
     if flatten
@@ -97,9 +97,9 @@ function walkpage(f, page::DemoPage; flatten=true, kwargs...)
 end
 
 function _walkpage(f, sec::DemoSection, depth; max_depth=Inf, flatten=true)
-    depth+1 > max_depth && return flatten ? f(sec) : [f(sec), ]
+    depth+1 > max_depth && return flatten ? f(src.root, sec) : [f(sec.root, sec), ]
     if !isempty(sec.cards)
-        return flatten ? mapreduce(f, vcat, sec.cards) : sec.title => f.(sec.cards)
+        return flatten ? mapreduce(x->f(sec.root, x), vcat, sec.cards) : sec.title => f.(sec.root, sec.cards)
     else
         map_fun(section) =  _walkpage(f, section, depth+1; max_depth=max_depth, flatten=flatten)
         return flatten ? mapreduce(map_fun, vcat, sec.subsections) : sec.title => map_fun.(sec.subsections)

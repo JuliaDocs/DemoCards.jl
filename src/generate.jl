@@ -143,8 +143,11 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
 
     # we can directly pass it to Documenter.makedocs
     if isnothing(templates)
-        out_path = walkpage(page; flatten=false) do item
-            splitext(joinpath(relative_root, relpath(item.path, page_root)))[1] * ".md"
+        out_path = walkpage(page; flatten=false) do dir, item
+            joinpath(
+                relpath(dir, root),
+                splitext(basename(item))[1] * ".md"
+            )
         end
     else
         out_path = joinpath(relative_root, "index.md")
