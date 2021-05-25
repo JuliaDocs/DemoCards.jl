@@ -21,5 +21,7 @@ generate demos and associated assets for you.
 
 ## Usage Examples
 
-* [Images](https://juliaimages.org/latest/democards/examples/)
-* [Augmentor](https://evizero.github.io/Augmentor.jl/dev/democards/operations/)
+* [Augmentor.jl](https://evizero.github.io/Augmentor.jl/dev/operations/)
+* [Images.jl](https://juliaimages.org/latest/examples/)
+* [ReinforcementLearning.jl](https://juliareinforcementlearning.org/docs/experiments/)
+* [LeetCode.jl](https://cn.julialang.org/LeetCode.jl/dev/)
