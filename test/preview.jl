@@ -73,7 +73,7 @@
         @test readdir(joinpath(page_dir, "subsection_2")) == ["card_3.md"]
     end
 
-    index_page = @suppress_err @test_nowarn preview_demos(joinpath(abs_root, "preview"), theme="grid", require_html=true)
+    index_page = @suppress_err preview_demos(joinpath(abs_root, "preview"), theme="grid", require_html=true)
     @test isfile(index_page)
     index_page = @suppress_err @test_nowarn preview_demos(joinpath(abs_root, "preview"), require_html=true)
     @test isfile(index_page)
