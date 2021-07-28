@@ -10,4 +10,4 @@ JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 TestImages = "5e47fb64-e119-507b-a336-dd2b206d9990"
 
 [compat]
-Documenter = "0.25"
+Documenter = "0.27"
