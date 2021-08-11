@@ -74,11 +74,12 @@ mutable struct JuliaDemoCard <: AbstractDemoCard
     date::DateTime
     julia::VersionNumber
     hidden::Bool
+    notebook::Union{Nothing, Bool}
 end
 
 function JuliaDemoCard(path::String)::JuliaDemoCard
     # first consturct an incomplete democard, and then load the config
-    card = JuliaDemoCard(path, "", "", "", "", "", DateTime(0), JULIA_COMPAT, false)
+    card = JuliaDemoCard(path, "", "", "", "", "", DateTime(0), JULIA_COMPAT, false, nothing)
 
     config = parse(card)
     card.cover = load_config(card, "cover"; config=config)
@@ -91,6 +92,15 @@ function JuliaDemoCard(path::String)::JuliaDemoCard
     # default description requires a title
     card.description = load_config(card, "description"; config=config)
     card.hidden = load_config(card, "hidden"; config=config)
+
+    # Because we want bottom-level cards configuration to have higher priority, figuring
+    # out the default `notebook` option needs a reverse walk from top-level page to the
+    # bottom-level card.
+    if haskey(config, "notebook")
+        notebook = config["notebook"]
+        card.notebook = notebook isa Bool ? notebook : parse(Bool, lowercase(notebook))
+    end
+
     return card
 end
 
@@ -118,6 +128,7 @@ function save_democards(card_dir::String,
                         project_dir=Base.source_dir(),
                         src="src",
                         throw_error = false,
+                        properties = Dict{String, Any}(),
                         kwargs...)
     isdir(card_dir) || mkpath(card_dir)
     cardname = splitext(basename(card.path))[1]
@@ -129,6 +140,15 @@ function save_democards(card_dir::String,
         # It may work, it may not work; I hope it would work.
         @warn "The running Julia version `$(VERSION)` is older than the declared compatible version `$(card.julia)`. You might need to upgrade your Julia."
     end
+
+    card.notebook = if isnothing(card.notebook)
+        # Backward compatibility: we used to generate notebooks for all jl files
+        op = get(properties, "notebook", "true")
+        Base.parse(Bool, op)
+    else
+        card.notebook
+    end
+    @assert !isnothing(card.notebook)
 
     # 1. generating assets
     cp(card.path, src_path; force=true)
@@ -174,14 +194,21 @@ function save_democards(card_dir::String,
     isempty(strip(src_header)) || (src_header *= "\n\n")
 
     # insert header badge
-    badges = make_badges(card; src=src, card_dir=card_dir, nbviewer_root_url=nbviewer_root_url, project_dir=project_dir) * "\n\n"
-    write(src_path, badges, body)
+    badges = make_badges(card;
+                         src=src,
+                         card_dir=card_dir,
+                         nbviewer_root_url=nbviewer_root_url,
+                         project_dir=project_dir,
+                         build_notebook=card.notebook) 
+    write(src_path, badges * "\n\n", body)
 
     # 2. notebook
-    try
-        @suppress Literate.notebook(src_path, card_dir; credit=credit)
-    catch err
-        nothing # early warning in the asserts generation
+    if card.notebook
+        try
+            @suppress Literate.notebook(src_path, card_dir; credit=credit)
+        catch err
+            nothing # There are already early warning in the assets generation
+        end
     end
 
     # 3. markdown
@@ -206,19 +233,21 @@ function save_democards(card_dir::String,
     end
 end
 
-function make_badges(card::JuliaDemoCard; src, card_dir, nbviewer_root_url, project_dir)
+function make_badges(card::JuliaDemoCard; src, card_dir, nbviewer_root_url, project_dir, build_notebook)
     cardname = splitext(basename(card.path))[1]
     badges = ["#md #"]
     push!(badges, "[![Source code]($download_badge)]($(cardname).jl)")
 
-    if !isempty(nbviewer_root_url)
-        # Note: this is only reachable in CI environment
-        nbviewer_folder = normpath(relpath(card_dir, "$project_dir/$src"))
-        nbviewer_url = replace("$(nbviewer_root_url)/$(nbviewer_folder)/$(cardname).ipynb", Base.Filesystem.path_separator=>'/')
-    else
-        nbviewer_url = "$(cardname).ipynb"
+    if build_notebook
+        if !isempty(nbviewer_root_url)
+            # Note: this is only reachable in CI environment
+            nbviewer_folder = normpath(relpath(card_dir, "$project_dir/$src"))
+            nbviewer_url = replace("$(nbviewer_root_url)/$(nbviewer_folder)/$(cardname).ipynb", Base.Filesystem.path_separator=>'/')
+        else
+            nbviewer_url = "$(cardname).ipynb"
+        end
+        push!(badges, "[![notebook]($nbviewer_badge)]($nbviewer_url)")
     end
-    push!(badges, "[![notebook]($nbviewer_badge)]($nbviewer_url)")
     if card.julia != JULIA_COMPAT
         # It might be over verbose to insert a compat badge for every julia card, only add one for
         # cards that users should care about

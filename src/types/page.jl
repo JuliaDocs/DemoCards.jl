@@ -89,6 +89,8 @@ mutable struct DemoPage
     template::String
     theme::Union{Nothing, String}
     title::String
+    # These properties will be shared by all childrens of it during build time
+    properties::Dict{String, Any}
 end
 
 basename(page::DemoPage) = basename(page.root)
@@ -122,7 +124,7 @@ function DemoPage(root::String)::DemoPage
     config = merge(json_config, config) # template has higher priority over config file
 
     sections = map(DemoSection, section_paths)
-    page = DemoPage(root, sections, "", nothing, "")
+    page = DemoPage(root, sections, "", nothing, "", Dict{String, Any}())
     page.theme = load_config(page, "theme"; config=config)
 
     section_orders = load_config(page, "order"; config=config)
@@ -139,6 +141,10 @@ function DemoPage(root::String)::DemoPage
     template = load_config(page, "template"; config=config)
     page.template = template
 
+    if haskey(config, "properties")
+        properties = config["properties"]::Dict
+        merge!(page.properties, properties)
+    end
     return page
 end
 

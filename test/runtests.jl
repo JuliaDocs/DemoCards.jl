@@ -21,6 +21,8 @@ cd(test_root) do
     include("preview.jl")
     include("show.jl")
     include("utils.jl")
+
+    include("configurations.jl")
 end
 
 nothing

@@ -75,6 +75,8 @@ struct DemoSection
     subsections::Vector{DemoSection}
     title::String
     description::String
+    # These properties will be shared by all childrens of it during build time
+    properties::Dict{String, Any}
 end
 
 basename(sec::DemoSection) = basename(sec.root)
@@ -113,7 +115,8 @@ function DemoSection(root::String)::DemoSection
                           cards,
                           map(DemoSection, section_paths),
                           "",
-                          "")
+                          "",
+                          Dict{String, Any}())
 
     ordered_paths = joinpath.(root, load_config(section, "order"; config=config))
     if !isempty(section.cards)
@@ -126,7 +129,14 @@ function DemoSection(root::String)::DemoSection
 
     title = load_config(section, "title"; config=config)
     description = load_config(section, "description"; config=config)
-    DemoSection(root, cards, subsections, title, description)
+
+    properties = if haskey(config, "properties")
+        Dict{String, Any}(config["properties"])
+    else
+        Dict{String, Any}()
+    end
+
+    DemoSection(root, cards, subsections, title, description, properties)
 end
 
 
