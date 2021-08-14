@@ -185,8 +185,18 @@ function copy_assets_and_configs(src_page_dir, dst_build_dir=pwd())
             for assets in assets_dirs
                 src_assets = abspath(root, assets)
                 dst_assets_path = abspath(dst_build_dir, relpath(src_assets, dirname(src_page_dir)))
-                mkpath(dirname(dst_assets_path))
-                ispath(dst_assets_path) || cp(src_assets, dst_assets_path; force=true)
+                dst_sec_dir = dirname(dst_assets_path)
+
+                # only copy assets when there are section or card entries
+                if isdir(dst_sec_dir)
+                    entry_names = filter(readdir(dst_sec_dir)) do x
+                        x = joinpath(root, x)
+                        is_democard(x) || is_demosection(x)
+                    end
+                    if !isempty(entry_names)
+                        ispath(dst_assets_path) || cp(src_assets, dst_assets_path; force=true)
+                    end
+                end
             end
         end
 

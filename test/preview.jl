@@ -22,7 +22,7 @@
         md_index = joinpath(page_dir, "index.md")
         @test_reference joinpath("references", "preview", "index_sec_nopage.md") read(md_index, String) by=ignore_CR
 
-        @test readdir(page_dir) == ["covers", "index.md", "scripts"]
+        @test readdir(page_dir) == ["assets", "covers", "index.md", "scripts"]
         @test readdir(joinpath(page_dir, "covers")) == ["demo2.svg", "democards_logo.svg"]
         @test readdir(joinpath(page_dir, "scripts")) == ["assets", "demo1.ipynb", "demo1.jl", "demo1.md", "demo2.md"]
     end
@@ -45,7 +45,7 @@
         md_index = joinpath(page_dir, "index.md")
         @test_reference joinpath("references", "preview", "index_file.md") read(md_index, String) by=ignore_CR
 
-        @test readdir(page_dir) == ["covers", "index.md", "scripts"]
+        @test readdir(page_dir) == ["assets", "covers", "index.md", "scripts"]
         @test readdir(joinpath(page_dir, "covers")) == ["demo2.svg"]
         @test readdir(joinpath(page_dir, "scripts")) == ["assets", "demo2.md"]
         @test readdir(joinpath(page_dir, "scripts", "assets")) == ["logo.svg"]
@@ -77,4 +77,15 @@
     @test isfile(index_page)
     index_page = @suppress_err preview_demos(joinpath(abs_root, "preview"), require_html=true)
     @test isfile(index_page)
+
+    @testset "don't copy unrelated assets" begin
+        src_page_dir = joinpath(abs_root, "preview")
+        @test readdir(src_page_dir) == ["assets", "other_scripts", "scripts"]
+        page_dir = @suppress_err preview_demos(joinpath(src_page_dir, "other_scripts", "nested", "demo3.jl"), theme="grid", require_html=false)
+
+        # `assets` is copied, but `scripts` is not
+        @test readdir(page_dir) == ["assets", "covers", "index.md", "other_scripts"]
+        @test readdir(joinpath(page_dir, "other_scripts")) == ["assets", "nested"]
+        @test readdir(joinpath(page_dir, "other_scripts", "nested")) == ["assets", "demo3.ipynb", "demo3.jl", "demo3.md"]
+    end
 end
