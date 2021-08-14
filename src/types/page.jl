@@ -22,6 +22,8 @@ Supported items are:
 * `theme`: specify which card theme should be used to generate the index page. If not specified, it
   will default to `nothing`.
 * `title`: specify the title of this demo page. By default, it's the folder name of `root`. Will be override by `template`.
+* `properties`: a dictionary of properties that can be propagated to its children items. The same properties in
+  the children items, if exist, have higher priority.
 
 The following is an example of `config.json`:
 
@@ -32,7 +34,12 @@ The following is an example of `config.json`:
     "order": [
         "basic",
         "advanced"
-    ]
+    ],
+    "properties": {
+        "notebook": "false",
+        "julia": "1.6",
+        "author": "Johnny Chen"
+    }
 }
 ```
 
@@ -89,7 +96,7 @@ mutable struct DemoPage
     template::String
     theme::Union{Nothing, String}
     title::String
-    # These properties will be shared by all childrens of it during build time
+    # These properties will be shared by all children of it during build time
     properties::Dict{String, Any}
 end
 

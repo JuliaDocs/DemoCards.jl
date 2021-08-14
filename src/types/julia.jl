@@ -32,6 +32,7 @@ Besides `path`, this struct has some other fields:
 * `description`: multi-line description of the demo card
 * `julia`: Julia version compatibility
 * `hidden`: whether this card is shown in the generated index page
+* `notebook`: enable or disable the jupyter notebook generation. Valid values are `true` or `false`.
 
 # Configuration
 

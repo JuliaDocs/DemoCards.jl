@@ -19,6 +19,8 @@ Supported items are:
 * `order`: specify the cards order or subsections order. By default, it's case-insensitive alphabetic order.
 * `title`: specify the title of this demo section. By default, it's the folder name of `root`.
 * `description`: some header description that you want to add before demo cards.
+* `properties`: a dictionary of properties that can be propagated to its children items. The same properties in
+  the children items, if exist, have higher priority.
 
 The following is an example of `config.json`:
 
@@ -29,7 +31,12 @@ The following is an example of `config.json`:
     "order": [
         "quickstart.md",
         "array.md"
-    ]
+    ],
+    "properties": {
+        "notebook": "false",
+        "julia": "1.6",
+        "author": "Johnny Chen"
+    }
 }
 ```
 
@@ -75,7 +82,7 @@ struct DemoSection
     subsections::Vector{DemoSection}
     title::String
     description::String
-    # These properties will be shared by all childrens of it during build time
+    # These properties will be shared by all children of it during build time
     properties::Dict{String, Any}
 end
 
