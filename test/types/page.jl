@@ -28,6 +28,22 @@ using DemoCards: infer_pagedir, is_demosection, is_democard
     # template has higher priority
     page = DemoPage(joinpath(root, "suppressed_title"))
     @test page.title == "Custom Title"
+
+    @testset "empty demo section" begin
+        page_dir = joinpath("assets", "section", "empty")
+        mkpath(joinpath(page_dir, "sec1")) # empty folder cannot be commited into git history
+
+        page = @suppress_err DemoPage(page_dir)
+        @test length(page.sections) == 1
+        warn_msg = @capture_err DemoPage(page_dir)
+        @test occursin("Empty section detected", warn_msg)
+
+        @test_throws ErrorException("Empty demo page, you have to add something.") @suppress_err begin
+            preview_demos(joinpath("assets", "section", "empty", "sec1"))
+        end
+        @test isempty(readdir(joinpath(page_dir, "sec1")))
+        rm(joinpath(page_dir, "sec1"))
+    end
 end
 
 @testset "infer_pagedir" begin
