@@ -92,6 +92,22 @@
             @test occursin("The running Julia version `$(VERSION)` is older than the declared compatible version `$(card.julia)`.", warn_msg)
         end
 
+        @testset "notebook" begin
+            card = JuliaDemoCard("notebook_1.jl")
+            @test card.notebook == true
+
+            card = JuliaDemoCard("notebook_2.jl")
+            @test card.notebook == false
+
+            card = JuliaDemoCard("notebook_3.jl")
+            @test card.notebook == false
+
+            card = @suppress_err JuliaDemoCard("notebook_4.jl")
+            @test card.notebook == nothing
+            warn_msg = @capture_err JuliaDemoCard("notebook_4.jl")
+            @test occursin("`notebook` option should be either `\"true\"` or `\"false\"`, instead it is: nothing. Fallback to unconfigured.", warn_msg)
+        end
+
         @testset "generate" begin
             page_dir = @suppress_err preview_demos("title_7.jl", theme="grid", require_html=false)
             card_dir = joinpath(page_dir, "julia")
@@ -105,6 +121,12 @@
             @test_reference joinpath(test_root, "references", "cards", "julia_md.md") strip_notebook(read(joinpath(card_dir, "title_7.md"), String)) by=ignore_CR
             @test_reference joinpath(test_root, "references", "cards", "julia_src.jl") read(joinpath(card_dir, "title_7.jl"), String) by=ignore_CR
             @test isfile(joinpath(card_dir, "title_7.ipynb"))
+
+            # check if notebook keyword actually affects the generation
+            page_dir = @suppress_err preview_demos("notebook_2.jl", theme="grid", require_html=false)
+            card_dir = joinpath(page_dir, "julia")
+            contents = read(joinpath(card_dir, "notebook_2.md"), String)
+            @test !occursin("[notebook]", contents)
         end
     end
 end

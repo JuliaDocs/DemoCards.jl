@@ -232,38 +232,41 @@ generate(io::IO, page::DemoPage, args...) = write(io, generate(page, args...))
 
 
 function generate(page::DemoPage, templates)
-    items = Dict("democards" => generate(page.sections, templates))
+    items = Dict("democards" => generate(page.sections, templates; properties=page.properties))
     Mustache.render(page.template, items)
 end
 
-function generate(cards::AbstractVector{<:AbstractDemoCard}, template)
+function generate(cards::AbstractVector{<:AbstractDemoCard}, template; properties=Dict{String, Any}())
     # for those hidden cards, only generate the necessary assets and files, but don't add them into
     # the index.md page
     foreach(filter(x->x.hidden, cards)) do x
-        generate(x, template)
+        generate(x, template; properties=properties)
     end
 
     mapreduce(*, filter(x->!x.hidden, cards); init="") do x
-        generate(x, template)
+        generate(x, template; properties=properties)
     end
 end
 
-function generate(secs::AbstractVector{DemoSection}, templates; level=1)
+function generate(secs::AbstractVector{DemoSection}, templates; level=1, properties=Dict{String, Any}())
     mapreduce(*, secs; init="") do x
-        generate(x, templates;level=level)
+        properties = merge(properties, x.properties) # sec.properties has higher priority
+        generate(x, templates; level=level, properties=properties)
     end
 end
 
-function generate(sec::DemoSection, templates; level=1)
+function generate(sec::DemoSection, templates; level=1, properties=Dict{String, Any}())
     header = repeat("#", level) * " " * sec.title * "\n"
     footer = "\n"
+    properties = merge(properties, sec.properties) # sec.properties has higher priority
+
     # either cards or subsections are empty
     # recursively generate the page contents
     if isempty(sec.cards)
-        body = generate(sec.subsections, templates; level=level+1)
+        body = generate(sec.subsections, templates; level=level+1, properties=properties)
     else
         items = Dict(
-            "cards" => generate(sec.cards, templates["card"]),
+            "cards" => generate(sec.cards, templates["card"], properties=properties),
             "description" => sec.description
         )
         body = Mustache.render(templates["section"], items)
@@ -271,7 +274,7 @@ function generate(sec::DemoSection, templates; level=1)
     header * body * footer
 end
 
-function generate(card::AbstractDemoCard, template)
+function generate(card::AbstractDemoCard, template; properties=Dict{String, Any})
     covername = get_covername(card)
 
     if isnothing(covername)
@@ -287,7 +290,7 @@ function generate(card::AbstractDemoCard, template)
     if length(card.description) >= cut_idx
         # cut descriptions into ~500 characters
         offset = findfirst(' ', description[cut_idx:end])
-        offset == nothing && (offset = 0)
+        offset === nothing && (offset = 0)
         offset = cut_idx + offset - 2
         description = description[1:cut_idx] * "..."
     end
@@ -365,13 +368,14 @@ get_logopath() = joinpath(pkgdir(DemoCards), "assets", "democards_logo.svg")
 recursively process and save source demo file
 """
 function save_democards(root::String, page::DemoPage; kwargs...)
-    save_democards.(root, page.sections; kwargs...)
+    save_democards.(root, page.sections; properties=page.properties, kwargs...)
 end
-function save_democards(root::String, sec::DemoSection; kwargs...)
+function save_democards(root::String, sec::DemoSection; properties, kwargs...)
+    properties = merge(properties, sec.properties) # sec.properties has higher priority
     save_democards.(joinpath(root, basename(sec.root)), sec.subsections;
-                    kwargs...)
+                    properties=properties, kwargs...)
     save_democards.(joinpath(root, basename(sec.root)), sec.cards;
-                    kwargs...)
+                    properties=properties, kwargs...)
 end
 
 ### copy assets

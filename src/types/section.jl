@@ -19,6 +19,8 @@ Supported items are:
 * `order`: specify the cards order or subsections order. By default, it's case-insensitive alphabetic order.
 * `title`: specify the title of this demo section. By default, it's the folder name of `root`.
 * `description`: some header description that you want to add before demo cards.
+* `properties`: a dictionary of properties that can be propagated to its children items. The same properties in
+  the children items, if exist, have higher priority.
 
 The following is an example of `config.json`:
 
@@ -29,7 +31,12 @@ The following is an example of `config.json`:
     "order": [
         "quickstart.md",
         "array.md"
-    ]
+    ],
+    "properties": {
+        "notebook": "false",
+        "julia": "1.6",
+        "author": "Johnny Chen"
+    }
 }
 ```
 
@@ -75,6 +82,8 @@ struct DemoSection
     subsections::Vector{DemoSection}
     title::String
     description::String
+    # These properties will be shared by all children of it during build time
+    properties::Dict{String, Any}
 end
 
 basename(sec::DemoSection) = basename(sec.root)
@@ -113,7 +122,8 @@ function DemoSection(root::String)::DemoSection
                           cards,
                           map(DemoSection, section_paths),
                           "",
-                          "")
+                          "",
+                          Dict{String, Any}())
 
     ordered_paths = joinpath.(root, load_config(section, "order"; config=config))
     if !isempty(section.cards)
@@ -126,7 +136,14 @@ function DemoSection(root::String)::DemoSection
 
     title = load_config(section, "title"; config=config)
     description = load_config(section, "description"; config=config)
-    DemoSection(root, cards, subsections, title, description)
+
+    properties = if haskey(config, "properties")
+        Dict{String, Any}(config["properties"])
+    else
+        Dict{String, Any}()
+    end
+
+    DemoSection(root, cards, subsections, title, description, properties)
 end
 
 
