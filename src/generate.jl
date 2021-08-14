@@ -164,6 +164,8 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
         end
         if clean_builddir
             @info "Remove DemoCards build dir: $absolute_root"
+            # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
+            Base.Sys.iswindows() && GC.gc()
             rm(absolute_root; force=true, recursive=true)
         else
             error("Stopped demos build.")
@@ -200,12 +202,18 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
             end
 
             @info "Clean up DemoCards build dir: \"$source\""
+            # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
+            Base.Sys.iswindows() && GC.gc()
             rm(absolute_root; force=true, recursive=true)
 
             if !isnothing(theme_assets)
                 assets_path = abspath(root, src, theme_assets)
+                # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
+                Base.Sys.iswindows() && GC.gc()
                 rm(assets_path, force=true)
                 if(isempty(readdir(dirname(assets_path))))
+                    # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
+                    Base.Sys.iswindows() && GC.gc()
                     rm(dirname(assets_path))
                 end
             end
@@ -216,6 +224,8 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
     catch err
         # clean up build dir if anything wrong happens here so that we _hopefully_ never trigger the
         # user prompt logic before the build process.
+        # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
+        Base.Sys.iswindows() && GC.gc()
         rm(absolute_root; force=true, recursive=true)
         @error "Errors when building demo dir" pwd=pwd() source root src
         rethrow(err)
