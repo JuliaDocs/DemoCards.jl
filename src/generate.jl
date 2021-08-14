@@ -156,6 +156,11 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
         out_path = joinpath(relative_root, "index.md")
     end
 
+    # Ensure every path exists before we actually do the work
+    walkpage(page) do dir, item
+        @assert isfile(item.path) || isdir(item.path)
+    end
+
     @info "SetupDemoCardsDirectory: setting up \"$(source)\" directory."
     if isdir(absolute_root)
         # a typical and probably safe case -- that we're still in docs/ folder

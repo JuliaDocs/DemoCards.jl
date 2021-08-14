@@ -119,22 +119,6 @@ function DemoSection(root::String)::DemoSection
         !(x isa UnmatchedCard)
     end
 
-    section = DemoSection(root,
-                          cards,
-                          map(DemoSection, section_paths),
-                          "",
-                          "",
-                          Dict{String, Any}())
-
-    ordered_paths = joinpath.(root, load_config(section, "order"; config=config))
-    if !isempty(section.cards)
-        cards = map(democard, ordered_paths)
-        subsections = []
-    else
-        cards = []
-        subsections = map(DemoSection, ordered_paths)
-    end
-
     if haskey(config, "remote")
         remote_cards = LocalRemoteCard[]
         for (cardname, cardpath) in config["remote"]
@@ -146,7 +130,7 @@ function DemoSection(root::String)::DemoSection
     end
 
     subsections = map(DemoSection, section_paths)
-    section = DemoSection(root, cards, subsections, "", "")
+    section = DemoSection(root, cards, subsections, "", "", Dict{String, Any}())
     cards, subsections = sort_by_order(section, config)
 
     title = load_config(section, "title"; config=config)

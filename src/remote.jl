@@ -34,9 +34,9 @@ function Base.show(io::IO, card::LocalRemoteCard)
     print(io, basename(card), " => ", card.path)
 end
 
-function generate(card::LocalRemoteCard, template)
+function generate(card::LocalRemoteCard, template; kwargs...)
     with_tempcard(card) do tempcard
-        generate(tempcard, template)
+        generate(tempcard, template; kwargs...)
     end
 end
 function save_democards(card_dir::String, card::LocalRemoteCard; kwargs...)

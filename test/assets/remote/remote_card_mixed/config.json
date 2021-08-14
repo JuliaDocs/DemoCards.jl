@@ -1,6 +1,6 @@
 {
     "remote": {
-        "julia_card": "../../card/julia/title_1.jl",
-        "markdown_card": "../../card/markdown/title_3.md"
+        "julia_card1": "../../card/julia/cover_1.jl",
+        "markdown_card1": "../../card/markdown/cover_3.md"
     }
 }

@@ -10,6 +10,7 @@
                 (5, "remote_card_mixed"),
                 (4, "remote_card_simplest")
             ]
+                # there will be warnings due to lack of cover images, but we can just safely ignore them
                 @suppress_err preview_demos(joinpath(abs_root, dir); theme="grid")
                 page_dir = @suppress_err preview_demos(joinpath(abs_root, dir); require_html=false)
                 files = readdir(joinpath(page_dir, dir))
