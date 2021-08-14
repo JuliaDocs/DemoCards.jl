@@ -130,7 +130,17 @@ function DemoPage(root::String)::DemoPage
     config = parse(Val(:Markdown), template_file)
     config = merge(json_config, config) # template has higher priority over config file
 
-    sections = map(DemoSection, section_paths)
+    sections = filter(map(DemoSection, section_paths)) do sec
+        empty_section = isempty(sec.cards) && isempty(sec.subsections)
+        if empty_section
+            @warn "Empty section detected, remove from the demo page tree." section=relpath(sec.root, root)
+            return false
+        else
+            return true
+        end
+    end
+    isempty(sections) && error("Empty demo page, you have to add something.")
+
     page = DemoPage(root, sections, "", nothing, "", Dict{String, Any}())
     page.theme = load_config(page, "theme"; config=config)
 
