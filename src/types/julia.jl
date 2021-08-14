@@ -99,7 +99,16 @@ function JuliaDemoCard(path::String)::JuliaDemoCard
     # bottom-level card.
     if haskey(config, "notebook")
         notebook = config["notebook"]
-        card.notebook = notebook isa Bool ? notebook : parse(Bool, lowercase(notebook))
+        if notebook isa Bool
+            card.notebook = notebook
+        else
+            card.notebook = try
+                parse(Bool, lowercase(notebook))
+            catch err
+                @warn "`notebook` option should be either `\"true\"` or `\"false\"`, instead it is: $notebook. Fallback to unconfigured."
+                nothing
+            end
+        end
     end
 
     return card
@@ -145,7 +154,12 @@ function save_democards(card_dir::String,
     card.notebook = if isnothing(card.notebook)
         # Backward compatibility: we used to generate notebooks for all jl files
         op = get(properties, "notebook", "true")
-        Base.parse(Bool, op)
+        op = isa(op, Bool) ? op : try
+            Base.parse(Bool, lowercase(op))
+        catch err
+            @warn "`notebook` option should be either `\"true\"` or `\"false\"`, instead it is: $op. Fallback to \"true\"."
+            true
+        end
     else
         card.notebook
     end

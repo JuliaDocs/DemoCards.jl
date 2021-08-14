@@ -92,6 +92,22 @@
             @test occursin("The running Julia version `$(VERSION)` is older than the declared compatible version `$(card.julia)`.", warn_msg)
         end
 
+        @testset "notebook" begin
+            card = JuliaDemoCard("notebook_1.jl")
+            @test card.notebook == true
+
+            card = JuliaDemoCard("notebook_2.jl")
+            @test card.notebook == false
+
+            card = JuliaDemoCard("notebook_3.jl")
+            @test card.notebook == false
+
+            card = JuliaDemoCard("notebook_4.jl")
+            @test card.notebook == nothing
+            warn_msg = @capture_err JuliaDemoCard("notebook_4.jl")
+            @test occursin("`notebook` option should be either `\"true\"` or `\"false\"`, instead it is: nothing. Fallback to unconfigured.", warn_msg)
+        end
+
         @testset "generate" begin
             page_dir = @suppress_err preview_demos("title_7.jl", theme="grid", require_html=false)
             card_dir = joinpath(page_dir, "julia")
