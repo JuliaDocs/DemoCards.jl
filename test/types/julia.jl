@@ -102,7 +102,7 @@
             card = JuliaDemoCard("notebook_3.jl")
             @test card.notebook == false
 
-            card = JuliaDemoCard("notebook_4.jl")
+            card = @suppress_err JuliaDemoCard("notebook_4.jl")
             @test card.notebook == nothing
             warn_msg = @capture_err JuliaDemoCard("notebook_4.jl")
             @test occursin("`notebook` option should be either `\"true\"` or `\"false\"`, instead it is: nothing. Fallback to unconfigured.", warn_msg)
@@ -121,6 +121,12 @@
             @test_reference joinpath(test_root, "references", "cards", "julia_md.md") strip_notebook(read(joinpath(card_dir, "title_7.md"), String)) by=ignore_CR
             @test_reference joinpath(test_root, "references", "cards", "julia_src.jl") read(joinpath(card_dir, "title_7.jl"), String) by=ignore_CR
             @test isfile(joinpath(card_dir, "title_7.ipynb"))
+
+            # check if notebook keyword actually affects the generation
+            page_dir = @suppress_err preview_demos("notebook_2.jl", theme="grid", require_html=false)
+            card_dir = joinpath(page_dir, "julia")
+            contents = read(joinpath(card_dir, "notebook_2.md"), String)
+            @test !occursin("[notebook]", contents)
         end
     end
 end
