@@ -223,13 +223,13 @@ function config_rewrite(src_dir, dst_dir)
             remotes = config["remote"]
             for (dst_entry_name, src_entry_path) in remotes
                 src_entry_path = isabspath(src_entry_path) ? src_entry_path : normpath(src_root, src_entry_path)
-                if !isfile(src_entry_path)
+                if !ispath(src_entry_path)
                     @warn "File/folder doesn't exist, skip it." path=src_entry_path
                     continue
                 end
                 
                 dst_entry_path = joinpath(dst_root, dst_entry_name)
-                if isfile(dst_entry_path)
+                if ispath(dst_entry_path)
                     @warn "A file/folder already exists for remote path $dst_entry_name, skip it." path=dst_entry_path
                     continue
                 end

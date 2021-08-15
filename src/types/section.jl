@@ -1,3 +1,11 @@
+abstract type AbstractDemoSection end
+
+demosection(root::String) = DemoSection(root)
+function demosection((name, path)::Pair{String, String})
+    LocalRemoteSection(name, path, DemoSection(path))
+end
+
+
 """
     struct DemoSection <: Any
     DemoSection(root::String)
@@ -76,17 +84,20 @@ section
 
 See also: [`MarkdownDemoCard`](@ref DemoCards.MarkdownDemoCard), [`DemoPage`](@ref DemoCards.DemoPage)
 """
-struct DemoSection
+struct DemoSection <: AbstractDemoSection
     root::String
     cards::Vector
-    subsections::Vector{DemoSection}
+    subsections::Vector
     title::String
     description::String
     # These properties will be shared by all children of it during build time
     properties::Dict{String, Any}
 end
 
-basename(sec::DemoSection) = basename(sec.root)
+Base.basename(sec::DemoSection) = basename(sec.root)
+compact_title(sec::DemoSection) = sec.title
+cards(sec::DemoSection) = sec.cards
+subsections(sec::DemoSection) = sec.subsections
 
 function DemoSection(root::String)::DemoSection
     root = replace(root, r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
@@ -121,6 +132,9 @@ function DemoSection(root::String)::DemoSection
     end
 
     subsections = map(DemoSection, section_paths)
+    remote_sections = map(demosection, read_remote_sections(config, root))
+    subsections = [subsections..., remote_sections...]
+
     section = DemoSection(root, cards, subsections, "", "", Dict{String, Any}())
     cards, subsections = sort_by_order(section, config)
 
@@ -201,15 +215,25 @@ function is_demosection(dir)
     end
 end
 
-function read_remote_cards(config, root)
-    remote_cards = Pair{String, String}[]
-    haskey(config, "remote") || return remote_cards
+###
+# LocalRemoteSection
+###
 
-    for (cardname, cardpath) in config["remote"]
-        # if possible, store the abspath 
-        cardpath = isabspath(cardpath) ? cardpath : normpath(joinpath(root, cardpath))
-        isfile(cardpath) || continue
-        push!(remote_cards, cardname=>cardpath)
+struct LocalRemoteSection{T<:AbstractDemoSection} <: AbstractDemoSection
+    name::String
+    path::String
+    item::T
+    function LocalRemoteSection(name::String, path::String, item::T) where T<:AbstractDemoSection
+        basename(name) == name || throw(ArgumentError("`name` should not be a path, instead it is: \"$name\". Do you mean \"$(basename(name))\""))
+        isdir(path) || throw(ArgumentError("folder $path does not exist."))
+        new{T}(name, path, item)
     end
-    return remote_cards
 end
+function LocalRemoteSection(name::String, path::String, card::LocalRemoteSection{T}) where T<:AbstractDemoCard
+    LocalRemoteSection(name, path, card.item)
+end
+
+Base.basename(sec::LocalRemoteSection) = sec.name
+compact_title(sec::LocalRemoteSection) = "$(sec.name) => $(sec.path)"
+cards(sec::LocalRemoteSection) = cards(sec.item)
+subsections(sec::LocalRemoteSection) = subsections(sec.item)

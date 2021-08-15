@@ -30,6 +30,21 @@ function validate_order(order::AbstractArray, x::Union{DemoPage, DemoSection})
     end
 end
 
+read_remote_cards(config, root) = _read_remote_items(isfile, config, root)
+read_remote_sections(config, root) = _read_remote_items(isdir, config, root)
+function _read_remote_items(fn, config, root)
+    remote_items = Pair{String, String}[]
+    haskey(config, "remote") || return remote_items
+
+    for (itemname, itempath) in config["remote"]
+        # if possible, store the abspath 
+        itempath = isabspath(itempath) ? itempath : normpath(joinpath(root, itempath))
+        fn(itempath) || continue
+        push!(remote_items, itemname=>itempath)
+    end
+    return remote_items
+end
+
 """
     walkpage([f=identity], page; flatten=true, max_depth=Inf)
 

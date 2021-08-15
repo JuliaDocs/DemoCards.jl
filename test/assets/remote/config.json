@@ -1,0 +1,12 @@
+{
+    "remote": {
+        "hidden_section": "../page/hidden"
+    },
+    "order": [
+        "hidden_section",
+        "remote_card_mixed",
+        "remote_card_mixed_order",
+        "remote_card_simplest",
+        "remote_subfolder"
+    ]
+}

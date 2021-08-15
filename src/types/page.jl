@@ -92,7 +92,7 @@ See also: [`MarkdownDemoCard`](@ref DemoCards.MarkdownDemoCard), [`DemoSection`]
 """
 mutable struct DemoPage
     root::String
-    sections::Vector{DemoSection}
+    sections::Vector
     template::String
     theme::Union{Nothing, String}
     title::String
@@ -100,7 +100,7 @@ mutable struct DemoPage
     properties::Dict{String, Any}
 end
 
-basename(page::DemoPage) = basename(page.root)
+Base.basename(page::DemoPage) = basename(page.root)
 
 function DemoPage(root::String)::DemoPage
     root = replace(root, r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
@@ -139,6 +139,8 @@ function DemoPage(root::String)::DemoPage
             return true
         end
     end
+    remote_sections = map(demosection, read_remote_sections(config, root))
+    sections = [sections..., remote_sections...]
     isempty(sections) && error("Empty demo page, you have to add something.")
 
     page = DemoPage(root, sections, "", nothing, "", Dict{String, Any}())
@@ -146,7 +148,7 @@ function DemoPage(root::String)::DemoPage
 
     section_orders = load_config(page, "order"; config=config)
     section_orders = map(sections) do sec
-        findfirst(x-> x == basename(sec.root), section_orders)
+        findfirst(x-> x == basename(sec), section_orders)
     end
     ordered_sections = sections[section_orders]
 
