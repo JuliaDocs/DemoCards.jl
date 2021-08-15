@@ -101,6 +101,7 @@ mutable struct DemoPage
 end
 
 Base.basename(page::DemoPage) = basename(page.root)
+subsections(sec::DemoPage) = sec.sections
 
 function DemoPage(root::String)::DemoPage
     root = replace(root, r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility

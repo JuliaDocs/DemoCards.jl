@@ -1,7 +1,7 @@
 using DemoCards
 using DemoCards: democard, MarkdownDemoCard, JuliaDemoCard, DemoSection, DemoPage
 using DemoCards: generate
-using HTTP
+using HTTP, JSON
 using Test, ReferenceTests, Suppressor
 using Dates
 

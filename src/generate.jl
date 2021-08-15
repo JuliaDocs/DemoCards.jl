@@ -260,7 +260,7 @@ function generate(page::DemoPage, templates)
     Mustache.render(page.template, items)
 end
 
-function generate(cards::AbstractVector{<:Union{AbstractDemoCard, LocalRemoteCard}}, template; properties=Dict{String, Any}())
+function generate(cards::AbstractVector{<:AbstractDemoCard}, template; properties=Dict{String, Any}())
     # for those hidden cards, only generate the necessary assets and files, but don't add them into
     # the index.md page
     foreach(filter(ishidden, cards)) do x
@@ -272,9 +272,12 @@ function generate(cards::AbstractVector{<:Union{AbstractDemoCard, LocalRemoteCar
     end
 end
 
-function generate(secs::AbstractVector{DemoSection}, templates; level=1, properties=Dict{String, Any}())
+function generate(secs::AbstractVector{<:AbstractDemoSection}, templates; level=1, properties=Dict{String, Any}())
     mapreduce(*, secs; init="") do x
-        properties = merge(properties, x.properties) # sec.properties has higher priority
+        if hasproperty(x, :properties)
+            # sec.properties has higher priority
+            properties = merge(properties, x.properties)
+        end
         generate(x, templates; level=level, properties=properties)
     end
 end

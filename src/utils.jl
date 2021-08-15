@@ -115,6 +115,7 @@ function _walkpage(f, sec::DemoSection, depth; max_depth=Inf, flatten=true)
         return flatten ? mapreduce(map_fun, vcat, sec.subsections) : sec.title => map_fun.(sec.subsections)
     end
 end
+_walkpage(f, sec::LocalRemoteSection, depth; kwargs...) = _walkpage(f, sec.item, depth; kwargs...)
 
 ### regexes and configuration parsers
 

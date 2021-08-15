@@ -237,3 +237,37 @@ Base.basename(sec::LocalRemoteSection) = sec.name
 compact_title(sec::LocalRemoteSection) = "$(sec.name) => $(sec.path)"
 cards(sec::LocalRemoteSection) = cards(sec.item)
 subsections(sec::LocalRemoteSection) = subsections(sec.item)
+
+function save_cover(path::String, sec::LocalRemoteSection)
+    with_tempsection(sec) do tempsec
+        save_cover(path, tempsec)
+    end
+end
+function save_democards(root::String, sec::LocalRemoteSection; kwargs...)
+    dst = joinpath(root, basename(sec))
+    ispath(dst) && throw(ArgumentError("folder $dst already exists."))
+    with_tempsection(sec) do tempsec
+        save_democards(root, tempsec; kwargs...)
+    end
+end
+function copy_assets(path::String, sec::LocalRemoteSection)
+    dst = joinpath(path, basename(sec))
+    ispath(dst) && throw(ArgumentError("folder $dst already exists."))
+    with_tempsection(sec) do tempsec
+        copy_assets(path, tempsec)
+    end
+end
+function generate(sec::LocalRemoteSection, template; kwargs...)
+    with_tempsection(sec) do tempsec
+        generate(tempsec, template; kwargs...)
+    end
+end
+
+# TODO: this file copy is not very necessary, and it get called many times
+function with_tempsection(f, sec)
+    mktempdir() do dir
+        tmpdir = joinpath(dir, basename(sec))
+        cp(sec.path, tmpdir)
+        f(demosection(tmpdir))
+    end
+end
