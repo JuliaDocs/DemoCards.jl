@@ -54,8 +54,7 @@ function preview_demos(demo_path::String;
     end
 
     page_dir = generate_or_copy_pagedir(demo_path, build_dir)
-    copy_assets_and_configs(page_dir, build_dir)
-    rewrite_localremote_path(page_dir, build_dir)
+    copy_assets(page_dir, build_dir)
 
     cd(build_dir) do
         page = @suppress_err DemoPage(page_dir)
@@ -159,9 +158,12 @@ function generate_or_copy_pagedir(src_path, build_dir)
         end
         mkpath(dirname(dst_sec_dir))
         cp(sec_dir, dst_sec_dir; force=true)
+        config_rewrite(sec_dir, dst_sec_dir)
     elseif is_demopage(src_path)
         page_dir = src_path
-        cp(page_dir, abspath(build_dir, basename(page_dir)); force=true)
+        dst_page_dir = abspath(build_dir, basename(page_dir))
+        cp(page_dir, dst_page_dir; force=true)
+        config_rewrite(page_dir, dst_page_dir)
     else
         throw(ArgumentError("failed to parse demo page structure from path: $src_path. There might be some invalid demo files."))
     end
@@ -170,14 +172,12 @@ function generate_or_copy_pagedir(src_path, build_dir)
 end
 
 """
-    copy_assets_and_configs(src_page_dir, dst_build_dir=pwd())
+    copy_assets(src_page_dir, dst_build_dir=pwd())
 
-copy only assets, configs and templates from `src_page_dir` to `dst_build_dir`. The folder structure
+copy only assets and templates from `src_page_dir` to `dst_build_dir`. The folder structure
 is preserved under `dst_build_dir/\$(basename(src_page_dir))`
-
-`order` in config files are modified accordingly.
 """
-function copy_assets_and_configs(src_page_dir, dst_build_dir=pwd())
+function copy_assets(src_page_dir, dst_build_dir=pwd())
     (isabspath(src_page_dir) && isdir(src_page_dir)) || throw(ArgumentError("src_page_dir is expected to be absolute folder path: $src_page_dir"))
 
     for (root, dirs, files) in walkdir(src_page_dir)
@@ -208,64 +208,40 @@ function copy_assets_and_configs(src_page_dir, dst_build_dir=pwd())
             ispath(dst_template_path) || cp(src_template_path, dst_template_path)
         end
     end
-
-    # modify and copy config.json after the folder structure is already set up
-    for (root, dirs, files) in walkdir(src_page_dir)
-        if config_filename in files
-            src_config_path = abspath(root, config_filename)
-            dst_config_path = abspath(dst_build_dir, relpath(src_config_path, dirname(src_page_dir)))
-            mkpath(dirname(dst_config_path))
-
-            config = JSON.parsefile(src_config_path)
-            config_dir = dirname(dst_config_path)
-            if haskey(config, "order")
-                files = readdir(config_dir)
-                remote_files = keys(get(config, "remote", Dict()))
-                order = filter(config["order"]) do x
-                    x in files || x in remote_files
-                end
-
-                if isempty(order)
-                    delete!(config, "order")
-                else
-                    config["order"] = order
-                end
-            end
-
-            if !isempty(config)
-                # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
-                Base.Sys.iswindows() && GC.gc()
-                open(dst_config_path, "w") do io
-                    JSON.print(io, config)
-                end
-            end
-        end
-    end
 end
 
-function rewrite_localremote_path(page_dir, build_dir)
-    # To support relpath for LocalRemoteCard, we have to
-    # eagerly rewrite the relpath with abspath so that
-    # later build can correctly find the remote filepath.
-    # This only affects LocalRemoteCard with relpath.
+function config_rewrite(src_dir, dst_dir)
+    for (dst_root, dirs, files) in walkdir(dst_dir)
+        src_root = joinpath(dirname(src_dir), relpath(dst_root, dirname(dst_dir)))
 
-    page = @suppress_err DemoPage(page_dir)
-    walkpage(page) do dir, card
-        if card isa LocalRemoteCard
-            # find out the corresponding config file, and rewrite the remote entry
-            # with abspath
-            build_carddir = joinpath(build_dir, basename(page_dir), relpath(dir, page_dir))
-            src_config_path = joinpath(build_carddir, config_filename)
+        config_filename in files || continue
 
-            config = JSON.parsefile(src_config_path)
-            config["remote"][card.name] = card.path
+        dst_config_path = joinpath(dst_root, config_filename)
+        config = JSON.parsefile(dst_config_path)
 
-            # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
-            Base.Sys.iswindows() && GC.gc()
-            open(src_config_path, "w") do io
-                JSON.print(io, config)
+        if haskey(config, "remote")
+            remotes = config["remote"]
+            for (dst_entry_name, src_entry_path) in remotes
+                src_entry_path = isabspath(src_entry_path) ? src_entry_path : normpath(src_root, src_entry_path)
+                if !isfile(src_entry_path)
+                    @warn "File/folder doesn't exist, skip it." path=src_entry_path
+                    continue
+                end
+                
+                dst_entry_path = joinpath(dst_root, dst_entry_name)
+                if isfile(dst_entry_path)
+                    @warn "A file/folder already exists for remote path $dst_entry_name, skip it." path=dst_entry_path
+                    continue
+                end
+                cp(src_entry_path, dst_entry_path)
             end
+            delete!(config, "remote")
+        end
+
+        # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
+        Base.Sys.iswindows() && GC.gc()
+        open(dst_config_path, "w") do io
+            JSON.print(io, config)
         end
     end
-
 end

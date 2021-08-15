@@ -1,9 +1,4 @@
-abstract type AbstractRemotePath end
-
-#####
-# LocalRemote
-#####
-struct LocalRemoteCard{T<:AbstractDemoCard} <: AbstractRemotePath
+struct LocalRemoteCard{T<:AbstractDemoCard} <: AbstractDemoCard
     name::String
     path::String
     item::T
@@ -13,22 +8,13 @@ struct LocalRemoteCard{T<:AbstractDemoCard} <: AbstractRemotePath
         new{T}(name, path, item)
     end
 end
+function LocalRemoteCard(name::String, path::String, card::LocalRemoteCard{T}) where T<:AbstractDemoCard
+    isempty(splitext(name)[2]) && throw(ArgumentError("Remote entry name `$name`for card should has extensions."))
+    LocalRemoteCard(name, path, card.item)
+end
 
 ishidden(card::LocalRemoteCard) = ishidden(card.item)
-
-function Base.basename(card::LocalRemoteCard{T}) where T
-    name, ext = splitext(card.name)
-    if isempty(ext)
-        if T <: MarkdownDemoCard
-            ext = ".md"
-        elseif T <: JuliaDemoCard
-            ext = ".jl"
-        else
-            throw(ArgumentError("Unknown card type $T"))
-        end
-    end
-    return name * ext
-end
+Base.basename(card::LocalRemoteCard) = card.name
 
 function Base.show(io::IO, card::LocalRemoteCard)
     print(io, basename(card), " => ", card.path)

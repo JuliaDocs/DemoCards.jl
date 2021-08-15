@@ -106,7 +106,7 @@ function DemoSection(root::String)::DemoSection
     # For files that `democard` fails to recognized, dummy
     # `UnmatchedCard` will be generated. Currently, we only
     # throw warnings for it.
-    cards = Union{AbstractDemoCard, LocalRemoteCard}[democard(x) for x in card_paths]
+    cards = AbstractDemoCard[democard(x) for x in card_paths]
     unmatches = filter(cards) do x
         x isa UnmatchedCard
     end
@@ -114,19 +114,10 @@ function DemoSection(root::String)::DemoSection
         msg = join(map(basename, unmatches), "\", \"")
         @warn "skip unmatched file: \"$msg\"" section_dir=root
     end
-
+    remote_card_paths = read_remote_cards(config, root)
+    cards = [cards..., democard.(remote_card_paths)...]
     cards = filter!(cards) do x
         !(x isa UnmatchedCard)
-    end
-
-    if haskey(config, "remote")
-        remote_cards = LocalRemoteCard[]
-        for (cardname, cardpath) in config["remote"]
-            # if possible, store the abspath
-            cardpath = isabspath(cardpath) ? cardpath : normpath(joinpath(root, cardpath))
-            push!(remote_cards, LocalRemoteCard(cardname, cardpath, democard(cardpath)))
-        end
-        append!(cards, remote_cards)
     end
 
     subsections = map(DemoSection, section_paths)
@@ -208,4 +199,17 @@ function is_demosection(dir)
         @debug err
         return false
     end
+end
+
+function read_remote_cards(config, root)
+    remote_cards = Pair{String, String}[]
+    haskey(config, "remote") || return remote_cards
+
+    for (cardname, cardpath) in config["remote"]
+        # if possible, store the abspath 
+        cardpath = isabspath(cardpath) ? cardpath : normpath(joinpath(root, cardpath))
+        isfile(cardpath) || continue
+        push!(remote_cards, cardname=>cardpath)
+    end
+    return remote_cards
 end

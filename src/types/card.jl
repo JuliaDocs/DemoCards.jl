@@ -34,6 +34,9 @@ function democard(path::String)::AbstractDemoCard
         return UnmatchedCard(path)
     end
 end
+function democard((name, path)::Pair{String, String})
+    LocalRemoteCard(name, path, democard(path))
+end
 
 basename(x::AbstractDemoCard) = basename(x.path)
 
@@ -52,8 +55,8 @@ end
 
 function is_democard(file)
     try
-        @suppress_err democard(file)
-        return true
+        card = @suppress_err democard(file)
+        return !isa(card, UnmatchedCard)
     catch err
         @debug err
         return false
@@ -128,3 +131,4 @@ end
 
 include("markdown.jl")
 include("julia.jl")
+include("remote_card.jl")
