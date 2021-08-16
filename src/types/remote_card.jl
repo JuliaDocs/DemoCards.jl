@@ -19,36 +19,3 @@ Base.basename(card::LocalRemoteCard) = card.name
 function Base.show(io::IO, card::LocalRemoteCard)
     print(io, basename(card), " => ", card.path)
 end
-
-function generate(card::LocalRemoteCard, template; kwargs...)
-    with_tempcard(card) do tempcard
-        generate(tempcard, template; kwargs...)
-    end
-end
-function save_democards(card_dir::String, card::LocalRemoteCard; kwargs...)
-    dst = joinpath(card_dir, basename(card))
-    isfile(dst) && throw(ArgumentError("file $dst already exists."))
-
-    with_tempcard(card) do tempcard
-        save_democards(card_dir, tempcard; kwargs...)
-    end
-end
-
-function save_cover(path::String, card::LocalRemoteCard)
-    with_tempcard(card) do tempcard
-        save_cover(path, tempcard)
-    end
-end
-
-# TODO: this file copy is not very necessary, and it get called many times
-function with_tempcard(f, card)
-    mktempdir() do dir
-        # copy and rename file so that generated files are correctly handled
-        # For example:
-        #   "cardname" => "path/to/sourcefile.jl"
-        # Later workflow uses "cardname.md" instead of "sourcefile.md"
-        tmpfile = joinpath(dir, basename(card))
-        cp(card.path, tmpfile)
-        f(democard(tmpfile))
-    end
-end

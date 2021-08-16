@@ -99,7 +99,7 @@ compact_title(sec::DemoSection) = sec.title
 cards(sec::DemoSection) = sec.cards
 subsections(sec::DemoSection) = sec.subsections
 
-function DemoSection(root::String)::DemoSection
+function DemoSection(root::String; ignore_remote=false)::DemoSection
     root = replace(root, r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
     isdir(root) || throw(ArgumentError("section root should be a valid dir, instead it's $(root)"))
 
@@ -125,15 +125,19 @@ function DemoSection(root::String)::DemoSection
         msg = join(map(basename, unmatches), "\", \"")
         @warn "skip unmatched file: \"$msg\"" section_dir=root
     end
-    remote_card_paths = read_remote_cards(config, root)
-    cards = [cards..., democard.(remote_card_paths)...]
+    if !ignore_remote
+        remote_card_paths = read_remote_cards(config, root)
+        cards = [cards..., democard.(remote_card_paths)...]
+    end
     cards = filter!(cards) do x
         !(x isa UnmatchedCard)
     end
 
     subsections = map(DemoSection, section_paths)
-    remote_sections = map(demosection, read_remote_sections(config, root))
-    subsections = [subsections..., remote_sections...]
+    if !ignore_remote
+        remote_sections = map(demosection, read_remote_sections(config, root))
+        subsections = [subsections..., remote_sections...]
+    end
 
     section = DemoSection(root, cards, subsections, "", "", Dict{String, Any}())
     cards, subsections = sort_by_order(section, config)
@@ -237,37 +241,3 @@ Base.basename(sec::LocalRemoteSection) = sec.name
 compact_title(sec::LocalRemoteSection) = "$(sec.name) => $(sec.path)"
 cards(sec::LocalRemoteSection) = cards(sec.item)
 subsections(sec::LocalRemoteSection) = subsections(sec.item)
-
-function save_cover(path::String, sec::LocalRemoteSection)
-    with_tempsection(sec) do tempsec
-        save_cover(path, tempsec)
-    end
-end
-function save_democards(root::String, sec::LocalRemoteSection; kwargs...)
-    dst = joinpath(root, basename(sec))
-    ispath(dst) && throw(ArgumentError("folder $dst already exists."))
-    with_tempsection(sec) do tempsec
-        save_democards(root, tempsec; kwargs...)
-    end
-end
-function copy_assets(path::String, sec::LocalRemoteSection)
-    dst = joinpath(path, basename(sec))
-    ispath(dst) && throw(ArgumentError("folder $dst already exists."))
-    with_tempsection(sec) do tempsec
-        copy_assets(path, tempsec)
-    end
-end
-function generate(sec::LocalRemoteSection, template; kwargs...)
-    with_tempsection(sec) do tempsec
-        generate(tempsec, template; kwargs...)
-    end
-end
-
-# TODO: this file copy is not very necessary, and it get called many times
-function with_tempsection(f, sec)
-    mktempdir() do dir
-        tmpdir = joinpath(dir, basename(sec))
-        cp(sec.path, tmpdir)
-        f(demosection(tmpdir))
-    end
-end

@@ -184,6 +184,7 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
     end
 
     mkpath(absolute_root)
+    local clean_up_temp_remote_files
     try
         # hard coded "covers" should be consistant to card template
         isnothing(templates) || mkpath(joinpath(absolute_root, "covers"))
@@ -192,6 +193,10 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
         source_files = [x.path for x in walkpage(page)[2]]
 
         # pipeline
+        # prepare remote files into current folder structure, and provide a callback
+        # to clean it up after the generation
+        page, clean_up_temp_remote_files = prepare_remote_files(page)
+
         # for themeless version, we don't need to generate covers and index page
         copy_assets(absolute_root, page)
         # WARNING: julia cards are reconfigured here
@@ -243,6 +248,8 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
         rm(absolute_root; force=true, recursive=true)
         @error "Errors when building demo dir" pwd=pwd() source root src
         rethrow(err)
+    finally
+        clean_up_temp_remote_files()
     end
 end
 
@@ -426,6 +433,50 @@ function _copy_assets(dest_root::String, src_root::String)
         cp(src, dest; force=true)
     end
 end
+
+### prepare_remote_files
+
+function prepare_remote_files(page)
+    # 1. copy all remote files into its corresponding folders
+    # 2. record all temporarily remote files
+    # 3. rebuild the demo page in no-remote mode
+    temp_entry_list = []
+    for (root, dirs, files) in walkdir(page.root)
+        config_filename in files || continue
+
+        config_path = joinpath(root, config_filename)
+        config = JSON.parsefile(config_path)
+
+        if haskey(config, "remote")
+            remotes = config["remote"]
+            for (dst_entry_name, src_entry_path) in remotes
+                dst_entry_path = joinpath(root, dst_entry_name)
+                src_entry_path = normpath(root, src_entry_path)
+                if !ispath(src_entry_path)
+                    @warn "File/folder doesn't exist, skip it." path=src_entry_path
+                    continue
+                end
+                if ispath(dst_entry_path)
+                    @warn "A file/folder already exists for remote path $dst_entry_name, skip it." path=dst_entry_path
+                    continue
+                end
+
+                cp(src_entry_path, dst_entry_path)
+                push!(temp_entry_list, dst_entry_path)
+            end
+        end
+    end
+
+    page = isempty(temp_entry_list) ? page : DemoPage(page.root; ignore_remote=true)
+    function clean_up_temp_remote_files()
+        Base.Sys.iswindows() && GC.gc()
+        foreach(temp_entry_list) do x
+            rm(x; force=true, recursive=true)
+        end
+    end
+    return page, clean_up_temp_remote_files
+end
+
 
 ### postprocess
 

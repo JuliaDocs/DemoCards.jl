@@ -103,7 +103,7 @@ end
 Base.basename(page::DemoPage) = basename(page.root)
 subsections(sec::DemoPage) = sec.sections
 
-function DemoPage(root::String)::DemoPage
+function DemoPage(root::String; ignore_remote=false)::DemoPage
     root = replace(root, r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
     isdir(root) || throw(ArgumentError("page root does not exist: $(root)"))
     root = rstrip(root, '/') # otherwise basename(root) will returns `""`
@@ -131,7 +131,10 @@ function DemoPage(root::String)::DemoPage
     config = parse(Val(:Markdown), template_file)
     config = merge(json_config, config) # template has higher priority over config file
 
-    sections = filter(map(DemoSection, section_paths)) do sec
+    sections = map(section_paths) do x
+        DemoSection(x, ignore_remote=ignore_remote)
+    end
+    sections = filter(sections) do sec
         empty_section = isempty(sec.cards) && isempty(sec.subsections)
         if empty_section
             @warn "Empty section detected, remove from the demo page tree." section=relpath(sec.root, root)
@@ -140,8 +143,10 @@ function DemoPage(root::String)::DemoPage
             return true
         end
     end
-    remote_sections = map(demosection, read_remote_sections(config, root))
-    sections = [sections..., remote_sections...]
+    if !ignore_remote
+        remote_sections = map(demosection, read_remote_sections(config, root))
+        sections = [sections..., remote_sections...]
+    end
     isempty(sections) && error("Empty demo page, you have to add something.")
 
     page = DemoPage(root, sections, "", nothing, "", Dict{String, Any}())
