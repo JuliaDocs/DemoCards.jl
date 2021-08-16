@@ -279,12 +279,9 @@ function generate(cards::AbstractVector{<:AbstractDemoCard}, template; propertie
     end
 end
 
-function generate(secs::AbstractVector{<:AbstractDemoSection}, templates; level=1, properties=Dict{String, Any}())
+function generate(secs::AbstractVector{DemoSection}, templates; level=1, properties=Dict{String, Any}())
     mapreduce(*, secs; init="") do x
-        if hasproperty(x, :properties)
-            # sec.properties has higher priority
-            properties = merge(properties, x.properties)
-        end
+        properties = merge(properties, x.properties)
         generate(x, templates; level=level, properties=properties)
     end
 end

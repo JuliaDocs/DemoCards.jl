@@ -49,6 +49,7 @@
                     for x in entry_names
                         config["remote"][x] = normpath(abs_root, dir, config["remote"][x])
                     end
+                    Base.Sys.iswindows() && GC.gc()
                     open(config_file, "w") do io
                         JSON.print(io, config)
                     end
