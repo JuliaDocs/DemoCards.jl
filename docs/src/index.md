@@ -19,8 +19,9 @@ generate demos and associated assets for you.
 * CI friendly
 * support demos in markdown and julia format.
 
-## Usage Examples
+## Examples
 
+* [AlgebraOfGraphics.jl](http://juliaplots.org/AlgebraOfGraphics.jl/dev/gallery/)
 * [Augmentor.jl](https://evizero.github.io/Augmentor.jl/dev/operations/)
 * [Images.jl](https://juliaimages.org/latest/examples/)
 * [ReinforcementLearning.jl](https://juliareinforcementlearning.org/docs/experiments/)

@@ -48,6 +48,14 @@ DemoCards would understand it in the following way:
 
 Read the [Quick Start](https://johnnychen94.github.io/DemoCards.jl/stable/democards/quickstart/index.html) for more instructions.
 
+## Examples
+
+* [AlgebraOfGraphics.jl](http://juliaplots.org/AlgebraOfGraphics.jl/dev/gallery/)
+* [Augmentor.jl](https://evizero.github.io/Augmentor.jl/dev/operations/)
+* [Images.jl](https://juliaimages.org/latest/examples/)
+* [ReinforcementLearning.jl](https://juliareinforcementlearning.org/docs/experiments/)
+* [LeetCode.jl](https://cn.julialang.org/LeetCode.jl/dev/)
+
 ## Caveat Emptor
 
 The use of this package heavily relies on [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl),
