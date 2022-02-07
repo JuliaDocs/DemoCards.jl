@@ -131,6 +131,7 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
 
     if !isnothing(page.theme)
         page_templates, theme_assets = cardtheme(page.theme, root = root)
+        theme_assets = something(page.stylesheet, theme_assets)
 
         if templates != page_templates && templates != nothing
             @warn "use configured theme from $(config_file)"
@@ -138,7 +139,7 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
 
         templates = page_templates
     else
-        theme_assets = nothing
+        theme_assets = page.stylesheet
     end
 
     # we can directly pass it to Documenter.makedocs

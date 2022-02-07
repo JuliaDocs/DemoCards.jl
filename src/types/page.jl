@@ -95,6 +95,7 @@ mutable struct DemoPage
     sections::Vector{DemoSection}
     template::String
     theme::Union{Nothing, String}
+    stylesheet::Union{Nothing, String}
     title::String
     # These properties will be shared by all children of it during build time
     properties::Dict{String, Any}
@@ -141,8 +142,9 @@ function DemoPage(root::String)::DemoPage
     end
     isempty(sections) && error("Empty demo page, you have to add something.")
 
-    page = DemoPage(root, sections, "", nothing, "", Dict{String, Any}())
+    page = DemoPage(root, sections, "", nothing, nothing, "", Dict{String, Any}())
     page.theme = load_config(page, "theme"; config=config)
+    page.stylesheet = load_config(page, "stylesheet"; config=config)
 
     section_orders = load_config(page, "order"; config=config)
     section_orders = map(sections) do sec
@@ -192,6 +194,8 @@ function load_config(page::DemoPage, key; config=Dict())
             theme = nothing
         end
         return theme
+    elseif key == "stylesheet"
+        return get(config, key, nothing)
     else
         throw(ArgumentError("Unrecognized key $(key) for DemoPage"))
     end
