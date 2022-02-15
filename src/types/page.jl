@@ -195,7 +195,8 @@ function load_config(page::DemoPage, key; config=Dict())
         end
         return theme
     elseif key == "stylesheet"
-        return get(config, key, nothing)
+        stylesheet = get(config, key, nothing)
+        return isnothing(stylesheet) ? nothing : abspath(page.root, stylesheet)
     else
         throw(ArgumentError("Unrecognized key $(key) for DemoPage"))
     end
