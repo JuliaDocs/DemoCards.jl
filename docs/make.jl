@@ -6,8 +6,9 @@ quickstart, postprocess_cb, quickstart_assets = makedemos("quickstart")
 themeless_demopage, themeless_cb, themeless_assets = makedemos(joinpath("theme_gallery", "themeless"))
 grid_demopage, grid_cb, grid_assets = makedemos(joinpath("theme_gallery", "grid"))
 list_demopage, list_cb, list_assets = makedemos(joinpath("theme_gallery", "list"))
+bulmagrid_demopage, bulmagrid_cb, bulmagrid_assets = makedemos(joinpath("theme_gallery", "bulmagrid"))
 
-assets = collect(filter(x->!isnothing(x), Set([quickstart_assets, themeless_assets, grid_assets, list_assets])))
+assets = collect(filter(x->!isnothing(x), Set([quickstart_assets, themeless_assets, grid_assets, list_assets, bulmagrid_assets])))
 
 # 2. normal Documenter usage
 format = Documenter.HTML(edit_link = "master",
@@ -24,7 +25,8 @@ makedocs(format = format,
             "Theme Gallery" => [
                themeless_demopage,
                grid_demopage,
-               list_demopage
+               bulmagrid_demopage,
+               list_demopage,
             ],
             "Package References" => "references.md"
          ],
@@ -33,6 +35,7 @@ makedocs(format = format,
 # 3. postprocess after makedocs
 postprocess_cb()
 themeless_cb()
+bulmagrid_cb()
 grid_cb()
 list_cb()
 
