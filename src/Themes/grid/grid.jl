@@ -1,9 +1,8 @@
-# FIXME: if rename everything with "grid-" prefix, description won't show up correctly
 const grid_section_template = mt"""
 {{{description}}}
 
 ```@raw html
-<div class="card-section">
+<div class="grid-card-section">
 ```
 
 {{{cards}}}
@@ -15,9 +14,9 @@ const grid_section_template = mt"""
 
 const grid_card_template = mt"""
 ```@raw html
-<div class="card">
-<div class="card-cover">
-<div class="card-description">
+<div class="card grid-card">
+<div class="grid-card-cover">
+<div class="grid-card-description">
 ```
 {{description}}
 ```@raw html
@@ -26,7 +25,7 @@ const grid_card_template = mt"""
 [![card-cover-image]({{{coverpath}}})](@ref {{id}})
 ```@raw html
 </div>
-<div class="card-text">
+<div class="grid-card-text">
 ```
 
 [{{title}}](@ref {{id}})

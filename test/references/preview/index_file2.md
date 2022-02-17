@@ -4,13 +4,13 @@
 
 
 ```@raw html
-<div class="card-section">
+<div class="grid-card-section">
 ```
 
 ```@raw html
-<div class="card">
-<div class="card-cover">
-<div class="card-description">
+<div class="card grid-card">
+<div class="grid-card-cover">
+<div class="grid-card-description">
 ```
 Preview demo1
 ```@raw html
@@ -19,7 +19,7 @@ Preview demo1
 [![card-cover-image](covers/democards_logo.svg)](@ref Preview-demo1)
 ```@raw html
 </div>
-<div class="card-text">
+<div class="grid-card-text">
 ```
 
 [Preview demo1](@ref Preview-demo1)

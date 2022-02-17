@@ -17,7 +17,7 @@
     font-size: large;
 }
 
-img[alt="list-card-cover-image"] {
+.list-card-cover img {
     width: 100%;
 }
 
