@@ -21,6 +21,7 @@ Supported items are:
 * `template`: path to template filename. By default, it's `"index.md"`. The content of the template file should has one and only one `{{{democards}}}`.
 * `theme`: specify which card theme should be used to generate the index page. If not specified, it
   will default to `nothing`.
+* `stylesheet`: relative path to the stylesheet file to override the default stylesheet provided by `"theme"`.
 * `title`: specify the title of this demo page. By default, it's the folder name of `root`. Will be override by `template`.
 * `properties`: a dictionary of properties that can be propagated to its children items. The same properties in
   the children items, if exist, have higher priority.
@@ -31,6 +32,7 @@ The following is an example of `config.json`:
 {
     "template": "template.md",
     "theme": "grid",
+    "stylesheet": "assets/gridstyle.css",
     "order": [
         "basic",
         "advanced"
@@ -95,6 +97,7 @@ mutable struct DemoPage
     sections::Vector{DemoSection}
     template::String
     theme::Union{Nothing, String}
+    stylesheet::Union{Nothing, String}
     title::String
     # These properties will be shared by all children of it during build time
     properties::Dict{String, Any}
@@ -141,8 +144,9 @@ function DemoPage(root::String)::DemoPage
     end
     isempty(sections) && error("Empty demo page, you have to add something.")
 
-    page = DemoPage(root, sections, "", nothing, "", Dict{String, Any}())
+    page = DemoPage(root, sections, "", nothing, nothing, "", Dict{String, Any}())
     page.theme = load_config(page, "theme"; config=config)
+    page.stylesheet = load_config(page, "stylesheet"; config=config)
 
     section_orders = load_config(page, "order"; config=config)
     section_orders = map(sections) do sec
@@ -192,6 +196,9 @@ function load_config(page::DemoPage, key; config=Dict())
             theme = nothing
         end
         return theme
+    elseif key == "stylesheet"
+        stylesheet = get(config, key, nothing)
+        return isnothing(stylesheet) ? nothing : abspath(page.root, stylesheet)
     else
         throw(ArgumentError("Unrecognized key $(key) for DemoPage"))
     end

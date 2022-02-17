@@ -71,7 +71,7 @@ function preview_demos(demo_path::String;
             card_templates = nothing
         else
             card_templates, card_theme = cardtheme(theme; root = build_dir)
-            push!(assets, card_theme)
+            push!(assets, something(page.stylesheet, card_theme))
         end
 
         page_index = joinpath(src, "index.md")
