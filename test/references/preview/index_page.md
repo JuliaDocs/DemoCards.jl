@@ -8,13 +8,13 @@ This is the content of the template
 
 
 ```@raw html
-<div class="card-section">
+<div class="grid-card-section">
 ```
 
 ```@raw html
-<div class="card">
-<div class="card-cover">
-<div class="card-description">
+<div class="card grid-card">
+<div class="grid-card-cover">
+<div class="grid-card-description">
 ```
 Card 1
 ```@raw html
@@ -23,7 +23,7 @@ Card 1
 [![card-cover-image](covers/democards_logo.svg)](@ref Card-1)
 ```@raw html
 </div>
-<div class="card-text">
+<div class="grid-card-text">
 ```
 
 [Card 1](@ref Card-1)
@@ -34,9 +34,9 @@ Card 1
 ```
 
 ```@raw html
-<div class="card">
-<div class="card-cover">
-<div class="card-description">
+<div class="card grid-card">
+<div class="grid-card-cover">
+<div class="grid-card-description">
 ```
 Card 2
 ```@raw html
@@ -45,7 +45,7 @@ Card 2
 [![card-cover-image](covers/democards_logo.svg)](@ref Card-2)
 ```@raw html
 </div>
-<div class="card-text">
+<div class="grid-card-text">
 ```
 
 [Card 2](@ref Card-2)
@@ -65,13 +65,13 @@ Card 2
 
 
 ```@raw html
-<div class="card-section">
+<div class="grid-card-section">
 ```
 
 ```@raw html
-<div class="card">
-<div class="card-cover">
-<div class="card-description">
+<div class="card grid-card">
+<div class="grid-card-cover">
+<div class="grid-card-description">
 ```
 Card 3
 ```@raw html
@@ -80,7 +80,7 @@ Card 3
 [![card-cover-image](covers/democards_logo.svg)](@ref Card-3)
 ```@raw html
 </div>
-<div class="card-text">
+<div class="grid-card-text">
 ```
 
 [Card 3](@ref Card-3)
@@ -91,9 +91,9 @@ Card 3
 ```
 
 ```@raw html
-<div class="card">
-<div class="card-cover">
-<div class="card-description">
+<div class="card grid-card">
+<div class="grid-card-cover">
+<div class="grid-card-description">
 ```
 Card 4
 ```@raw html
@@ -102,7 +102,7 @@ Card 4
 [![card-cover-image](covers/democards_logo.svg)](@ref Card-4)
 ```@raw html
 </div>
-<div class="card-text">
+<div class="grid-card-text">
 ```
 
 [Card 4](@ref Card-4)

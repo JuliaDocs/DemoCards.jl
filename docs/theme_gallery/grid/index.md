@@ -1,4 +1,4 @@
-# Theme: Grid
+# [Theme: Grid](@id theme-grid)
 
 Given demos organized as following, you can make them displayed in grid-like manner
 

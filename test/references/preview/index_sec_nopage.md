@@ -4,13 +4,13 @@
 
 
 ```@raw html
-<div class="card-section">
+<div class="grid-card-section">
 ```
 
 ```@raw html
-<div class="card">
-<div class="card-cover">
-<div class="card-description">
+<div class="card grid-card">
+<div class="grid-card-cover">
+<div class="grid-card-description">
 ```
 Demo1
 ```@raw html
@@ -19,7 +19,7 @@ Demo1
 [![card-cover-image](covers/democards_logo.svg)](@ref Demo1)
 ```@raw html
 </div>
-<div class="card-text">
+<div class="grid-card-text">
 ```
 
 [Demo1](@ref Demo1)
@@ -30,9 +30,9 @@ Demo1
 ```
 
 ```@raw html
-<div class="card">
-<div class="card-cover">
-<div class="card-description">
+<div class="card grid-card">
+<div class="grid-card-cover">
+<div class="grid-card-description">
 ```
 Demo2
 ```@raw html
@@ -41,7 +41,7 @@ Demo2
 [![card-cover-image](covers/demo2.svg)](@ref Demo2)
 ```@raw html
 </div>
-<div class="card-text">
+<div class="grid-card-text">
 ```
 
 [Demo2](@ref Demo2)

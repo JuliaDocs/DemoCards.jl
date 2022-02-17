@@ -25,12 +25,13 @@ using Mustache
 """
 A list of DemoCards theme presets
 """
-const themelists = ["grid", "list"]
+const themelists = ["bulmagrid", "grid", "list"]
 
 # TODO: don't hardcode this
 const max_coversize = (220, 200)
 
 # add themes
+include("bulmagrid/bulmagrid.jl")
 include("grid/grid.jl")
 include("list/list.jl")
 
