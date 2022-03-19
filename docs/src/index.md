@@ -26,3 +26,4 @@ generate demos and associated assets for you.
 * [Images.jl](https://juliaimages.org/latest/examples/)
 * [ReinforcementLearning.jl](https://juliareinforcementlearning.org/docs/experiments/)
 * [LeetCode.jl](https://cn.julialang.org/LeetCode.jl/dev/)
+* [FractionalDiffEq.jl](https://scifracx.org/FractionalDiffEq.jl/dev/ChaosGallery/)

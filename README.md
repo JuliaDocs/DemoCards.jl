@@ -55,6 +55,7 @@ Read the [Quick Start](https://johnnychen94.github.io/DemoCards.jl/stable/democa
 * [Images.jl](https://juliaimages.org/latest/examples/)
 * [ReinforcementLearning.jl](https://juliareinforcementlearning.org/docs/experiments/)
 * [LeetCode.jl](https://cn.julialang.org/LeetCode.jl/dev/)
+* [FractionalDiffEq.jl](https://scifracx.org/FractionalDiffEq.jl/dev/ChaosGallery/)
 
 ## Caveat Emptor
 
