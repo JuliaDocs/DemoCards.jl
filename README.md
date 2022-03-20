@@ -52,10 +52,11 @@ Read the [Quick Start](https://johnnychen94.github.io/DemoCards.jl/stable/democa
 
 * [AlgebraOfGraphics.jl](http://juliaplots.org/AlgebraOfGraphics.jl/dev/gallery/)
 * [Augmentor.jl](https://evizero.github.io/Augmentor.jl/dev/operations/)
+* [FractionalDiffEq.jl](https://scifracx.org/FractionalDiffEq.jl/dev/ChaosGallery/)
+* [LeetCode.jl](https://cn.julialang.org/LeetCode.jl/dev/)
 * [Images.jl](https://juliaimages.org/latest/examples/)
 * [ReinforcementLearning.jl](https://juliareinforcementlearning.org/docs/experiments/)
-* [LeetCode.jl](https://cn.julialang.org/LeetCode.jl/dev/)
-* [FractionalDiffEq.jl](https://scifracx.org/FractionalDiffEq.jl/dev/ChaosGallery/)
+* [Plots.jl](https://docs.juliaplots.org/latest)
 
 ## Caveat Emptor
 
