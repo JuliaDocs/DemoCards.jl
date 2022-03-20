@@ -155,6 +155,7 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
     if isdir(absolute_root)
         # a typical and probably safe case -- that we're still in docs/ folder
         trigger_prompt = !endswith(dirname(absolute_root), joinpath("docs", "src"))
+        @info "Deleting folder $absolute_root"
 
         if trigger_prompt
             @warn "DemoCards build dir $absolute_root already exists.\nThis should only happen when you are using DemoCards incorrectly."
@@ -212,10 +213,12 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
                 # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
                 Base.Sys.iswindows() && GC.gc()
                 rm(assets_path, force=true)
-                if(isempty(readdir(dirname(assets_path))))
-                    # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
-                    Base.Sys.iswindows() && GC.gc()
-                    rm(dirname(assets_path))
+                if isdir(dirname(assets_path))
+                    if(isempty(readdir(dirname(assets_path))))
+                        # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
+                        Base.Sys.iswindows() && GC.gc()
+                        rm(dirname(assets_path))
+                    end
                 end
             end
         end
