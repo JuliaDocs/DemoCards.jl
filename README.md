@@ -56,7 +56,7 @@ Read the [Quick Start](https://johnnychen94.github.io/DemoCards.jl/stable/democa
 * [LeetCode.jl](https://cn.julialang.org/LeetCode.jl/dev/)
 * [Images.jl](https://juliaimages.org/latest/examples/)
 * [ReinforcementLearning.jl](https://juliareinforcementlearning.org/docs/experiments/)
-* [Plots.jl](https://docs.juliaplots.org/latest)
+* [Plots.jl](https://docs.juliaplots.org/dev/user_gallery/)
 
 ## Caveat Emptor
 
