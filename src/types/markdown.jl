@@ -108,7 +108,7 @@ function save_democards(card_dir::String,
                         credit,
                         kwargs...)
     isdir(card_dir) || mkpath(card_dir)
-
+    @debug card.path
     markdown_path = joinpath(card_dir, basename(card))
 
     _, _, body = split_frontmatter(read(card.path, String))
