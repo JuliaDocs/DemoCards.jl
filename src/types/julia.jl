@@ -141,6 +141,7 @@ function save_democards(card_dir::String,
                         properties = Dict{String, Any}(),
                         kwargs...)
     isdir(card_dir) || mkpath(card_dir)
+    @debug card.path
     cardname = splitext(basename(card.path))[1]
     md_path = joinpath(card_dir, "$(cardname).md")
     nb_path = joinpath(card_dir, "$(cardname).ipynb")

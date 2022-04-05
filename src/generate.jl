@@ -154,7 +154,10 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
     @info "SetupDemoCardsDirectory: setting up \"$(source)\" directory."
     if isdir(absolute_root)
         # a typical and probably safe case -- that we're still in docs/ folder
-        trigger_prompt = !endswith(dirname(absolute_root), joinpath("docs", "src"))
+        trigger_prompt = (
+            !endswith(dirname(absolute_root), joinpath("docs", "src")) &&
+            !(haskey(ENV, "GITLAB_CI") || haskey(ENV, "GITHUB_ACTIONS"))
+        )
         @info "Deleting folder $absolute_root"
 
         if trigger_prompt
@@ -382,9 +385,11 @@ get_logopath() = joinpath(pkgdir(DemoCards), "assets", "democards_logo.svg")
 recursively process and save source demo file
 """
 function save_democards(root::String, page::DemoPage; kwargs...)
+    @debug page.root
     save_democards.(root, page.sections; properties=page.properties, kwargs...)
 end
 function save_democards(root::String, sec::DemoSection; properties, kwargs...)
+    @debug sec.root
     properties = merge(properties, sec.properties) # sec.properties has higher priority
     save_democards.(joinpath(root, basename(sec.root)), sec.subsections;
                     properties=properties, kwargs...)
