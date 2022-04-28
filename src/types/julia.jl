@@ -174,13 +174,16 @@ function save_democards(card_dir::String,
                 isdir(x) || mkdir(x)
             end
 
-            # run scripts in a sandbox
-            m = Module(gensym())
-            # modules created with Module() does not have include defined
-            # abspath is needed since this will call `include_relative`
-            Core.eval(m, :(include(x) = Base.include($m, abspath(x))))
-            gen_assets() = Core.eval(m, :(include($cardname * ".jl")))
-            verbose_mode() ? gen_assets() : @suppress gen_assets()
+            # conditionally generate assets
+            if get(ENV, "DEMOCARDS_BUILD_ASSETS", "false") == "true"
+		# run scripts in a sandbox
+		m = Module(gensym())
+		# modules created with Module() does not have include defined
+		# abspath is needed since this will call `include_relative`
+		Core.eval(m, :(include(x) = Base.include($m, abspath(x))))
+		gen_assets() = Core.eval(m, :(include($cardname * ".jl")))
+		verbose_mode() ? gen_assets() : @suppress gen_assets()
+	    end
 
             # WARNING: card.path is modified here
             card.path = cardname*".jl"
