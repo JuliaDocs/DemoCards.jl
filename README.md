@@ -46,7 +46,7 @@ DemoCards would understand it in the following way:
     demo_5.jl
 ```
 
-Read the [Quick Start](https://johnnychen94.github.io/DemoCards.jl/stable/democards/quickstart/index.html) for more instructions.
+Read the [Quick Start](https://johnnychen94.github.io/DemoCards.jl/stable/quickstart/) for more instructions.
 
 ## Examples
 
