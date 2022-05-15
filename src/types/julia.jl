@@ -139,6 +139,7 @@ function save_democards(card_dir::String,
                         src="src",
                         throw_error = false,
                         properties = Dict{String, Any}(),
+                        literate_kwargs = (),
                         kwargs...)
     isdir(card_dir) || mkpath(card_dir)
     @debug card.path
