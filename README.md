@@ -1,7 +1,5 @@
 # DemoCards
 
-**NOTE**: the purpose of this fork of DemoCards is to generate cover images during HTML generation, thereby needing only a **single pass**. It has only been tested in very narrow scenarios, so **use with caution.**
-
 | **Documentation**                                                               | **Build Status**                                                                                |
 |:-------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|
 | [![][docs-stable-img]][docs-stable-url] [![][docs-dev-img]][docs-dev-url] | [![][action-img]][action-url] [![][pkgeval-img]][pkgeval-url] [![][codecov-img]][codecov-url] |
