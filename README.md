@@ -69,16 +69,16 @@ I'm not sure how broadly this package suits the need of others, but I'd like to 
 
 
 [docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
-[docs-dev-url]: https://johnnychen94.github.io/DemoCards.jl/dev
+[docs-dev-url]: https://juliadocs.github.io/DemoCards.jl/dev
 
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
-[docs-stable-url]: https://johnnychen94.github.io/DemoCards.jl/stable
+[docs-stable-url]: https://juliadocs.github.io/DemoCards.jl/stable
 
-[action-img]: https://github.com/johnnychen94/DemoCards.jl/workflows/Unit%20test/badge.svg
-[action-url]: https://github.com/johnnychen94/DemoCards.jl/actions
+[action-img]: https://github.com/JuliaDocs/DemoCards.jl/workflows/Unit%20test/badge.svg
+[action-url]: https://github.com/JuliaDocs/DemoCards.jl/actions
 
-[codecov-img]: https://codecov.io/gh/johnnychen94/DemoCards.jl/branch/master/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/johnnychen94/DemoCards.jl
+[codecov-img]: https://codecov.io/gh/JuliaDocs/DemoCards.jl/branch/master/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/JuliaDocs/DemoCards.jl
 
 [pkgeval-img]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/D/DemoCards.svg
 [pkgeval-url]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html
