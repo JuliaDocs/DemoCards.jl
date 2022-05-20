@@ -8,6 +8,7 @@ shipped with [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl).
 bulmagrid
 ├── assets
 │   └── logo.svg
+├── config.json
 ├── bulmagrid_section_1
 │   ├── bulmagrid_subsection_1
 │   │   ├── bulmagrid_card_1.md
@@ -22,7 +23,7 @@ bulmagrid
 bulmagrid_demopage, bulmagrid_cb, bulmagrid_assets = makedemos("theme_gallery/bulmagrid", bulmagrid_templates)
 ```
 
-The page configuration file should contain an entry `theme = "bulmagrid"`, e.g.,
+The page configuration file `bulmagrid/config.json` should contain an entry `theme = "bulmagrid"`, e.g.,
 
 ```json
 {

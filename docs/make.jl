@@ -7,8 +7,9 @@ themeless_demopage, themeless_cb, themeless_assets = makedemos(joinpath("theme_g
 grid_demopage, grid_cb, grid_assets = makedemos(joinpath("theme_gallery", "grid"))
 list_demopage, list_cb, list_assets = makedemos(joinpath("theme_gallery", "list"))
 bulmagrid_demopage, bulmagrid_cb, bulmagrid_assets = makedemos(joinpath("theme_gallery", "bulmagrid"))
+bokehlist_demopage, bokehlist_cb, bokehlist_assets = makedemos(joinpath("theme_gallery", "bokehlist"))
 
-assets = collect(filter(x->!isnothing(x), Set([quickstart_assets, themeless_assets, grid_assets, list_assets, bulmagrid_assets])))
+assets = collect(filter(x->!isnothing(x), Set([quickstart_assets, themeless_assets, grid_assets, list_assets, bulmagrid_assets, bokehlist_assets])))
 
 # 2. normal Documenter usage
 format = Documenter.HTML(edit_link = "master",
@@ -27,6 +28,7 @@ makedocs(format = format,
                grid_demopage,
                bulmagrid_demopage,
                list_demopage,
+               bokehlist_demopage,
             ],
             "Package References" => "references.md"
          ],
@@ -36,6 +38,7 @@ makedocs(format = format,
 postprocess_cb()
 themeless_cb()
 bulmagrid_cb()
+bokehlist_cb()
 grid_cb()
 list_cb()
 
