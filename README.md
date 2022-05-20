@@ -50,13 +50,16 @@ Read the [Quick Start](https://johnnychen94.github.io/DemoCards.jl/stable/quicks
 
 ## Examples
 
-* [AlgebraOfGraphics.jl](http://juliaplots.org/AlgebraOfGraphics.jl/dev/gallery/)
-* [Augmentor.jl](https://evizero.github.io/Augmentor.jl/dev/operations/)
-* [FractionalDiffEq.jl](https://scifracx.org/FractionalDiffEq.jl/dev/ChaosGallery/)
-* [LeetCode.jl](https://cn.julialang.org/LeetCode.jl/dev/)
-* [Images.jl](https://juliaimages.org/latest/examples/)
-* [ReinforcementLearning.jl](https://juliareinforcementlearning.org/docs/experiments/)
-* [Plots.jl](https://docs.juliaplots.org/dev/user_gallery/)
+| repo | theme |
+| :---- | :---- |
+| [AlgebraOfGraphics.jl](http://juliaplots.org/AlgebraOfGraphics.jl/dev/gallery/) | [![][theme-bulmagrid-img]][theme-bulmagrid] |
+| [Augmentor.jl](https://evizero.github.io/Augmentor.jl/dev/operations/) | [![][theme-grid-img]][theme-grid] |
+| [Bokeh.jl](https://cjdoris.github.io/Bokeh.jl/dev/gallery/) | [![][theme-bokehlist-img]][theme-bokehlist] |
+| [FractionalDiffEq.jl](https://scifracx.org/FractionalDiffEq.jl/dev/ChaosGallery/) | [![][theme-bulmagrid-img]][theme-bulmagrid] |
+| [LeetCode.jl](https://cn.julialang.org/LeetCode.jl/dev/) | [![][theme-none-img]][theme-none] |
+| [Images.jl](https://juliaimages.org/latest/examples/) | [![][theme-grid-img]][theme-grid] |
+| [ReinforcementLearning.jl](https://juliareinforcementlearning.org/docs/experiments/) | [![][theme-grid-img]][theme-grid] |
+| [Plots.jl](https://docs.juliaplots.org/dev/user_gallery/) | [![][theme-bulmagrid-img]][theme-bulmagrid] |
 
 ## Caveat Emptor
 
@@ -82,3 +85,16 @@ I'm not sure how broadly this package suits the need of others, but I'd like to 
 
 [pkgeval-img]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/D/DemoCards.svg
 [pkgeval-url]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html
+
+
+[theme-bulmagrid-img]: https://img.shields.io/badge/theme-bulmagrid-blue.svg
+[theme-grid-img]: https://img.shields.io/badge/theme-grid-blue.svg
+[theme-list-img]: https://img.shields.io/badge/theme-list-blue.svg
+[theme-bokehlist-img]: https://img.shields.io/badge/theme-bokehlist-blue.svg
+[theme-none-img]: https://img.shields.io/badge/theme-none-blue.svg
+
+[theme-bulmagrid]: https://juliadocs.github.io/DemoCards.jl/stable/bulmagrid/
+[theme-grid]: https://juliadocs.github.io/DemoCards.jl/stable/grid/
+[theme-list]: https://juliadocs.github.io/DemoCards.jl/stable/list/
+[theme-bokehlist]: https://juliadocs.github.io/DemoCards.jl/stable/bokehlist/
+[theme-none]: https://juliadocs.github.io/DemoCards.jl/stable/themeless/markdown/item1/

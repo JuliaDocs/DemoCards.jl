@@ -18,12 +18,3 @@ generate demos and associated assets for you.
 * minimal configuration.
 * CI friendly
 * support demos in markdown and julia format.
-
-## Examples
-
-* [AlgebraOfGraphics.jl](http://juliaplots.org/AlgebraOfGraphics.jl/dev/gallery/)
-* [Augmentor.jl](https://evizero.github.io/Augmentor.jl/dev/operations/)
-* [Images.jl](https://juliaimages.org/latest/examples/)
-* [ReinforcementLearning.jl](https://juliareinforcementlearning.org/docs/experiments/)
-* [LeetCode.jl](https://cn.julialang.org/LeetCode.jl/dev/)
-* [FractionalDiffEq.jl](https://scifracx.org/FractionalDiffEq.jl/dev/ChaosGallery/)
