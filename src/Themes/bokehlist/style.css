@@ -1,0 +1,19 @@
+.bokeh-list-card-text {
+    padding: 0;
+    margin-top: 1em;
+}
+
+.bokeh-list-card-description {
+    padding: 0;
+    margin-top: 1em;
+}
+
+.bokeh-list-card-cover {
+    box-shadow: none;
+}
+
+.bokeh-list-card-cover img {
+    width: 140px;
+    height: 140px;
+    object-fit: none;
+}
