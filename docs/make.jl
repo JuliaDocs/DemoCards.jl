@@ -53,5 +53,5 @@ function should_push_preview(event_path = get(ENV, "GITHUB_EVENT_PATH", nothing)
 end
 
 # 4. deployment
-deploydocs(repo = "github.com/johnnychen94/DemoCards.jl.git",
+deploydocs(repo = "github.com/JuliaDocs/DemoCards.jl.git",
             push_preview = should_push_preview())
