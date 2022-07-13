@@ -58,6 +58,7 @@ Read the [Quick Start](https://juliadocs.github.io/DemoCards.jl/stable/quickstar
 | [FractionalDiffEq.jl](https://scifracx.org/FractionalDiffEq.jl/dev/ChaosGallery/) | [![][theme-bulmagrid-img]][theme-bulmagrid] |
 | [LeetCode.jl](https://cn.julialang.org/LeetCode.jl/dev/) | [![][theme-none-img]][theme-none] |
 | [Images.jl](https://juliaimages.org/latest/examples/) | [![][theme-grid-img]][theme-grid] |
+| [ImageMorphology.jl](https://juliaimages.org/ImageMorphology.jl/stable/operators/) | [![][theme-list-img]][theme-list] |
 | [ReinforcementLearning.jl](https://juliareinforcementlearning.org/docs/experiments/) | [![][theme-grid-img]][theme-grid] |
 | [Plots.jl](https://docs.juliaplots.org/dev/user_gallery/) | [![][theme-bulmagrid-img]][theme-bulmagrid] |
 
