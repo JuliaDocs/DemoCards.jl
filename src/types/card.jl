@@ -1,5 +1,12 @@
 abstract type AbstractDemoCard end
 
+"""
+    UnmatchedCard(path)
+
+A dummy placeholder card for files that DemoCards doesn't support
+yet. No operation will be applied on this type of file, except for
+warnings.
+"""
 struct UnmatchedCard <: AbstractDemoCard
     path::String
 end
@@ -18,7 +25,6 @@ to your demofile. Currently supported types are:
 
 """
 function democard(path::String)::AbstractDemoCard
-    validate_file(path)
     _, ext = splitext(path)
     if ext in markdown_exts
         return MarkdownDemoCard(path)
@@ -27,6 +33,9 @@ function democard(path::String)::AbstractDemoCard
     else
         return UnmatchedCard(path)
     end
+end
+function democard((name, path)::Pair{String, String})
+    LocalRemoteCard(name, path, democard(path))
 end
 
 basename(x::AbstractDemoCard) = basename(x.path)
@@ -46,8 +55,8 @@ end
 
 function is_democard(file)
     try
-        @suppress_err democard(file)
-        return true
+        card = @suppress_err democard(file)
+        return !isa(card, UnmatchedCard)
     catch err
         @debug err
         return false
@@ -122,3 +131,4 @@ end
 
 include("markdown.jl")
 include("julia.jl")
+include("remote_card.jl")

@@ -54,7 +54,7 @@ function preview_demos(demo_path::String;
     end
 
     page_dir = generate_or_copy_pagedir(demo_path, build_dir)
-    copy_assets_and_configs(page_dir, build_dir)
+    copy_assets(page_dir, build_dir)
 
     cd(build_dir) do
         page = @suppress_err DemoPage(page_dir)
@@ -158,9 +158,12 @@ function generate_or_copy_pagedir(src_path, build_dir)
         end
         mkpath(dirname(dst_sec_dir))
         cp(sec_dir, dst_sec_dir; force=true)
+        config_rewrite(sec_dir, dst_sec_dir)
     elseif is_demopage(src_path)
         page_dir = src_path
-        cp(page_dir, abspath(build_dir, basename(page_dir)); force=true)
+        dst_page_dir = abspath(build_dir, basename(page_dir))
+        cp(page_dir, dst_page_dir; force=true)
+        config_rewrite(page_dir, dst_page_dir)
     else
         throw(ArgumentError("failed to parse demo page structure from path: $src_path. There might be some invalid demo files."))
     end
@@ -169,14 +172,12 @@ function generate_or_copy_pagedir(src_path, build_dir)
 end
 
 """
-    copy_assets_and_configs(src_page_dir, dst_build_dir=pwd())
+    copy_assets(src_page_dir, dst_build_dir=pwd())
 
-copy only assets, configs and templates from `src_page_dir` to `dst_build_dir`. The folder structure
+copy only assets and templates from `src_page_dir` to `dst_build_dir`. The folder structure
 is preserved under `dst_build_dir/\$(basename(src_page_dir))`
-
-`order` in config files are modified accordingly.
 """
-function copy_assets_and_configs(src_page_dir, dst_build_dir=pwd())
+function copy_assets(src_page_dir, dst_build_dir=pwd())
     (isabspath(src_page_dir) && isdir(src_page_dir)) || throw(ArgumentError("src_page_dir is expected to be absolute folder path: $src_page_dir"))
 
     for (root, dirs, files) in walkdir(src_page_dir)
@@ -207,32 +208,40 @@ function copy_assets_and_configs(src_page_dir, dst_build_dir=pwd())
             ispath(dst_template_path) || cp(src_template_path, dst_template_path)
         end
     end
+end
 
-    # modify and copy config.json after the folder structure is already set up
-    for (root, dirs, files) in walkdir(src_page_dir)
-        if config_filename in files
-            src_config_path = abspath(root, config_filename)
-            dst_config_path = abspath(dst_build_dir, relpath(src_config_path, dirname(src_page_dir)))
-            mkpath(dirname(dst_config_path))
+function config_rewrite(src_dir, dst_dir)
+    for (dst_root, dirs, files) in walkdir(dst_dir)
+        src_root = joinpath(dirname(src_dir), relpath(dst_root, dirname(dst_dir)))
 
-            config = JSON.parsefile(src_config_path)
-            config_dir = dirname(dst_config_path)
-            if haskey(config, "order")
-                order =  [x for x in config["order"] if x in readdir(config_dir)]
-                if isempty(order)
-                    delete!(config, "order")
-                else
-                    config["order"] = order
+        config_filename in files || continue
+
+        dst_config_path = joinpath(dst_root, config_filename)
+        config = JSON.parsefile(dst_config_path)
+
+        if haskey(config, "remote")
+            remotes = config["remote"]
+            for (dst_entry_name, src_entry_path) in remotes
+                src_entry_path = isabspath(src_entry_path) ? src_entry_path : normpath(src_root, src_entry_path)
+                if !ispath(src_entry_path)
+                    @warn "File/folder doesn't exist, skip it." path=src_entry_path
+                    continue
                 end
-            end
-
-            if !isempty(config)
-                # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
-                Base.Sys.iswindows() && GC.gc()
-                open(dst_config_path, "w") do io
-                    JSON.print(io, config)
+                
+                dst_entry_path = joinpath(dst_root, dst_entry_name)
+                if ispath(dst_entry_path)
+                    @warn "A file/folder already exists for remote path $dst_entry_name, skip it." path=dst_entry_path
+                    continue
                 end
+                cp(src_entry_path, dst_entry_path)
             end
+            delete!(config, "remote")
+        end
+
+        # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
+        Base.Sys.iswindows() && GC.gc()
+        open(dst_config_path, "w") do io
+            JSON.print(io, config)
         end
     end
 end

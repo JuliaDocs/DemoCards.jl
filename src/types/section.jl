@@ -1,3 +1,11 @@
+abstract type AbstractDemoSection end
+
+demosection(root::String) = DemoSection(root)
+function demosection((name, path)::Pair{String, String})
+    LocalRemoteSection(name, path, DemoSection(path))
+end
+
+
 """
     struct DemoSection <: Any
     DemoSection(root::String)
@@ -76,19 +84,22 @@ section
 
 See also: [`MarkdownDemoCard`](@ref DemoCards.MarkdownDemoCard), [`DemoPage`](@ref DemoCards.DemoPage)
 """
-struct DemoSection
+struct DemoSection <: AbstractDemoSection
     root::String
     cards::Vector
-    subsections::Vector{DemoSection}
+    subsections::Vector
     title::String
     description::String
     # These properties will be shared by all children of it during build time
     properties::Dict{String, Any}
 end
 
-basename(sec::DemoSection) = basename(sec.root)
+Base.basename(sec::DemoSection) = basename(sec.root)
+compact_title(sec::DemoSection) = sec.title
+cards(sec::DemoSection) = sec.cards
+subsections(sec::DemoSection) = sec.subsections
 
-function DemoSection(root::String)::DemoSection
+function DemoSection(root::String; ignore_remote=false)::DemoSection
     root = replace(root, r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
     isdir(root) || throw(ArgumentError("section root should be a valid dir, instead it's $(root)"))
 
@@ -106,7 +117,7 @@ function DemoSection(root::String)::DemoSection
     # For files that `democard` fails to recognized, dummy
     # `UnmatchedCard` will be generated. Currently, we only
     # throw warnings for it.
-    cards = map(democard, card_paths)
+    cards = AbstractDemoCard[democard(x) for x in card_paths]
     unmatches = filter(cards) do x
         x isa UnmatchedCard
     end
@@ -114,25 +125,22 @@ function DemoSection(root::String)::DemoSection
         msg = join(map(basename, unmatches), "\", \"")
         @warn "skip unmatched file: \"$msg\"" section_dir=root
     end
+    if !ignore_remote
+        remote_card_paths = read_remote_cards(config, root)
+        cards = [cards..., democard.(remote_card_paths)...]
+    end
     cards = filter!(cards) do x
         !(x isa UnmatchedCard)
     end
 
-    section = DemoSection(root,
-                          cards,
-                          map(DemoSection, section_paths),
-                          "",
-                          "",
-                          Dict{String, Any}())
-
-    ordered_paths = joinpath.(root, load_config(section, "order"; config=config))
-    if !isempty(section.cards)
-        cards = map(democard, ordered_paths)
-        subsections = []
-    else
-        cards = []
-        subsections = map(DemoSection, ordered_paths)
+    subsections = map(DemoSection, section_paths)
+    if !ignore_remote
+        remote_sections = map(demosection, read_remote_sections(config, root))
+        subsections = [subsections..., remote_sections...]
     end
+
+    section = DemoSection(root, cards, subsections, "", "", Dict{String, Any}())
+    cards, subsections = sort_by_order(section, config)
 
     title = load_config(section, "title"; config=config)
     description = load_config(section, "description"; config=config)
@@ -146,6 +154,31 @@ function DemoSection(root::String)::DemoSection
     DemoSection(root, cards, subsections, title, description, properties)
 end
 
+function sort_by_order(sec::DemoSection, config)
+    cards = sec.cards
+    subsections = sec.subsections
+
+    ordered_paths = load_config(sec, "order"; config=config)
+    if !isempty(sec.cards)
+        indices = map(ordered_paths) do ref
+            findfirst(cards) do card
+                basename(card) == ref
+            end
+        end
+        cards = cards[indices]
+        subsections = []
+    else
+        indices = map(ordered_paths) do ref
+            findfirst(subsections) do sec
+                basename(sec) == ref
+            end
+        end
+        subsections = subsections[indices]
+        cards = []
+    end
+
+    return cards, subsections
+end
 
 function load_config(sec::DemoSection, key; config=Dict())
     if isempty(config)
@@ -185,3 +218,26 @@ function is_demosection(dir)
         return false
     end
 end
+
+###
+# LocalRemoteSection
+###
+
+struct LocalRemoteSection{T<:AbstractDemoSection} <: AbstractDemoSection
+    name::String
+    path::String
+    item::T
+    function LocalRemoteSection(name::String, path::String, item::T) where T<:AbstractDemoSection
+        basename(name) == name || throw(ArgumentError("`name` should not be a path, instead it is: \"$name\". Do you mean \"$(basename(name))\""))
+        isdir(path) || throw(ArgumentError("folder $path does not exist."))
+        new{T}(name, path, item)
+    end
+end
+function LocalRemoteSection(name::String, path::String, card::LocalRemoteSection{T}) where T<:AbstractDemoCard
+    LocalRemoteSection(name, path, card.item)
+end
+
+Base.basename(sec::LocalRemoteSection) = sec.name
+compact_title(sec::LocalRemoteSection) = "$(sec.name) => $(sec.path)"
+cards(sec::LocalRemoteSection) = cards(sec.item)
+subsections(sec::LocalRemoteSection) = subsections(sec.item)

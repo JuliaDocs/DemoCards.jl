@@ -144,11 +144,22 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
 
     # we can directly pass it to Documenter.makedocs
     if isnothing(templates)
-        out_path = walkpage(page; flatten=false) do item
-            splitext(joinpath(relative_root, relpath(item.path, page_root)))[1] * ".md"
+        out_path = walkpage(page; flatten=false) do dir, item
+            joinpath(
+                basename(source),
+                relpath(dir, page_root),
+                splitext(basename(item))[1] * ".md"
+            )
         end
     else
+        # For themes that requires an index page
+        # This will not generate a multi-level structure in the sidebar
         out_path = joinpath(relative_root, "index.md")
+    end
+
+    # Ensure every path exists before we actually do the work
+    walkpage(page) do dir, item
+        @assert isfile(item.path) || isdir(item.path)
     end
 
     @info "SetupDemoCardsDirectory: setting up \"$(source)\" directory."
@@ -178,6 +189,7 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
     end
 
     mkpath(absolute_root)
+    local clean_up_temp_remote_files
     try
         # hard coded "covers" should be consistant to card template
         isnothing(templates) || mkpath(joinpath(absolute_root, "covers"))
@@ -186,6 +198,10 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
         source_files = [x.path for x in walkpage(page)[2]]
 
         # pipeline
+        # prepare remote files into current folder structure, and provide a callback
+        # to clean it up after the generation
+        page, clean_up_temp_remote_files = prepare_remote_files(page)
+
         # for themeless version, we don't need to generate covers and index page
         copy_assets(absolute_root, page)
         # WARNING: julia cards are reconfigured here
@@ -203,6 +219,9 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
             @info "Redirect page URL: redirect docs-edit-link for demos in \"$(source)\" directory."
             isnothing(templates) || push!(source_files, joinpath(page_root, "index.md"))
             foreach(source_files) do source_file
+                # LocalRemoteCard is a virtual placeholder and does not exist here
+                isfile(source_file) && return
+                # only redirect to "real" files
                 redirect_link(source_file, source, root, src, build, edit_branch)
             end
 
@@ -236,6 +255,8 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
         rm(absolute_root; force=true, recursive=true)
         @error "Errors when building demo dir" pwd=pwd() source root src
         rethrow(err)
+    finally
+        clean_up_temp_remote_files()
     end
 end
 
@@ -256,18 +277,18 @@ end
 function generate(cards::AbstractVector{<:AbstractDemoCard}, template; properties=Dict{String, Any}())
     # for those hidden cards, only generate the necessary assets and files, but don't add them into
     # the index.md page
-    foreach(filter(x->x.hidden, cards)) do x
+    foreach(filter(ishidden, cards)) do x
         generate(x, template; properties=properties)
     end
 
-    mapreduce(*, filter(x->!x.hidden, cards); init="") do x
+    mapreduce(*, filter(x->!ishidden(x), cards); init="") do x
         generate(x, template; properties=properties)
     end
 end
 
 function generate(secs::AbstractVector{DemoSection}, templates; level=1, properties=Dict{String, Any}())
     mapreduce(*, secs; init="") do x
-        properties = merge(properties, x.properties) # sec.properties has higher priority
+        properties = merge(properties, x.properties)
         generate(x, templates; level=level, properties=properties)
     end
 end
@@ -330,7 +351,7 @@ function save_cover(path::String, sec::DemoSection)
 end
 
 """
-    save_cover(path::String, card::AbstractDemoCard)
+    save_cover(path::String, card)
 
 process the cover image and save it.
 """
@@ -365,7 +386,7 @@ function save_cover(path::String, card::AbstractDemoCard)
     end
 end
 
-function get_covername(card::AbstractDemoCard)
+function get_covername(card)
     isnothing(card.cover) && return nothing
     is_remote_url(card.cover) && return card.cover
 
@@ -418,6 +439,50 @@ function _copy_assets(dest_root::String, src_root::String)
         cp(src, dest; force=true)
     end
 end
+
+### prepare_remote_files
+
+function prepare_remote_files(page)
+    # 1. copy all remote files into its corresponding folders
+    # 2. record all temporarily remote files
+    # 3. rebuild the demo page in no-remote mode
+    temp_entry_list = []
+    for (root, dirs, files) in walkdir(page.root)
+        config_filename in files || continue
+
+        config_path = joinpath(root, config_filename)
+        config = JSON.parsefile(config_path)
+
+        if haskey(config, "remote")
+            remotes = config["remote"]
+            for (dst_entry_name, src_entry_path) in remotes
+                dst_entry_path = joinpath(root, dst_entry_name)
+                src_entry_path = normpath(root, src_entry_path)
+                if !ispath(src_entry_path)
+                    @warn "File/folder doesn't exist, skip it." path=src_entry_path
+                    continue
+                end
+                if ispath(dst_entry_path)
+                    @warn "A file/folder already exists for remote path $dst_entry_name, skip it." path=dst_entry_path
+                    continue
+                end
+
+                cp(src_entry_path, dst_entry_path)
+                push!(temp_entry_list, dst_entry_path)
+            end
+        end
+    end
+
+    page = isempty(temp_entry_list) ? page : DemoPage(page.root; ignore_remote=true)
+    function clean_up_temp_remote_files()
+        Base.Sys.iswindows() && GC.gc()
+        foreach(temp_entry_list) do x
+            rm(x; force=true, recursive=true)
+        end
+    end
+    return page, clean_up_temp_remote_files
+end
+
 
 ### postprocess
 

@@ -67,6 +67,19 @@ mutable struct MarkdownDemoCard <: AbstractDemoCard
     author::String
     date::DateTime
     hidden::Bool
+    function MarkdownDemoCard(
+        path::String,
+        cover::Union{String, Nothing},
+        id::String,
+        title::String,
+        description::String,
+        author::String,
+        date::DateTime,
+        hidden::Bool
+    )
+        isfile(path) || throw(ArgumentError("$(path) is not a valid file"))
+        new(path, cover, id, title, description, author, date, hidden)
+    end
 end
 
 function MarkdownDemoCard(path::String)::MarkdownDemoCard
@@ -120,3 +133,5 @@ function save_democards(card_dir::String,
     footer = credit ? markdown_footer : "\n"
     write(markdown_path, header, make_badges(card)*"\n\n", body, footer)
 end
+
+ishidden(x::MarkdownDemoCard) = x.hidden
