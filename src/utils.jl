@@ -369,3 +369,5 @@ function input_bool(prompt)
         # Otherwise loop and repeat the prompt
     end
 end
+
+is_pluto_notebook(path::String) = any(occursin.(r"╔═╡\s[0-9a-f\-]{36}", readlines(path)))
