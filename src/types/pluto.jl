@@ -2,7 +2,7 @@ const pluto_footer = raw"""
 
 ---
 
-*This page was generated using [DemoCards.jl](https://github.com/johnnychen94/DemoCards.jl).*
+*This page was generated using [DemoCards.jl](https://github.com/johnnychen94/DemoCards.jl). and [PlutoStaitcHTML.jl](https://github.com/rikhuijzer/PlutoStaticHTML.jl)*
 
 
 """
@@ -55,7 +55,7 @@ hidden: false
 ---
 ```
 
-See also: [`JuliaDemoCard`](@ref DemoCards.JuliaDemoCard), [`DemoSection`](@ref DemoCards.DemoSection), [`DemoPage`](@ref DemoCards.DemoPage)
+See also: [`PlutoDemoCard`](@ref DemoCards.PlutoDemoCard), [`DemoSection`](@ref DemoCards.DemoSection), [`DemoPage`](@ref DemoCards.DemoPage)
 """
 mutable struct PlutoDemoCard <: AbstractDemoCard
     path::String
@@ -74,13 +74,14 @@ function PlutoDemoCard(path::String)::PlutoDemoCard
     card = PlutoDemoCard(path, "", "", "", "", "", DateTime(0), JULIA_COMPAT, false)
 
     # config = parse(card)
+    config = Dict()
     # card.cover = load_config(card, "cover"; config=config)
-    # card.title = load_config(card, "title"; config=config)
+    card.title =  load_config(card, "title"; config=config)
     # card.date = load_config(card, "date"; config=config)
-    # card.author = load_config(card, "author"; config=config)
+    card.author = "Deeptendu Santra"
     # card.julia = load_config(card, "julia"; config=config)
     # # default id requires a title
-    # card.id    = load_config(card, "id"; config=config)
+    card.id = load_config(card, "id"; config=config)
     # # default description requires a title
     # card.description = load_config(card, "description"; config=config)
     # card.hidden = load_config(card, "hidden"; config=config)
@@ -90,7 +91,7 @@ end
 
 
 """
-    save_democards(card_dir::String, card::JuliaDemoCard;
+    save_democards(card_dir::String, card::PlutoDemoCard;
                    project_dir,
                    src,
                    credit,
@@ -122,7 +123,14 @@ function save_democards(card_dir::String,
     cardname = splitext(basename(card.path))[1]
     curr_dir = pwd()
     src_dir = dirname(card.path)
-    md_src_path = joinpath(src_dir, "$(cardname).md")
+    # pluto outputs are expensive, we save the output to a cache dir
+    # these cache dir contains the render files from previous runs,
+    # saves time, while rendering
+    render_dir = joinpath(src_dir, "..", "..", "pluto_output") |> abspath
+    isdir(render_dir) || mkpath(render_dir)
+
+    src_path = joinpath(src_dir, "$(cardname).md")
+    nb_path = joinpath(card_dir, "$(cardname).jl")
     card_path = joinpath(card_dir, "$(cardname).md")
 
     if VERSION < card.julia
@@ -136,21 +144,52 @@ function save_democards(card_dir::String,
     output_format = documenter_output
     # The card_dir is deleted, so keep the md files in
     # the pluto directory to save some time.
-    bopts = BuildOptions(src_dir;previous_dir=src_dir,
+    bopts = BuildOptions(src_dir;previous_dir=render_dir,
                          output_format=output_format)
     build_notebooks(bopts, oopts)
 
     cd(curr_dir)
     @debug curr_dir
-    cp(md_src_path, card_path;force=false)
+    cp(src_path, card_path;force=true)
+    cp(card.path, nb_path;force=true)
+
+    # 1. read the dir
+    # 2. check if it has pluto notebook
+    # 3. get the cache file names
+    # 4. mv the cache files
+    for filepath in readdir(src_dir;join=true)
+        filename, ext = splitext(basename(filepath))
+        if ext in [".md", ".html"]
+          pluto_notebook_path = "$(filename).jl"
+          if isfile(joinpath(src_dir, pluto_notebook_path))
+            cache_path = joinpath(render_dir, basename(filepath))
+            println(filepath)
+            println(cache_path)
+            mv(filepath, cache_path; force=true)
+          end
+        end
+    end
+
+    badges = make_badges(card;
+                         src=src,
+                         card_dir=card_dir,
+                         nbviewer_root_url=nbviewer_root_url,
+                         project_dir=project_dir,
+                         build_notebook=false) 
+
+    header = "# [$(card.title)](@id $(card.id))\n"
+    footer = pluto_footer
+
+    body = join(readlines(card_path), "\n")
+    write(card_path, header, badges * "\n\n", body, footer)
 
     return nothing
 end
 
 function make_badges(card::PlutoDemoCard; src, card_dir, nbviewer_root_url, project_dir, build_notebook)
-    # cardname = splitext(basename(card.path))[1]
-    # badges = ["#md #"]
-    # push!(badges, "[![Source code]($download_badge)]($(cardname).jl)")
+    cardname = splitext(basename(card.path))[1]
+    badges = []
+    push!(badges, "[![Source code]($download_badge)]($(cardname).jl)")
 
     # if build_notebook
     #     if !isempty(nbviewer_root_url)
@@ -169,8 +208,7 @@ function make_badges(card::PlutoDemoCard; src, card_dir, nbviewer_root_url, proj
     #     push!(badges, "![compat](https://img.shields.io/badge/julia-$(card.julia)-blue.svg)")
     # end
 
-    # push!(badges, invoke(make_badges, Tuple{AbstractDemoCard}, card))
+    push!(badges, invoke(make_badges, Tuple{AbstractDemoCard}, card))
 
-    badges = ["#md #"]
     join(badges, " ")
 end

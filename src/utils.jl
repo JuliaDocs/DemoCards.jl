@@ -143,6 +143,28 @@ function get_regex(::Val{:Markdown}, regex_type)
     end
 end
 
+
+function get_regex(::Val{:Pluto}, regex_type)
+    if regex_type == :image
+        # Example: ![title](path)
+        return r"^\s*!\[(?<title>[^\]]*)\]\((?<path>[^\s]*)\)"
+    elseif regex_type == :title
+        # Example: # [title](@id id)
+        regex_title = r"md[\"]{1,3}.*\n#\s(\S.*)\n"
+        # Example: # title
+        regex_simple_title = r"md[\"]{1,3}.*\n#\s(\S.*)\n"
+
+        # Note: return the complete one first
+        return (regex_title, regex_simple_title)
+    elseif regex_type == :content
+        # lines that are not title, image, link, list
+        # FIXME: list is also captured by this regex
+        return r"^\s*(?<content>[^#\-*!].*)"
+    else
+        error("Unrecognized regex type: $(regex_type)")
+    end
+end
+
 function get_regex(::Val{:Julia}, regex_type)
     if regex_type == :image
         # Example: #md ![title](path)
@@ -207,6 +229,7 @@ function parse(T::Val, card::AbstractDemoCard)
 end
 parse(card::JuliaDemoCard) = parse(Val(:Julia), card)
 parse(card::MarkdownDemoCard) = parse(Val(:Markdown), card)
+parse(card::PlutoDemoCard) = parse(Val(:Pluto), card)
 
 
 function parse(T::Val, contents::String)
@@ -313,7 +336,7 @@ function split_frontmatter(contents::AbstractArray{<:AbstractString})
         m isa RegexMatch
     end
     offsets = findall(offsets)
-    
+
     length(offsets) < 2 && return "", "", contents
     if offsets[1] != 1 && !all(x->isempty(strip(x)) || startswith(strip(x), "#"), contents[1:offsets[1]-1])
         # For julia demo, comments and empty lines are allowed before frontmatter
@@ -370,4 +393,4 @@ function input_bool(prompt)
     end
 end
 
-is_pluto_notebook(path::String) = any(occursin.(r"╔═╡\s[0-9a-f\-]{36}", readlines(path)))
+is_pluto_notebook(path::String) = any(occursin.(r"#\s?╔═╡\s?[0-9a-f\-]{36}", readlines(path)))
