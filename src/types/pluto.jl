@@ -78,7 +78,7 @@ function PlutoDemoCard(path::String)::PlutoDemoCard
     # card.cover = load_config(card, "cover"; config=config)
     card.title =  load_config(card, "title"; config=config)
     # card.date = load_config(card, "date"; config=config)
-    card.author = "Deeptendu Santra"
+    card.author = "contributor"
     # card.julia = load_config(card, "julia"; config=config)
     # # default id requires a title
     card.id = load_config(card, "id"; config=config)
