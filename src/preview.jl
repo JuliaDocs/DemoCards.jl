@@ -112,7 +112,11 @@ function preview_demos(demo_path::String;
 
         demos_cb()
 
-        return abspath(build, "index.html")
+        return if Sys.iswindows()
+            "file:///" * replace(abspath(build, "index.html"), "\\" => "/")
+        else
+            abspath(build, "index.html")
+        end
     end
 end
 
