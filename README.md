@@ -61,6 +61,7 @@ Read the [Quick Start](https://juliadocs.github.io/DemoCards.jl/stable/quickstar
 | [ImageMorphology.jl](https://juliaimages.org/ImageMorphology.jl/stable/operators/) | [![][theme-list-img]][theme-list] |
 | [ReinforcementLearning.jl](https://juliareinforcementlearning.org/docs/experiments/) | [![][theme-grid-img]][theme-grid] |
 | [Plots.jl](https://docs.juliaplots.org/dev/user_gallery/) | [![][theme-bulmagrid-img]][theme-bulmagrid] |
+| [PSSFSS.jl](https://simonp0420.github.io/PSSFSS.jl/stable/PSS_&_FSS_Element_Gallery/) | [![][theme-bulmagrid-img]][theme-bulmagrid] |
 
 ## Caveat Emptor
 
