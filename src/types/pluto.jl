@@ -73,18 +73,17 @@ function PlutoDemoCard(path::String)::PlutoDemoCard
     # first consturct an incomplete democard, and then load the config
     card = PlutoDemoCard(path, "", "", "", "", "", DateTime(0), JULIA_COMPAT, false)
 
-    # config = parse(card)
-    config = Dict()
-    # card.cover = load_config(card, "cover"; config=config)
+    config = parse(card)
+    card.cover = load_config(card, "cover"; config=config)
     card.title =  load_config(card, "title"; config=config)
-    # card.date = load_config(card, "date"; config=config)
-    card.author = "contributor"
-    # card.julia = load_config(card, "julia"; config=config)
-    # # default id requires a title
+    card.date = load_config(card, "date"; config=config)
+    card.author = load_config(card, "author"; config=config)
+    card.julia = load_config(card, "julia"; config=config)
+    # default id requires a title
     card.id = load_config(card, "id"; config=config)
-    # # default description requires a title
-    # card.description = load_config(card, "description"; config=config)
-    # card.hidden = load_config(card, "hidden"; config=config)
+    # default description requires a title
+    card.description = load_config(card, "description"; config=config)
+    card.hidden = load_config(card, "hidden"; config=config)
 
     return card
 end
@@ -120,6 +119,8 @@ function save_democards(card_dir::String,
     end
     isdir(card_dir) || mkpath(card_dir)
     @debug card.path
+
+    # copy to card dir and do things
     cardname = splitext(basename(card.path))[1]
     curr_dir = pwd()
     src_dir = dirname(card.path)
@@ -129,43 +130,37 @@ function save_democards(card_dir::String,
     render_dir = joinpath(src_dir, "..", "..", "pluto_output") |> abspath
     isdir(render_dir) || mkpath(render_dir)
 
-    src_path = joinpath(src_dir, "$(cardname).md")
     nb_path = joinpath(card_dir, "$(cardname).jl")
     card_path = joinpath(card_dir, "$(cardname).md")
+
+    _, _, body = split_pluto_frontmatter(readlines(card.path))
+    println("Notebook path:", nb_path)
+    write(nb_path, join(body, "\n"))
 
     if VERSION < card.julia
         # It may work, it may not work; I hope it would work.
         @warn "The running Julia version `$(VERSION)` is older than the declared compatible version `$(card.julia)`. You might need to upgrade your Julia."
     end
 
-    cd(src_dir)
-
     oopts = OutputOptions(; append_build_context=false)
     output_format = documenter_output
     # The card_dir is deleted, so keep the md files in
     # the pluto directory to save some time.
-    bopts = BuildOptions(src_dir;previous_dir=render_dir,
+    bopts = BuildOptions(card_dir;previous_dir=render_dir,
                          output_format=output_format)
     build_notebooks(bopts, oopts)
-
-    cd(curr_dir)
-    @debug curr_dir
-    cp(src_path, card_path;force=true)
-    cp(card.path, nb_path;force=true)
 
     # 1. read the dir
     # 2. check if it has pluto notebook
     # 3. get the cache file names
     # 4. mv the cache files
-    for filepath in readdir(src_dir;join=true)
+    for filepath in readdir(card_dir;join=true)
         filename, ext = splitext(basename(filepath))
         if ext in [".md", ".html"]
           pluto_notebook_path = "$(filename).jl"
           if isfile(joinpath(src_dir, pluto_notebook_path))
             cache_path = joinpath(render_dir, basename(filepath))
-            println(filepath)
-            println(cache_path)
-            mv(filepath, cache_path; force=true)
+            cp(filepath, cache_path; force=true)
           end
         end
     end
@@ -190,23 +185,6 @@ function make_badges(card::PlutoDemoCard; src, card_dir, nbviewer_root_url, proj
     cardname = splitext(basename(card.path))[1]
     badges = []
     push!(badges, "[![Source code]($download_badge)]($(cardname).jl)")
-
-    # if build_notebook
-    #     if !isempty(nbviewer_root_url)
-    #         # Note: this is only reachable in CI environment
-    #         nbviewer_folder = normpath(relpath(card_dir, "$project_dir/$src"))
-    #         nbviewer_url = replace("$(nbviewer_root_url)/$(nbviewer_folder)/$(cardname).ipynb", Base.Filesystem.path_separator=>'/')
-    #     else
-    #         nbviewer_url = "$(cardname).ipynb"
-    #     end
-    #     push!(badges, "[![notebook]($nbviewer_badge)]($nbviewer_url)")
-    # end
-    # if card.julia != JULIA_COMPAT
-    #     # It might be over verbose to insert a compat badge for every julia card, only add one for
-    #     # cards that users should care about
-    #     # Question: Is this too conservative?
-    #     push!(badges, "![compat](https://img.shields.io/badge/julia-$(card.julia)-blue.svg)")
-    # end
 
     push!(badges, invoke(make_badges, Tuple{AbstractDemoCard}, card))
 

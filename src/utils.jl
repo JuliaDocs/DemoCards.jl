@@ -211,8 +211,14 @@ Currently supported items are: `title`, `id`, `cover`, `description`.
     They also need to validate the values.
 """
 function parse(T::Val, card::AbstractDemoCard)
-    header, frontmatter, body = split_frontmatter(readlines(card.path))
-    config = parse(T, body)
+    # TODO: generalize
+    if T == Val(:Pluto)
+      header, frontmatter, body = split_pluto_frontmatter(readlines(card.path))
+      config = parse(T, body) # should ideally not pickup
+    else
+      header, frontmatter, body = split_frontmatter(readlines(card.path))
+      config = parse(T, body)
+    end
     # frontmatter has higher priority
     if !isempty(frontmatter)
         yaml_config = try
@@ -361,6 +367,28 @@ function split_frontmatter(contents::AbstractArray{<:AbstractString})
     end
 
     return contents[1:offsets[1]-1], frontmatter, contents[offsets[2]+1:end]
+end
+
+
+# special case, generalize it with rest of functions later
+function split_pluto_frontmatter(contents)
+    first_cell_regex = r"#\s╔═╡\sCell\sorder:\n#\s?[╠╟][─═]\s?([0-9a-f\-]{36})"
+    content = join(contents, "\n")
+    first_cell_id = match(first_cell_regex, content)[1]
+    m1 = r"#\s╔═╡\s"
+    m2 = Regex("$(first_cell_id)\n")
+    m3 = r"""md\"\"\"\n([\s\S]*?)\"\"\""""
+    first_cell_regex = m1 * m2 * m3
+    frontmatter = match(first_cell_regex, content)[1]
+    frontmatter = split(frontmatter, "\n") |> Vector{String}
+    content_id_repr = r"#\s?[╠╟][─═]\s?" * Regex("$(first_cell_id)")
+
+    offset = map(contents) do line
+        m = match(content_id_repr, line)
+        m isa RegexMatch
+    end |> findlast
+
+    return String[], frontmatter, vcat(contents[1:offset-1], contents[offset+1:end])
 end
 
 
