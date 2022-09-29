@@ -11,7 +11,7 @@ const pluto_footer = raw"""
     struct PlutoDemoCard <: AbstractDemoCard
     PlutoDemoCard(path::String)
 
-Constructs a markdown-format demo card from existing markdown file `path`.
+Constructs a markdown-format demo card from a pluto notebook.
 
 
 # Fields
@@ -24,7 +24,7 @@ Besides `path`, this struct has some other fields:
 * `title`: one-line description of the demo card
 * `author`: author(s) of this demo.
 * `date`: the update date of this demo.
-* `pluto`: the version number of pluto used in the original demo.
+* `julia`: Julia version compatibility
 * `description`: multi-line description of the demo card
 * `hidden`: whether this card is shown in the generated index page
 
@@ -38,6 +38,7 @@ Supported items are:
 * `id`: specify the `id` tag for cross-references. By default it's infered from the filename, e.g., `simple_demo` from `simple demo.md`.
 * `title`: one-line description to this file, will be displayed under the cover image. By default, it's the name of the file (without extension).
 * `author`: author name. If there are multiple authors, split them with semicolon `;`.
+* `julia`: Julia version compatibility. Any string that can be converted to `VersionNumber`
 * `date`: any string contents that can be passed to `Dates.DateTime`. For example, `2020-09-13`.
 * `hidden`: whether this card is shown in the layout of index page. The default value is `false`.
 
@@ -101,7 +102,6 @@ process the original julia file and save it.
 The processing pipeline is:
 
 1. preprocess and copy source file
-2. generate ipynb file
 3. generate markdown file
 4. insert header and footer to generated markdown file
 """
@@ -134,7 +134,6 @@ function save_democards(card_dir::String,
     card_path = joinpath(card_dir, "$(cardname).md")
 
     _, _, body = split_pluto_frontmatter(readlines(card.path))
-    println("Notebook path:", nb_path)
     write(nb_path, join(body, "\n"))
 
     if VERSION < card.julia
