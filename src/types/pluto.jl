@@ -143,26 +143,13 @@ function save_democards(card_dir::String,
 
     oopts = OutputOptions(; append_build_context=false)
     output_format = documenter_output
-    # The card_dir is deleted, so keep the md files in
-    # the pluto directory to save some time.
     bopts = BuildOptions(card_dir;previous_dir=render_dir,
                          output_format=output_format)
-    build_notebooks(bopts, oopts)
+    # don't run notebooks in parallel
+    build_notebooks(bopts, ["$(cardname).jl"], oopts)
 
-    # 1. read the dir
-    # 2. check if it has pluto notebook
-    # 3. get the cache file names
-    # 4. mv the cache files
-    for filepath in readdir(card_dir;join=true)
-        filename, ext = splitext(basename(filepath))
-        if ext in [".md", ".html"]
-          pluto_notebook_path = "$(filename).jl"
-          if isfile(joinpath(src_dir, pluto_notebook_path))
-            cache_path = joinpath(render_dir, basename(filepath))
-            cp(filepath, cache_path; force=true)
-          end
-        end
-    end
+    cache_path = joinpath(render_dir, basename(card_path))
+    cp(card_path, cache_path; force=true)
 
     badges = make_badges(card;
                          src=src,
