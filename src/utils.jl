@@ -212,7 +212,7 @@ Currently supported items are: `title`, `id`, `cover`, `description`.
 """
 function parse(T::Val, card::AbstractDemoCard)
     # TODO: generalize
-    if T == Val(:Pluto)
+    if T === Val(:Pluto)
       header, frontmatter, body = split_pluto_frontmatter(readlines(card.path))
       config = parse(T, body) # should ideally not pickup
     else
