@@ -2,7 +2,7 @@ const pluto_footer = raw"""
 
 ---
 
-*This page was generated using [DemoCards.jl](https://github.com/johnnychen94/DemoCards.jl). and [PlutoStaitcHTML.jl](https://github.com/rikhuijzer/PlutoStaticHTML.jl)*
+*This page was generated using [DemoCards.jl](https://github.com/johnnychen94/DemoCards.jl). and [PlutoStaticHTML.jl](https://github.com/rikhuijzer/PlutoStaticHTML.jl)*
 
 
 """
