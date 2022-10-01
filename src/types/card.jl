@@ -23,7 +23,11 @@ function democard(path::String)::AbstractDemoCard
     if ext in markdown_exts
         return MarkdownDemoCard(path)
     elseif ext in julia_exts
-        return JuliaDemoCard(path)
+        if is_pluto_notebook(path)
+          return PlutoDemoCard(path)
+        else
+          return JuliaDemoCard(path)
+        end
     else
         return UnmatchedCard(path)
     end
@@ -122,3 +126,4 @@ end
 
 include("markdown.jl")
 include("julia.jl")
+include("pluto.jl")
