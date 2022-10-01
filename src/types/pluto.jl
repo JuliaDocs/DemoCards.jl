@@ -9,7 +9,7 @@ const pluto_footer = raw"""
 
 """
     struct PlutoDemoCard <: AbstractDemoCard
-    PlutoDemoCard(path::String)
+    PlutoDemoCard(path::AbstractString)
 
 Constructs a markdown-format demo card from a pluto notebook.
 
@@ -70,7 +70,7 @@ mutable struct PlutoDemoCard <: AbstractDemoCard
     hidden::Bool
 end
 
-function PlutoDemoCard(path::String)::PlutoDemoCard
+function PlutoDemoCard(path::AbstractString)::PlutoDemoCard
     # first consturct an incomplete democard, and then load the config
     card = PlutoDemoCard(path, "", "", "", "", "", DateTime(0), JULIA_COMPAT, false)
 
@@ -91,7 +91,7 @@ end
 
 
 """
-    save_democards(card_dir::String, card::PlutoDemoCard;
+    save_democards(card_dir::AbstractString, card::PlutoDemoCard;
                    project_dir,
                    src,
                    credit,
@@ -105,7 +105,7 @@ The processing pipeline is:
 3. generate markdown file
 4. insert header and footer to generated markdown file
 """
-function save_democards(card_dir::String,
+function save_democards(card_dir::AbstractString,
                         card::PlutoDemoCard;
                         credit,
                         nbviewer_root_url,
