@@ -377,18 +377,31 @@ function split_pluto_frontmatter(contents)
     first_cell_id = match(first_cell_regex, content)[1]
     m1 = r"#\s╔═╡\s"
     m2 = Regex("$(first_cell_id)\n")
-    m3 = r"""md\"\"\"\n([\s\S]*?)\"\"\""""
+    m3 = r"""md\"\"\"\n[\n\s]*(\-\-\-[\s\S]*?)\"\"\""""
     first_cell_regex = m1 * m2 * m3
-    frontmatter = match(first_cell_regex, content)[1]
-    frontmatter = split(frontmatter, "\n") |> Vector{String}
-    content_id_repr = r"#\s?[╠╟][─═]\s?" * Regex("$(first_cell_id)")
+    frontmatter = match(first_cell_regex, content)
 
-    offset = map(contents) do line
-        m = match(content_id_repr, line)
-        m isa RegexMatch
-    end |> findlast
+    if frontmatter isa RegexMatch
+       s = frontmatter.offset
+       e = lastindex(frontmatter.match)
+       frontmatter = split(frontmatter[1], "\n") |> Vector{String}
+       # remove frontmatter and split contents
+       content = join([content[1:s-3], content[s+e:end]], "")
+       contents = split(content, "\n") |> Vector{String}
 
-    return String[], frontmatter, vcat(contents[1:offset-1], contents[offset+1:end])
+       # remove the frontmatter cell uuid from the list of uuid
+       content_id_repr = r"#\s?[╠╟][─═]\s?" * Regex("$(first_cell_id)")
+       offset = map(contents) do line
+           m = match(content_id_repr, line)
+           m isa RegexMatch
+       end |> findlast
+
+      contents = vcat(contents[1:offset-1], contents[offset+1:end])
+    else
+       frontmatter = String[]
+    end
+
+    return String[], frontmatter, contents
 end
 
 
