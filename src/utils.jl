@@ -19,7 +19,7 @@ end
 ### common utils for DemoPage and DemoSection
 
 function validate_order(order::AbstractArray, x::Union{DemoPage, DemoSection})
-    default_order = gnb_pathet_default_order(x)
+    default_order = get_default_order(x)
     if intersect(order, default_order) == union(order, default_order)
         return true
     else
