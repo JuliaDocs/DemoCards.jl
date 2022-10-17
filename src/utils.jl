@@ -143,28 +143,6 @@ function get_regex(::Val{:Markdown}, regex_type)
     end
 end
 
-
-function get_regex(::Val{:Pluto}, regex_type)
-    if regex_type == :image
-        # Example: ![title](path)
-        return r"^\s*!\[(?<title>[^\]]*)\]\((?<path>[^\s]*)\)"
-    elseif regex_type == :title
-        # Example: # [title](@id id)
-        regex_title = r"md[\"]{1,3}.*\n#\s(\S.*)\n"
-        # Example: # title
-        regex_simple_title = r"md[\"]{1,3}.*\n#\s(\S.*)\n"
-
-        # Note: return the complete one first
-        return (regex_title, regex_simple_title)
-    elseif regex_type == :content
-        # lines that are not title, image, link, list
-        # FIXME: list is also captured by this regex
-        return r"^\s*(?<content>[^#\-*!].*)"
-    else
-        error("Unrecognized regex type: $(regex_type)")
-    end
-end
-
 function get_regex(::Val{:Julia}, regex_type)
     if regex_type == :image
         # Example: #md ![title](path)
@@ -213,8 +191,8 @@ Currently supported items are: `title`, `id`, `cover`, `description`.
 function parse(T::Val, card::AbstractDemoCard)
     # TODO: generalize
     if T === Val(:Pluto)
-      header, frontmatter, body = split_pluto_frontmatter(readlines(card.path))
-      config = parse(T, body) # should ideally not pickup
+      frontmatter = []
+      config = Pluto.frontmatter(card.path)
     else
       header, frontmatter, body = split_frontmatter(readlines(card.path))
       config = parse(T, body)
@@ -367,28 +345,6 @@ function split_frontmatter(contents::AbstractArray{<:AbstractString})
     end
 
     return contents[1:offsets[1]-1], frontmatter, contents[offsets[2]+1:end]
-end
-
-
-# special case, generalize it with rest of functions later
-function split_pluto_frontmatter(contents)
-    first_cell_regex = r"#\s╔═╡\sCell\sorder:\n#\s?[╠╟][─═]\s?([0-9a-f\-]{36})"
-    content = join(contents, "\n")
-    first_cell_id = match(first_cell_regex, content)[1]
-    m1 = r"#\s╔═╡\s"
-    m2 = Regex("$(first_cell_id)\n")
-    m3 = r"""md\"\"\"\n([\s\S]*?)\"\"\""""
-    first_cell_regex = m1 * m2 * m3
-    frontmatter = match(first_cell_regex, content)[1]
-    frontmatter = split(frontmatter, "\n") |> Vector{String}
-    content_id_repr = r"#\s?[╠╟][─═]\s?" * Regex("$(first_cell_id)")
-
-    offset = map(contents) do line
-        m = match(content_id_repr, line)
-        m isa RegexMatch
-    end |> findlast
-
-    return String[], frontmatter, vcat(contents[1:offset-1], contents[offset+1:end])
 end
 
 
