@@ -122,19 +122,16 @@ function save_democards(card_dir::AbstractString,
 
     # copy to card dir and do things
     cardname = splitext(basename(card.path))[1]
-    curr_dir = pwd()
-    src_dir = dirname(card.path)
     # pluto outputs are expensive, we save the output to a cache dir
     # these cache dir contains the render files from previous runs,
     # saves time, while rendering
-    render_dir = joinpath(src_dir, "..", "..", "pluto_output") |> abspath
+    render_dir = joinpath(project_dir, "pluto_output") |> abspath
     isdir(render_dir) || mkpath(render_dir)
 
     nb_path = joinpath(card_dir, "$(cardname).jl")
-    card_path = joinpath(card_dir, "$(cardname).md")
+    md_path = joinpath(card_dir, "$(cardname).md")
 
-    _, _, body = split_pluto_frontmatter(readlines(card.path))
-    write(nb_path, join(body, "\n"))
+    cp(card.path, nb_path)
 
     if VERSION < card.julia
         # It may work, it may not work; I hope it would work.
@@ -146,23 +143,25 @@ function save_democards(card_dir::AbstractString,
     bopts = BuildOptions(card_dir;previous_dir=render_dir,
                          output_format=output_format)
     # don't run notebooks in parallel
+    # TODO: User option to run it parallel or not
     build_notebooks(bopts, ["$(cardname).jl"], oopts)
 
-    cache_path = joinpath(render_dir, basename(card_path))
-    cp(card_path, cache_path; force=true)
+    # move rendered files to cache
+    cache_path = joinpath(render_dir, basename(md_path))
+    cp(md_path, cache_path; force=true)
 
     badges = make_badges(card;
                          src=src,
                          card_dir=card_dir,
                          nbviewer_root_url=nbviewer_root_url,
                          project_dir=project_dir,
-                         build_notebook=false) 
+                         build_notebook=false)
 
     header = "# [$(card.title)](@id $(card.id))\n"
     footer = pluto_footer
 
-    body = join(readlines(card_path), "\n")
-    write(card_path, header, badges * "\n\n", body, footer)
+    body = join(readlines(md_path), "\n")
+    write(md_path, header, badges * "\n\n", body, footer)
 
     return nothing
 end
