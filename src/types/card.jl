@@ -103,6 +103,10 @@ function load_config(card::T, key; config=Dict()) where T <: AbstractDemoCard
     elseif key == "julia"
         version = get(config, key, JULIA_COMPAT)
         return version isa VersionNumber ? version : VersionNumber(string(version))
+    elseif key == "generate_cover"
+        return get(config, key, !haskey(config, "cover"))
+    elseif key == "execute"
+        return get(config, key, true)
     else
         throw(ArgumentError("Unrecognized key $(key) for $(T)"))
     end
