@@ -46,7 +46,7 @@ DemoCards would understand it in the following way:
     demo_5.jl
 ```
 
-Read the [Quick Start](https://juliadocs.github.io/DemoCards.jl/stable/quickstart/) for more instructions.
+Read the [Quick Start](https://democards.juliadocs.org/stable/quickstart/) for more instructions.
 
 ## Examples
 
@@ -74,10 +74,10 @@ I'm not sure how broadly this package suits the need of others, but I'd like to 
 
 
 [docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
-[docs-dev-url]: https://juliadocs.github.io/DemoCards.jl/dev
+[docs-dev-url]: https://democards.juliadocs.org/dev
 
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
-[docs-stable-url]: https://juliadocs.github.io/DemoCards.jl/stable
+[docs-stable-url]: https://democards.juliadocs.org/stable
 
 [action-img]: https://github.com/JuliaDocs/DemoCards.jl/workflows/Unit%20test/badge.svg
 [action-url]: https://github.com/JuliaDocs/DemoCards.jl/actions
@@ -95,8 +95,8 @@ I'm not sure how broadly this package suits the need of others, but I'd like to 
 [theme-bokehlist-img]: https://img.shields.io/badge/theme-bokehlist-blue.svg
 [theme-none-img]: https://img.shields.io/badge/theme-none-blue.svg
 
-[theme-bulmagrid]: https://juliadocs.github.io/DemoCards.jl/stable/bulmagrid/
-[theme-grid]: https://juliadocs.github.io/DemoCards.jl/stable/grid/
-[theme-list]: https://juliadocs.github.io/DemoCards.jl/stable/list/
-[theme-bokehlist]: https://juliadocs.github.io/DemoCards.jl/stable/bokehlist/
-[theme-none]: https://juliadocs.github.io/DemoCards.jl/stable/themeless/markdown/item1/
+[theme-bulmagrid]: https://democards.juliadocs.org/stable/bulmagrid/
+[theme-grid]: https://democards.juliadocs.org/stable/grid/
+[theme-list]: https://democards.juliadocs.org/stable/list/
+[theme-bokehlist]: https://democards.juliadocs.org/stable/bokehlist/
+[theme-none]: https://democards.juliadocs.org/stable/themeless/markdown/item1/
