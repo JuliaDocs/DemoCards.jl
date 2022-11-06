@@ -1,8 +1,8 @@
 # DemoCards
 
-| **Documentation**                                                               | **Build Status**                                                                                |
-|:-------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|
-| [![][docs-stable-img]][docs-stable-url] [![][docs-dev-img]][docs-dev-url] | [![][action-img]][action-url] [![][pkgeval-img]][pkgeval-url] [![][codecov-img]][codecov-url] |
+| **Documentation**                                                               | **Build Status**                                              |
+|:-------------------------------------------------------------------------------:|:-------------------------------------------------------------:|
+| [![][docs-stable-img]][docs-stable-url] [![][docs-dev-img]][docs-dev-url]       | [![][action-img]][action-url] [![][codecov-img]][codecov-url] |
 
 This package is used to *dynamically* generate a demo page and integrate with [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl).
 
