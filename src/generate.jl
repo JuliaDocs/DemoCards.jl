@@ -154,7 +154,7 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
     @info "SetupDemoCardsDirectory: setting up \"$(source)\" directory."
     if isdir(absolute_root)
         # a typical and probably safe case -- that we're still in docs/ folder
-        trigger_prompt = (
+        trigger_prompt = isinteractive() && (
             !endswith(dirname(absolute_root), joinpath("docs", "src")) &&
             !(haskey(ENV, "GITLAB_CI") || haskey(ENV, "GITHUB_ACTIONS"))
         )
