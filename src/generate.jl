@@ -130,7 +130,7 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
     end
 
     if !isnothing(page.theme)
-        page_templates, theme_assets = cardtheme(page.theme, root = root)
+        page_templates, theme_assets = cardtheme(page.theme; root = root, src = src)
         theme_assets = something(page.stylesheet, theme_assets)
 
         if templates != page_templates && templates != nothing
