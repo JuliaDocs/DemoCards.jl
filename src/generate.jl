@@ -273,8 +273,12 @@ function generate(secs::AbstractVector{DemoSection}, templates; level=1, propert
 end
 
 function generate(sec::DemoSection, templates; level=1, properties=Dict{String, Any}())
-    header = repeat("#", level) * " " * sec.title * "\n"
-    footer = "\n"
+    header = if length(sec.title) > 0
+        repeat("#", level) * " " * sec.title
+    else
+        ""
+    end * '\n'
+    footer = '\n'
     properties = merge(properties, sec.properties) # sec.properties has higher priority
 
     # either cards or subsections are empty
