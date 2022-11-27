@@ -70,7 +70,7 @@ function preview_demos(demo_path::String;
         if isnothing(theme)
             card_templates = nothing
         else
-            card_templates, card_theme = cardtheme(theme; root = build_dir)
+            card_templates, card_theme = cardtheme(theme; root = build_dir, src = src)
             push!(assets, something(page.stylesheet, card_theme))
         end
 

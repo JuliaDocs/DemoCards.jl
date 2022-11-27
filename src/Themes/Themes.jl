@@ -40,6 +40,7 @@ include("bokehlist/bokehlist.jl")
 """
     cardtheme(theme = "grid";
               root = "<current-directory>",
+              src = "src",
               destination = "democards") -> templates, stylesheet_path
 
 For given theme, return the templates and path to stylesheet.
@@ -51,11 +52,12 @@ Available themes are:
 """
 function cardtheme(theme::AbstractString="grid";
                    root::AbstractString = Base.source_dir(),
+                   src::AbstractString = "src",
                    destination::String = "democards")
     templates, src_stylesheet_path = cardtheme(Val(Symbol(theme)))
 
     # a copy is needed because Documenter only support relative path inside root
-    absolute_root = joinpath(root, "src", destination)
+    absolute_root = joinpath(root, src, destination)
     filename = "$(theme)theme.css"
     out_stylesheet_path = joinpath(absolute_root, filename)
     isdir(absolute_root) || mkpath(absolute_root)
