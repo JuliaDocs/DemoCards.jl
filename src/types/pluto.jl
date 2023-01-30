@@ -175,3 +175,5 @@ function make_badges(card::PlutoDemoCard; src, card_dir, nbviewer_root_url, proj
 
     join(badges, " ")
 end
+
+parse(card::PlutoDemoCard) = Pluto.frontmatter(card.path)

@@ -189,14 +189,8 @@ Currently supported items are: `title`, `id`, `cover`, `description`.
     They also need to validate the values.
 """
 function parse(T::Val, card::AbstractDemoCard)
-    # TODO: generalize
-    if T === Val(:Pluto)
-      frontmatter = []
-      config = Pluto.frontmatter(card.path)
-    else
-      header, frontmatter, body = split_frontmatter(readlines(card.path))
-      config = parse(T, body)
-    end
+    header, frontmatter, body = split_frontmatter(readlines(card.path))
+    config = parse(T, body)
     # frontmatter has higher priority
     if !isempty(frontmatter)
         yaml_config = try
@@ -213,7 +207,6 @@ function parse(T::Val, card::AbstractDemoCard)
 end
 parse(card::JuliaDemoCard) = parse(Val(:Julia), card)
 parse(card::MarkdownDemoCard) = parse(Val(:Markdown), card)
-parse(card::PlutoDemoCard) = parse(Val(:Pluto), card)
 
 
 function parse(T::Val, contents::String)
