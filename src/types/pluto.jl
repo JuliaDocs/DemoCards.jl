@@ -70,3 +70,6 @@ mutable struct PlutoDemoCard <: AbstractDemoCard
     hidden::Bool
 end
 
+function PlutoDemoCard(path::AbstractString)::PlutoDemoCard
+  throw(ErrorException("You need to load PlutoStaticHTML.jl before using this function."))
+end
