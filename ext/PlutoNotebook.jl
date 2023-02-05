@@ -1,10 +1,9 @@
 module PlutoNotebook
 
 using Dates
-using DemoCards: AbstractDemoCard
+using DemoCards: AbstractDemoCard, JULIA_COMPAT, load_config, download_badge, pluto_footer
 import DemoCards: PlutoDemoCard, save_democards, make_badges, parse
 isdefined(Base, :get_extension) ? (using PlutoStaticHTML) : (using ..PlutoStaticHTML)
-using PlutoStaticHTML
 
 
 function PlutoDemoCard(path::AbstractString)::PlutoDemoCard
@@ -124,7 +123,5 @@ function make_badges(
 end
 
 parse(card::PlutoDemoCard) = PlutoStaticHTML.Pluto.frontmatter(card.path)
-
-
 
 end
