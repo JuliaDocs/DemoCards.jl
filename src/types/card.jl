@@ -24,7 +24,20 @@ function democard(path::String)::AbstractDemoCard
         return MarkdownDemoCard(path)
     elseif ext in julia_exts
         if is_pluto_notebook(path)
-          return PlutoDemoCard(path)
+          return try
+            PlutoDemoCard(path)
+          catch e
+            if isa(e, MethodError)
+              # method is not imported from PlutoNotebook
+              throw(
+                ErrorException(
+                  "You need to load PlutoStaticHTML.jl for using pluto notebooks",
+                ),
+              )
+            else 
+              throw(e)
+            end
+          end
         else
           return JuliaDemoCard(path)
         end

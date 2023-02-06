@@ -60,16 +60,12 @@ See also: [`PlutoDemoCard`](@ref DemoCards.PlutoDemoCard), [`DemoSection`](@ref 
 """
 mutable struct PlutoDemoCard <: AbstractDemoCard
     path::String
-    cover::Union{String, Nothing}
+    cover::Union{String,Nothing}
     id::String
     title::String
     description::String
     author::String
     date::DateTime
-    julia::Union{Nothing, VersionNumber}
+    julia::Union{Nothing,VersionNumber}
     hidden::Bool
-end
-
-function PlutoDemoCard(path::AbstractString)::PlutoDemoCard
-  throw(ErrorException("You need to load PlutoStaticHTML.jl before using this function."))
 end
