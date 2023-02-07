@@ -14,6 +14,7 @@ to your demofile. Currently supported types are:
 
 * [`MarkdownDemoCard`](@ref) for markdown files
 * [`JuliaDemoCard`](@ref) for julia files
+* [`PlutoDemoCard`](@ref) for pluto files
 * [`UnmatchedCard`](@ref) for unmatched files
 
 """
