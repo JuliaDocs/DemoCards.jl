@@ -93,7 +93,8 @@ function load_config(card::T, key; config=Dict()) where T <: AbstractDemoCard
     elseif key == "description"
         return get(config, key, card.title)
     elseif key == "hidden"
-        return get(config, key, false)
+        hidden = get(config, key, false)
+        return hidden isa Bool ? hidden : parse(Bool, string(hidden))
     elseif key == "author"
         return get(config, key, "")
     elseif key == "date"

@@ -33,12 +33,13 @@ end
                    credit,
                    nbviewer_root_url)
 
-process the original julia file and save it.
+Process the original pluto notebook and saves it.
 
 The processing pipeline is:
 
 1. preprocess and copy source file
-3. generate markdown file
+2. generate markdown file
+3. copy the markdown file to cache folder
 4. insert header and footer to generated markdown file
 """
 function save_democards(
