@@ -63,7 +63,7 @@ An example of the front matter (note the leading `#`):
 # ---
 ```
 
-See also: [`MarkdownDemoCard`](@ref DemoCards.MarkdownDemoCard), [`DemoSection`](@ref DemoCards.DemoSection), [`DemoPage`](@ref DemoCards.DemoPage)
+See also: [`MarkdownDemoCard`](@ref DemoCards.MarkdownDemoCard), [`PlutoDemoCard`](@ref DemoCards.PlutoDemoCard), [`DemoSection`](@ref DemoCards.DemoSection), [`DemoPage`](@ref DemoCards.DemoPage)
 """
 mutable struct JuliaDemoCard <: AbstractDemoCard
     path::String

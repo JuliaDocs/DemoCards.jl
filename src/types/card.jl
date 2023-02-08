@@ -14,6 +14,7 @@ to your demofile. Currently supported types are:
 
 * [`MarkdownDemoCard`](@ref) for markdown files
 * [`JuliaDemoCard`](@ref) for julia files
+* [`PlutoDemoCard`](@ref) for pluto files
 * [`UnmatchedCard`](@ref) for unmatched files
 
 """
@@ -93,7 +94,8 @@ function load_config(card::T, key; config=Dict()) where T <: AbstractDemoCard
     elseif key == "description"
         return get(config, key, card.title)
     elseif key == "hidden"
-        return get(config, key, false)
+        hidden = get(config, key, false)
+        return hidden isa Bool ? hidden : parse(Bool, string(hidden))
     elseif key == "author"
         return get(config, key, "")
     elseif key == "date"

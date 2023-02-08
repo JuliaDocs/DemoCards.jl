@@ -1,4 +1,5 @@
 using Documenter, DemoCards, JSON
+using PlutoStaticHTML # add the docstring for Pluto notebooks
 
 
 # 1. generate demo files
@@ -23,6 +24,7 @@ makedocs(format = format,
             "Concepts" => "concepts.md",
             "Partial build" => "preview.md",
             "Structure manipulation" => "structure.md",
+            "Pluto.jl support" => "pluto.md",
             "Theme Gallery" => [
                themeless_demopage,
                grid_demopage,

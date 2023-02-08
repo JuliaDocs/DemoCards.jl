@@ -56,7 +56,7 @@ hidden: false
 ---
 ```
 
-See also: [`JuliaDemoCard`](@ref DemoCards.JuliaDemoCard), [`DemoSection`](@ref DemoCards.DemoSection), [`DemoPage`](@ref DemoCards.DemoPage)
+See also: [`JuliaDemoCard`](@ref DemoCards.JuliaDemoCard), [`PlutoDemoCard`](@ref DemoCards.PlutoDemoCard), [`DemoSection`](@ref DemoCards.DemoSection), [`DemoPage`](@ref DemoCards.DemoPage)
 """
 mutable struct MarkdownDemoCard <: AbstractDemoCard
     path::String
