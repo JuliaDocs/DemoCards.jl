@@ -1,7 +1,7 @@
 # [Pluto.jl notebooks support](@id pluto)
 
 [Pluto.jl](https://plutojl.org/) is a modern interactive notebook for Julia.
-It has an extension of a Julia script but packs a lot of great features like inbuilt dependency management.
+The Pluto notebook content is saved as a Julia script with special syntax decorations to support features like built-in dependency management and reactive cell execution.
 In this section, we will discuss how we can add demos written using Pluto as DemoCards.
 
 DemoCards.jl natively support only Julia and markdown files.
@@ -12,7 +12,7 @@ The functionality for rendering pluto notebooks is automatically loaded when Plu
 !!! note
 
     Julia versions before julia 1.9 doesn't support the extension functionality.
-    Revise.jl is used to conditional loading of code for older julia versions.
+    Requires.jl is used to conditional loading of code for older julia versions.
 
 
 The set of functionalities supported for Julia and Markdown files are also supported for Pluto.
