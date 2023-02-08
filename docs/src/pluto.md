@@ -40,6 +40,9 @@ Pluto.jl has its own GUI to manipulate the front matter of a notebook.
 This makes it easier for users to create and edit frontmatter.
 The pluto frontmatter is not saved in YAML format.
 See this [PR](https://github.com/fonsp/Pluto.jl/pull/2104) for more details.
+DemoCards rendered from pluto notebooks currently doesn't support inference of
+`title`, `description`, `id` or `cover` from the content of the notebook.
+Make sure to explicitly mention custom configs in the frontmatter to avoid surprises.
 
 ## Cache computationally expensive notebooks
 Rendering a Pluto notebook is sometimes time and resource-consuming, especially in a CI environment.
