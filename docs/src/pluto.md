@@ -4,21 +4,20 @@
 The Pluto notebook content is saved as a Julia script with special syntax decorations to support features like built-in dependency management and reactive cell execution.
 In this section, we will discuss how we can add demos written using Pluto as DemoCards.
 
-DemoCards.jl natively support only Julia and markdown files.
+DemoCards.jl natively supports only Julia and markdown files.
 Pluto notebooks are supported via an [extension](https://pkgdocs.julialang.org/dev/creating-packages/#Conditional-loading-of-code-in-packages-%28Extensions%29) to the existing package.
-PlutoStaticHTML.jl is used for rendering of pluto notebooks to desired markdown format.
+PlutoStaticHTML.jl is used for rendering pluto notebooks to desired markdown format.
 The functionality for rendering pluto notebooks is automatically loaded when PlutoStaticHTML is imported into the current environment.
 
 !!! note
 
     Julia versions before julia 1.9 doesn't support the extension functionality.
-    Requires.jl is used to conditional loading of code for older julia versions.
+    Requires.jl is used for conditional loading of code in older julia versions.
 
-
-The set of functionalities supported for Julia and Markdown files are also supported for Pluto.
+The set of functionalities supported for Julia and Markdown files is also supported for Pluto.
 We can compose any number of Pluto, Julia or Markdown files together for a demo.
 
-If one of the demos contain a pluto notebook, we just need to add PlutoStaticHTML to the list of imports.
+If one of the demos contains a pluto notebook, we just need to add PlutoStaticHTML to the list of imports.
 
 ```julia
 using Documenter, DemoCards # Load functionality for markdown and julia
@@ -40,9 +39,12 @@ Pluto.jl has its own GUI to manipulate the front matter of a notebook.
 This makes it easier for users to create and edit frontmatter.
 The pluto frontmatter is not saved in YAML format.
 See this [PR](https://github.com/fonsp/Pluto.jl/pull/2104) for more details.
-DemoCards rendered from pluto notebooks currently doesn't support inference of
-`title`, `description`, `id` or `cover` from the content of the notebook.
-Make sure to explicitly mention custom configs in the frontmatter to avoid surprises.
+
+!!! warning
+
+    Frontmatter support for Pluto demoCards are currently limited to the frontmatter support for pluto.
+    It doesn't support the inference of `title`, `description`, `id` or `cover` from the content of the notebook.
+    Make sure to explicitly mention custom configs in the frontmatter to avoid surprises.
 
 ## Cache computationally expensive notebooks
 Rendering a Pluto notebook is sometimes time and resource-consuming, especially in a CI environment.
