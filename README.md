@@ -52,7 +52,7 @@ Read the [Quick Start](https://democards.juliadocs.org/stable/quickstart/) for m
 
 | repo | theme |
 | :---- | :---- |
-| [AlgebraOfGraphics.jl](http://juliaplots.org/AlgebraOfGraphics.jl/dev/gallery/) | [![][theme-bulmagrid-img]][theme-bulmagrid] |
+| [AlgebraOfGraphics.jl](https://aog.makie.org/stable/gallery/) | [![][theme-bulmagrid-img]][theme-bulmagrid] |
 | [Augmentor.jl](https://evizero.github.io/Augmentor.jl/dev/operations/) | [![][theme-grid-img]][theme-grid] |
 | [Bokeh.jl](https://cjdoris.github.io/Bokeh.jl/dev/gallery/) | [![][theme-bokehlist-img]][theme-bokehlist] |
 | [FractionalDiffEq.jl](https://scifracx.org/FractionalDiffEq.jl/dev/ChaosGallery/) | [![][theme-bulmagrid-img]][theme-bulmagrid] |
