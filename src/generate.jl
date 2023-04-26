@@ -355,7 +355,7 @@ function save_cover(path::String, card::AbstractDemoCard)
     # only save cover image if it is a existing local file
     src_path = joinpath(dirname(card.path), card.cover)
     if !isfile(src_path)
-        @warn "cover file doesn't exists" cover_path=src_path
+        @warn "cover file doesn't exist" cover_path=src_path
 
         # reset it back to nothing and fallback to use default cover
         card.cover = nothing
