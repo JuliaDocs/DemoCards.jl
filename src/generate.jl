@@ -92,8 +92,9 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
                    branch::String = "gh-pages",
                    edit_branch::String = "master",
                    credit = true,
-                   throw_error = false)
-
+                   throw_error = false,
+                   kwargs...
+    )
     if !(basename(pwd()) == "docs" || basename(root) == "docs" || root == preview_build_dir())
         # special cases that warnings are not printed:
         # 1. called from `docs/make.jl`
@@ -194,7 +195,9 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
                     src = src,
                     credit = credit,
                     nbviewer_root_url = get_nbviewer_root_url(branch),
-                    throw_error=throw_error)
+                    throw_error=throw_error,
+                    kwargs...
+        )
         isnothing(templates) || save_cover(joinpath(absolute_root, "covers"), page)
         isnothing(templates) || generate(joinpath(absolute_root, "index.md"), page, templates)
 
