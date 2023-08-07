@@ -93,7 +93,7 @@ function DemoSection(root::String, filter_func=x -> true)::DemoSection
     isdir(root) || throw(ArgumentError("section root should be a valid dir, instead it's $(root)"))
 
     path = joinpath.(root, filter(x->!startswith(x, "."), readdir(root))) # filter out hidden files
-    card_paths = filter(x->isfile(x) && !endswith(x, config_filename) && filter_func(x), path)
+    card_paths = filter(x->isfile(x) && !endswith(x, config_filename), path)
     section_paths = filter(x->isdir(x)&&!(basename(x) in ignored_dirnames), path)
 
     if !isempty(card_paths) && !isempty(section_paths)
@@ -108,14 +108,14 @@ function DemoSection(root::String, filter_func=x -> true)::DemoSection
     # throw warnings for it.
     cards = map(democard, card_paths)
     unmatches = filter(cards) do x
-        x isa UnmatchedCard
+        x isa UnmatchedCard || filter_func(x)
     end
     if !isempty(unmatches)
         msg = join(map(basename, unmatches), "\", \"")
         @warn "skip unmatched file: \"$msg\"" section_dir=root
     end
     cards = filter!(cards) do x
-        !(x isa UnmatchedCard)
+        !(x isa UnmatchedCard || filter_func(x))
     end
 
     section = DemoSection(root,
