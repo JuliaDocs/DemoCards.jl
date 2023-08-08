@@ -108,14 +108,14 @@ function DemoSection(root::String, filter_func=x -> true)::DemoSection
     # throw warnings for it.
     cards = map(democard, card_paths)
     unmatches = filter(cards) do x
-        x isa UnmatchedCard || filter_func(x)
+        x isa UnmatchedCard || !filter_func(x)
     end
     if !isempty(unmatches)
         msg = join(map(basename, unmatches), "\", \"")
         @warn "skip unmatched file: \"$msg\"" section_dir=root
     end
     cards = filter!(cards) do x
-        !(x isa UnmatchedCard || filter_func(x))
+        !(x isa UnmatchedCard || !filter_func(x))
     end
 
     section = DemoSection(root,
