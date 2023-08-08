@@ -432,7 +432,7 @@ Redirect the "Edit On GitHub" link of generated demo files to its original url, 
 this a 404 error is expected.
 """
 function redirect_link(source_file, source, root, src, build, edit_branch)
-    build_file = get_build_file(source_file, source, build)
+    build_file = get_build_file(source_file, source, root, build)
     if !isfile(build_file)
         @warn "$build_file doesn't exists, skip"
         return nothing
@@ -479,7 +479,7 @@ function get_source_url(build_url, source, cardname, src)
     return src_url
 end
 
-function get_build_file(source_file, source, build)
+function get_build_file(source_file, source, root, build)
     # given inputs:
     #   - source_file: "$source_root/$prefix/$page/$section/$subsection/$card.md"
     #   - source:      "$prefix/$page
@@ -491,19 +491,19 @@ function get_build_file(source_file, source, build)
 
     sep = Base.Filesystem.path_separator
     # add trailing / to avoid incorrect substring match
-    source_root = first(split(source_file, source * sep; limit=2))
-    build_root = joinpath(source_root, build)
-    prefix, page = splitdir(source)
+    source_root = abspath(root, source)
+    build_root = joinpath(root, build)
+    prefix, page = splitdir(source_root)
 
     source_dir, name = splitdir(source_file)
     card, ext = splitext(name)
     _, prefix_to_subsection = split(source_dir, source_root; limit=2)
-    if !isempty(prefix)
+    if !isempty(prefix) && prefix_to_subsection != ""
         # add trailing / to remove leading / for prefix_to_subsection
         # otherwise, joinpath of two absolute path would simply drop the first one
-        _, prefix_to_subsection = split(prefix_to_subsection, prefix * sep; limit=2)
+        _, prefix_to_subsection = split(prefix_to_subsection, sep; limit=2)
     end
-    build_dir = joinpath(build_root, prefix_to_subsection)
+    build_dir = joinpath(build_root, page, prefix_to_subsection)
 
     prettyurls = isdir(joinpath(build_dir, card))
     # Documenter.HTML behaves differently on prettyurls
