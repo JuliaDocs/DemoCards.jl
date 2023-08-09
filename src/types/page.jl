@@ -105,7 +105,7 @@ end
 
 basename(page::DemoPage) = basename(page.root)
 
-function DemoPage(root::String)::DemoPage
+function DemoPage(root::String, filter_func=x -> true)::DemoPage
     root = replace(root, r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
     isdir(root) || throw(ArgumentError("page root does not exist: $(root)"))
     root = rstrip(root, '/') # otherwise basename(root) will returns `""`
@@ -133,7 +133,7 @@ function DemoPage(root::String)::DemoPage
     config = parse(Val(:Markdown), template_file)
     config = merge(json_config, config) # template has higher priority over config file
 
-    sections = filter(map(DemoSection, section_paths)) do sec
+    sections = filter(map(p -> DemoSection(p, filter_func), section_paths)) do sec
         empty_section = isempty(sec.cards) && isempty(sec.subsections)
         if empty_section
             @warn "Empty section detected, remove from the demo page tree." section=relpath(sec.root, root)

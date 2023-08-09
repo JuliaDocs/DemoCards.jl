@@ -88,7 +88,7 @@ end
 
 basename(sec::DemoSection) = basename(sec.root)
 
-function DemoSection(root::String)::DemoSection
+function DemoSection(root::String, filter_func=x -> true)::DemoSection
     root = replace(root, r"[/\\]" => Base.Filesystem.path_separator) # windows compatibility
     isdir(root) || throw(ArgumentError("section root should be a valid dir, instead it's $(root)"))
 
@@ -108,14 +108,14 @@ function DemoSection(root::String)::DemoSection
     # throw warnings for it.
     cards = map(democard, card_paths)
     unmatches = filter(cards) do x
-        x isa UnmatchedCard
+        x isa UnmatchedCard || !filter_func(x)
     end
     if !isempty(unmatches)
         msg = join(map(basename, unmatches), "\", \"")
         @warn "skip unmatched file: \"$msg\"" section_dir=root
     end
     cards = filter!(cards) do x
-        !(x isa UnmatchedCard)
+        !(x isa UnmatchedCard || !filter_func(x))
     end
 
     section = DemoSection(root,
