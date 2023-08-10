@@ -149,8 +149,8 @@ function DemoPage(root::String, filter_func=x -> true)::DemoPage
     page.stylesheet = load_config(page, "stylesheet"; config=config)
 
     section_orders = load_config(page, "order"; config=config)
-    section_orders = map(sections) do sec
-        findfirst(x-> x == basename(sec.root), section_orders)
+    section_orders = map(section_orders) do sec
+        findfirst(x-> sec == basename(x), sections)
     end
     ordered_sections = sections[section_orders]
 

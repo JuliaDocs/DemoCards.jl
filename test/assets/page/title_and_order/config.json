@@ -1,7 +1,9 @@
 {
     "title": "Custom Title",
     "order": [
-        "subsection_2",
-        "subsection_1"
+        "subsection_4",
+        "subsection_3",
+        "subsection_1",
+        "subsection_2"
     ]
 }

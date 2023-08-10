@@ -13,9 +13,12 @@ using DemoCards: infer_pagedir, is_demosection, is_democard
     # title and order
     page = DemoPage(joinpath(root, "title_and_order"))
     @test page.title == "Custom Title"
-    sec1, sec2 = page.sections
-    @test sec1.root == joinpath(page.root, "subsection_2")
-    @test sec2.root == joinpath(page.root, "subsection_1")
+    sec1, sec2, sec3, sec4 = page.sections
+    @test sec1.root == joinpath(page.root, "subsection_4")
+    @test sec2.root == joinpath(page.root, "subsection_3")
+    @test sec3.root == joinpath(page.root, "subsection_1")
+    @test sec4.root == joinpath(page.root, "subsection_2")
+
 
     # template
     page = DemoPage(joinpath(root, "template"))
