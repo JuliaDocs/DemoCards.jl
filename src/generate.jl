@@ -299,7 +299,7 @@ function generate(sec::DemoSection, templates; level=1, properties=Dict{String, 
 end
 
 function generate(card::AbstractDemoCard, template; properties=Dict{String, Any})
-    covername = get_covername(card)
+    covername = get_covername(card, card.properties)
 
     if isnothing(covername)
         # `generate` are called after `save_cover`, we assume that this default cover file is
@@ -342,7 +342,7 @@ end
 process the cover image and save it.
 """
 function save_cover(path::String, card::AbstractDemoCard)
-    covername = get_covername(card)
+    covername = get_covername(card, card.properties)
     if isnothing(covername)
         default_coverpath = get_logopath()
         cover_path = joinpath(path, basename(default_coverpath))
@@ -372,14 +372,22 @@ function save_cover(path::String, card::AbstractDemoCard)
     end
 end
 
-function get_covername(card::AbstractDemoCard)
-    isnothing(card.cover) && return nothing
-    is_remote_url(card.cover) && return card.cover
+function get_covername(card::AbstractDemoCard, properties::Dict{String, Any})
+    if isnothing(card.cover)
+        if haskey(properties, "fallback_cover")
+            cover = properties["fallback_cover"]
+        else
+            return nothing
+        end
+    else
+        cover = card.cover
+    end
+    is_remote_url(cover) && return cover
 
     default_covername = basename(get_logopath())
-    card.cover == default_covername && return default_covername
+    cover == default_covername && return default_covername
     
-    return splitext(basename(card))[1] * splitext(card.cover)[2]
+    return splitext(basename(card))[1] * splitext(cover)[2]
 end
 
 get_logopath() = joinpath(pkgdir(DemoCards), "assets", "democards_logo.svg")
