@@ -119,7 +119,7 @@
             end
             isempty(DemoCards.get_nbviewer_root_url("master")) || println(read(joinpath(card_dir, "title_7.md"), String)) # for debug usage
             @test_reference joinpath(test_root, "references", "cards", "julia_md.md") strip_notebook(read(joinpath(card_dir, "title_7.md"), String)) by=ignore_CR
-            @test_reference joinpath(test_root, "references", "cards", "julia_src.jl") read(joinpath(card_dir, "title_7.jl"), String) by=ignore_CR
+            @test_reference joinpath(test_root, "references", "cards", "julia_src.jl") read(joinpath(card_dir, "title_7.jl"), String) by=ignore_blank_line_and_CR
             @test isfile(joinpath(card_dir, "title_7.ipynb"))
 
             # check if notebook keyword actually affects the generation
