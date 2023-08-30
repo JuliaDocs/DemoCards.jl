@@ -42,6 +42,7 @@ There are three possible options for `theme`:
   Documenter for navigation purpose. `template` option doesn't affect, neither.
 * `"grid"`: a grid like index page.
 * `"list"`: a list like index page.
+* `"nocoverlist"`: a list like index page without cover images.
 
 You can check the "Theme Gallery" to see how different themes look like.
 

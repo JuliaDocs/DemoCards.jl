@@ -7,10 +7,11 @@ quickstart, postprocess_cb, quickstart_assets = makedemos("quickstart")
 themeless_demopage, themeless_cb, themeless_assets = makedemos(joinpath("theme_gallery", "themeless"))
 grid_demopage, grid_cb, grid_assets = makedemos(joinpath("theme_gallery", "grid"))
 list_demopage, list_cb, list_assets = makedemos(joinpath("theme_gallery", "list"))
+nocoverlist_demopage, nocoverlist_cb, nocoverlist_assets = makedemos(joinpath("theme_gallery", "nocoverlist"))
 bulmagrid_demopage, bulmagrid_cb, bulmagrid_assets = makedemos(joinpath("theme_gallery", "bulmagrid"))
 bokehlist_demopage, bokehlist_cb, bokehlist_assets = makedemos(joinpath("theme_gallery", "bokehlist"))
 
-assets = collect(filter(x->!isnothing(x), Set([quickstart_assets, themeless_assets, grid_assets, list_assets, bulmagrid_assets, bokehlist_assets])))
+assets = collect(filter(x->!isnothing(x), Set([quickstart_assets, themeless_assets, grid_assets, list_assets, nocoverlist_assets, bulmagrid_assets, bokehlist_assets])))
 
 # 2. normal Documenter usage
 format = Documenter.HTML(edit_link = "master",
@@ -30,6 +31,7 @@ makedocs(format = format,
                grid_demopage,
                bulmagrid_demopage,
                list_demopage,
+               nocoverlist_demopage,
                bokehlist_demopage,
             ],
             "Package References" => "references.md"
@@ -43,6 +45,7 @@ bulmagrid_cb()
 bokehlist_cb()
 grid_cb()
 list_cb()
+nocoverlist_cb()
 
 # a workdaround to github action that only push preview when PR has "push_preview" labels
 # issue: https://github.com/JuliaDocs/Documenter.jl/issues/1225
