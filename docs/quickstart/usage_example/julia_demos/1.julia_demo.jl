@@ -69,7 +69,7 @@ img = testimage("lena")
 
 # Another extra keyword is `notebook`, it allows you to control whether you needs to generate
 # jupyter notebook `.ipynb` for the demo. The valid values are `true` and `false`. See also
-# [Override default values with properties](@id page_sec_properties) on how to disable all notebook
+# [Override default values with properties](@ref page_sec_properties) on how to disable all notebook
 # generation via the properties entry.
 
 # !!! warning

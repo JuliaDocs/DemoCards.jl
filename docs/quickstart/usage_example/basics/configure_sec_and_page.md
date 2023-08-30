@@ -47,7 +47,7 @@ There are three possible options for `theme`:
 You can check the "Theme Gallery" to see how different themes look like.
 
 
-## [Override default values with properties](@ref page_sec_properties)
+## [Override default values with properties](@id page_sec_properties)
 
 Another item that could be useful is `properties`, it is written as a dictionary-like format, and
 provides a way to override some default values. Properties can be configured at any level and it
