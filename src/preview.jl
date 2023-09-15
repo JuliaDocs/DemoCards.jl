@@ -107,7 +107,8 @@ function preview_demos(demo_path::String;
                 "Index" => relpath(page_index, src),
                 demos
             ],
-            sitename="DemoCards Preview"
+            sitename="DemoCards Preview",
+            remotes=nothing
         )
 
         demos_cb()
