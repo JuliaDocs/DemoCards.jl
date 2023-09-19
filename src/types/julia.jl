@@ -5,7 +5,7 @@ const julia_footer = raw"""
 
 ---
 
-*This page was generated using [DemoCards.jl](https://github.com/johnnychen94/DemoCards.jl) and [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
+*This page was generated using [DemoCards.jl](https://github.com/JuliaDocs/DemoCards.jl) and [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
 
 
 """

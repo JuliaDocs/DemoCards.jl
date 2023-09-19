@@ -5,7 +5,7 @@ const markdown_footer = raw"""
 
 ---
 
-*This page was generated using [DemoCards.jl](https://github.com/johnnychen94/DemoCards.jl).*
+*This page was generated using [DemoCards.jl](https://github.com/JuliaDocs/DemoCards.jl).*
 
 
 """
