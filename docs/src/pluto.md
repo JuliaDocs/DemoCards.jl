@@ -61,7 +61,7 @@ The usage of pluto notebooks as DemoCards can be found in [GraphNeuralNetworks.j
 
 ## References
 
-```@docs
+```@docs; canonical=false
 DemoCards.PlutoDemoCard
 DemoCards.save_democards(card_dir::AbstractString, card::DemoCards.PlutoDemoCard;
                    project_dir,
