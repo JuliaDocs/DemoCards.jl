@@ -29,7 +29,7 @@ This page contains a set of examples for you to start with.
 
 {{{democards}}}
 
-Contributions are welcomed at [DemoCards.jl](https://github.com/johnnychen94/DemoCards.jl) :D
+Contributions are welcomed at [DemoCards.jl](https://github.com/JuliaDocs/DemoCards.jl) :D
 ```
 
 Here's an example of `config.json` for `DemoPage`:

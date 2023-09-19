@@ -11,6 +11,6 @@ This is the content
 
 ---
 
-*This page was generated using [DemoCards.jl](https://github.com/johnnychen94/DemoCards.jl).*
+*This page was generated using [DemoCards.jl](https://github.com/JuliaDocs/DemoCards.jl).*
 
 
