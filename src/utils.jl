@@ -108,9 +108,6 @@ end
 
 ### regexes and configuration parsers
 
-"""regex that capture the URL of Edit On GitHub button from Documenter generated html files"""
-const regex_edit_on_github = r"\<a class=\"docs-edit-link\" href=\"(.*)\"\s*title=..*Edit on GitHub\</span\>\</a\>"
-
 raw"""
     get_regex(card::AbstractDemoCard, regex_type)
 
