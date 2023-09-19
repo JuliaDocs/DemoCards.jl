@@ -5,7 +5,7 @@
     @testset "page structure" begin
         page_dir = @suppress_err preview_demos(joinpath(abs_root, "page", "template"), theme="grid", require_html=false)
         md_index = joinpath(page_dir, "index.md")
-        @test_reference joinpath("references", "preview", "index_page.md") read(md_index, String) by=ignore_CR
+        @test_reference joinpath("references", "preview", "index_page.md") read(md_index, String) by=ignore_all
 
         @test readdir(page_dir) == ["covers", "index.md", "subsection_1", "subsection_2"]
         @test readdir(joinpath(page_dir, "subsection_2")) == ["card_3.md", "card_4.md"]
@@ -20,7 +20,7 @@
     @testset "section with non page structure" begin
         page_dir = @suppress_err preview_demos(joinpath(abs_root, "preview", "scripts"), theme="grid", require_html=false)
         md_index = joinpath(page_dir, "index.md")
-        @test_reference joinpath("references", "preview", "index_sec_nopage.md") read(md_index, String) by=ignore_CR
+        @test_reference joinpath("references", "preview", "index_sec_nopage.md") read(md_index, String) by=ignore_all
 
         @test readdir(page_dir) == ["assets", "covers", "index.md", "scripts"]
         @test readdir(joinpath(page_dir, "covers")) == ["demo2.svg", "democards_logo.svg"]
@@ -30,7 +30,7 @@
     @testset "section with page structure" begin
         page_dir = @suppress_err preview_demos(joinpath(abs_root, "page", "template", "subsection_2"), theme="grid", require_html=false) 
         md_index = joinpath(page_dir, "index.md")
-        @test_reference joinpath("references", "preview", "index_sec_page.md") read(md_index, String) by=ignore_CR
+        @test_reference joinpath("references", "preview", "index_sec_page.md") read(md_index, String) by=ignore_all
 
         @test readdir(page_dir) == ["covers", "index.md", "subsection_2"]
         @test readdir(joinpath(page_dir, "subsection_2")) == ["card_3.md", "card_4.md"]
@@ -43,7 +43,7 @@
     @testset "file with non page structure" begin
         page_dir = @suppress_err preview_demos(joinpath(abs_root, "preview", "scripts", "demo2.md"), theme="grid", require_html=false)
         md_index = joinpath(page_dir, "index.md")
-        @test_reference joinpath("references", "preview", "index_file.md") read(md_index, String) by=ignore_CR
+        @test_reference joinpath("references", "preview", "index_file.md") read(md_index, String) by=ignore_all
 
         @test readdir(page_dir) == ["assets", "covers", "index.md", "scripts"]
         @test readdir(joinpath(page_dir, "covers")) == ["demo2.svg"]
@@ -52,7 +52,7 @@
 
         page_dir = @suppress_err preview_demos(joinpath(abs_root, "preview_demo1.jl"), theme="grid", require_html=false)
         md_index = joinpath(page_dir, "index.md")
-        @test_reference joinpath("references", "preview", "index_file2.md") read(md_index, String) by=ignore_CR
+        @test_reference joinpath("references", "preview", "index_file2.md") read(md_index, String) by=ignore_all
 
         @test readdir(page_dir) == ["covers", "index.md", "preview_section"]
         @test readdir(joinpath(page_dir, "covers")) == ["democards_logo.svg"]
@@ -62,7 +62,7 @@
     @testset "file with page structure" begin
         page_dir = @suppress_err preview_demos(joinpath(abs_root, "page", "template", "subsection_2", "card_3.md"), theme="grid", require_html=false)
         md_index = joinpath(page_dir, "index.md")
-        @test_reference joinpath("references", "preview", "index_file_page.md") read(md_index, String) by=ignore_CR
+        @test_reference joinpath("references", "preview", "index_file_page.md") read(md_index, String) by=ignore_all
 
         @test readdir(page_dir) == ["covers", "index.md", "subsection_2"]
         @test readdir(joinpath(page_dir, "subsection_2")) == ["card_3.md"]

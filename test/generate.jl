@@ -8,7 +8,7 @@
         @test_reference joinpath("references", "generate_section_$theme.txt") generate(sec, templates) by=ignore_CR
 
         page = DemoPage(joinpath(root, "page", "default"))
-        @test_reference joinpath("references", "generate_page_$theme.txt") generate(page, templates) by=ignore_CR
+        @test_reference joinpath("references", "generate_page_$theme.txt") generate(page, templates) by=ignore_all
     end
 
     abs_root = joinpath(pwd(), root, "page", "default")
@@ -26,7 +26,7 @@
         page_dir = @suppress_err preview_demos(joinpath(root, "page", "hidden"); theme="grid", require_html=false)
         md_index = joinpath(page_dir, "index.md")
         # test only one card is shown in index.md
-        @test_reference joinpath("references", "hidden_index.txt") read(md_index, String)
+        @test_reference joinpath("references", "hidden_index.txt") read(md_index, String) by=ignore_all
 
         # check that assets are still normally generated even if they are hidden from index.md
         @test readdir(page_dir) == ["covers", "index.md", "sec"]

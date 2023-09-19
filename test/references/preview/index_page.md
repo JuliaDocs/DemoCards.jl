@@ -1,3 +1,7 @@
+```@meta
+EditURL = "/tmp/jl_MynnRG/template/template.md"
+```
+
 # [Custom Title](@id custom_id)
 
 This is the content of the template

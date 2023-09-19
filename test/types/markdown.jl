@@ -80,7 +80,7 @@
         @testset "generate" begin
             page_dir = @suppress_err preview_demos("title_6.md", theme="grid", require_html=false)
             card_path = joinpath(page_dir, "markdown", "title_6.md")
-            @test_reference joinpath(test_root, "references", "cards", "markdown.md") read(card_path, String) by=ignore_CR
+            @test_reference joinpath(test_root, "references", "cards", "markdown.md") read(card_path, String) by=ignore_all
         end
     end
 end

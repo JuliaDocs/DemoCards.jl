@@ -160,7 +160,7 @@ function DemoPage(root::String, filter_func=x -> true)::DemoPage
 
     # default template requires a title
     template = load_config(page, "template"; config=config)
-    page.template = template
+    page.template = meta_edit_url(template_file) * template
 
     if haskey(config, "properties")
         properties = config["properties"]::Dict

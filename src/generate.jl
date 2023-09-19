@@ -203,12 +203,6 @@ function makedemos(source::String, templates::Union{Dict, Nothing} = nothing;
 
         # pipeline: generate postprocess callback function
         postprocess_cb = ()->begin
-            @info "Redirect page URL: redirect docs-edit-link for demos in \"$(source)\" directory."
-            isnothing(templates) || push!(source_files, joinpath(page_root, "index.md"))
-            foreach(source_files) do source_file
-                redirect_link(source_file, source, root, src, build, edit_branch)
-            end
-
             @info "Clean up DemoCards build dir: \"$source\""
             # Ref: https://discourse.julialang.org/t/find-what-has-locked-held-a-file/23278/2
             Base.Sys.iswindows() && GC.gc()
@@ -424,98 +418,6 @@ function _copy_assets(dest_root::String, src_root::String)
         mkpath(dest)
         cp(src, dest; force=true)
     end
-end
-
-### postprocess
-
-"""
-    redirect_link(src_file, source, root, src, build, edit_branch)
-
-Redirect the "Edit On GitHub" link of generated demo files to its original url, without
-this a 404 error is expected.
-"""
-function redirect_link(source_file, source, root, src, build, edit_branch)
-    build_file = get_build_file(source_file, source, root, build)
-    if !isfile(build_file)
-        @warn "$build_file doesn't exists, skip"
-        return nothing
-    end
-    contents = read(build_file, String)
-
-    if !isfile(source_file)
-        # reach here when user doesn't create a page template index.md
-        # just remove the whole button so that user don't click and get 404
-        new_contents = replace(contents, regex_edit_on_github=>"")
-    else
-        # otherwise, redirect the url links
-        m = match(regex_edit_on_github, contents)
-        isnothing(m) && return nothing
-        build_url = m.captures[1]
-
-        src_url = get_source_url(build_url, source, basename(source_file), src)
-        new_contents = replace(contents, build_url=>src_url)
-    end
-    write(build_file, new_contents)
-end
-
-function get_source_url(build_url, source, cardname, src)
-    # given input:
-    #   - projct_root:          "$REPO/blob/$edit_branch"
-    #   - build_root:           "$projct_root/$docs_root/$src"
-    #   - build_dir:            "$build_root/$prefix/$page/$section/$subsection"
-    #   - build_url:            "$build_dir/$cardfile"
-    # example of build_url:
-    #  "https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/src/quickstart/usage_example/julia_demos/2.cover_on_the_fly.md"
-    # we need to generate:
-    #   - src_root:             "$projct_root/$docs_root/$src"
-    #   - src_dir:              "$src_root/$prefix/$page/$section/$subsection"
-    #   - src_url:              "$src_dir/$cardfile"
-    # example of src_url:
-    #   "https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/quickstart/usage_example/julia_demos/2.cover_on_the_fly.jl"
-    source = replace(source, Base.Filesystem.path_separator => "/")
-
-    repo, path = strip.(split(build_url, "/blob/"; limit=2), '/')
-    root_to_subsection = replace(splitdir(path)[1], "$(src)/" => ""; count=1)
-    root_to_subsection = replace(root_to_subsection, "/$(basename(source))/" => "/$(source)/"; count=1)
-    src_url = join([repo, "blob", root_to_subsection, cardname], "/")
-
-    return src_url
-end
-
-function get_build_file(source_file, source, root, build)
-    # given inputs:
-    #   - source_file: "$source_root/$prefix/$page/$section/$subsection/$card.md"
-    #   - source:      "$prefix/$page
-    #   - build:       "build"
-    # we need to generate:
-    #   - build_root: "$source_root/$build"
-    #   - build_dir: "$build_root/$page/$section/$subsection
-    #   - build_file: "$build_dir/$card.html" or "$build_dir/$card/index.html"
-
-    sep = Base.Filesystem.path_separator
-    # add trailing / to avoid incorrect substring match
-    source_root = abspath(root, source)
-    build_root = joinpath(root, build)
-    prefix, page = splitdir(source_root)
-
-    source_dir, name = splitdir(source_file)
-    card, ext = splitext(name)
-    _, prefix_to_subsection = split(source_dir, source_root; limit=2)
-    if !isempty(prefix) && prefix_to_subsection != ""
-        # add trailing / to remove leading / for prefix_to_subsection
-        # otherwise, joinpath of two absolute path would simply drop the first one
-        _, prefix_to_subsection = split(prefix_to_subsection, sep; limit=2)
-    end
-    build_dir = joinpath(build_root, page, prefix_to_subsection)
-
-    prettyurls = isdir(joinpath(build_dir, card))
-    # Documenter.HTML behaves differently on prettyurls
-    if prettyurls
-        build_file = joinpath(build_dir, card, "index.html")
-    else
-        build_file = joinpath(build_dir, card * ".html")
-    end
-    return build_file
 end
 
 # modified from https://github.com/fredrikekre/Literate.jl to replace the use of @__NBVIEWER_ROOT_URL__

@@ -371,3 +371,18 @@ function input_bool(prompt)
 end
 
 is_pluto_notebook(path::String) = any(occursin.(r"#\s?╔═╡\s?[0-9a-f\-]{36}", readlines(path)))
+
+"""
+    meta_edit_url(path)
+
+helper to add in corrected edit link for markdown files which will be processed by Documenter.jl later
+"""
+function meta_edit_url(path)
+    escaped_path = escape_string(path)
+    return """
+    ```@meta
+    EditURL = "$escaped_path"
+    ```
+
+    """
+end
