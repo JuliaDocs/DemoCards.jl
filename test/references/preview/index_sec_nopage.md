@@ -1,3 +1,7 @@
+```@meta
+EditURL = "/tmp/jl_MynnRG/preview/index.md"
+```
+
 # Preview
 
 # Scripts

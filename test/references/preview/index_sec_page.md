@@ -1,3 +1,7 @@
+```@meta
+EditURL = "/tmp/jl_MynnRG/template/template.md"
+```
+
 # Template
 
 # Subsection 2

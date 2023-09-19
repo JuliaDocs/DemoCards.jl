@@ -58,36 +58,6 @@ using DemoCards: democard, walkpage, DemoPage
     @test !haskey(config, "title")
     @test !haskey(config, "id")
     @test !haskey(config, "cover")
-
-
-    # check if upstream changes on "Edit On GitHub" button breaks the redirect_url logic
-    try
-        example_url = "https://juliadocs.github.io/Documenter.jl/stable/"
-        regex_url = r"http[s]?://.*index\.md"
-
-        contents = String(HTTP.get(example_url; readtimeout=3, retry=false).body)
-
-        m = match(DemoCards.regex_edit_on_github, contents)
-        @test isa(m, RegexMatch)
-        if m isa RegexMatch
-            @test isa(match(regex_url, m.captures[1]), RegexMatch)
-        end
-    catch err
-        # if network is down...
-        @warn err
-    end
-end
-
-@testset "url_redirect" begin
-    source = "quickstart"
-    build_url = "https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/src/quickstart/usage_example/julia_demos/2.cover_on_the_fly.md"
-    src_url = "https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/quickstart/usage_example/julia_demos/2.cover_on_the_fly.jl"
-    @test src_url == DemoCards.get_source_url(build_url, source, "2.cover_on_the_fly.jl", "src")
-
-    source = joinpath("theme_gallery", "grid")
-    build_url = "https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/src/grid/grid_section_1/grid_subsection_1/grid_card_1.md"
-    src_url = "https://github.com/johnnychen94/DemoCards.jl/blob/master/docs/theme_gallery/grid/grid_section_1/grid_subsection_1/grid_card_1.md"
-    @test src_url == DemoCards.get_source_url(build_url, source, "grid_card_1.md", "src")
 end
 
 @testset "walkpage" begin

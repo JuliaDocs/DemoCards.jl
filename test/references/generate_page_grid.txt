@@ -1,3 +1,7 @@
+```@meta
+EditURL = "assets/page/default/index.md"
+```
+
 # Default
 
 # Subsection 1

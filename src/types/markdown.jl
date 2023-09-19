@@ -118,5 +118,5 @@ function save_democards(card_dir::String,
     header = need_header ? "# [$(card.title)](@id $(card.id))\n" : "\n"
 
     footer = credit ? markdown_footer : "\n"
-    write(markdown_path, header, make_badges(card)*"\n\n", body, footer)
+    write(markdown_path, meta_edit_url(card.path), header, make_badges(card)*"\n\n", body, footer)
 end

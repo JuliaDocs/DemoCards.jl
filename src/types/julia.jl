@@ -150,6 +150,7 @@ function save_democards(card_dir::String,
                         kwargs...)
     isdir(card_dir) || mkpath(card_dir)
     @debug card.path
+    original_card_path = card.path
     cardname = splitext(basename(card.path))[1]
     md_path = joinpath(card_dir, "$(cardname).md")
     nb_path = joinpath(card_dir, "$(cardname).ipynb")
@@ -256,7 +257,7 @@ function save_democards(card_dir::String,
     # @ref syntax: https://juliadocs.github.io/Documenter.jl/stable/man/syntax/#@ref-link-1
     header = need_header ? "# [$(card.title)](@id $(card.id))\n" : "\n"
     footer = credit ? julia_footer : "\n"
-    write(md_path, header, body, footer)
+    write(md_path, meta_edit_url(original_card_path), header, body, footer)
 
     # 5. filter out source file
     mktempdir(card_dir) do tmpdir
