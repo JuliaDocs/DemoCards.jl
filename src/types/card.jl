@@ -1,5 +1,11 @@
 abstract type AbstractDemoCard end
 
+"""
+    struct MarkdownDemoCard <: AbstractDemoCard
+    MarkdownDemoCard(path::String)
+
+Constructs a unknown-format demo card from a file at `path`.
+"""
 struct UnmatchedCard <: AbstractDemoCard
     path::String
 end
