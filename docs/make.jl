@@ -16,7 +16,8 @@ assets = collect(filter(x->!isnothing(x), Set([quickstart_assets, themeless_asse
 # 2. normal Documenter usage
 format = Documenter.HTML(edit_link = "master",
                          prettyurls = get(ENV, "CI", nothing) == "true",
-                         assets = assets)
+                         assets = assets,
+                         size_threshold=1024 * 1024)
 
 makedocs(format = format,
          pages = [
