@@ -49,7 +49,7 @@ Supported items are:
 * `date`: any string contents that can be passed to `Dates.DateTime`. For example, `2020-09-13`.
 * `julia`: Julia version compatibility. Any string that can be converted to `VersionNumber`
 * `hidden`: whether this card is shown in the layout of index page. The default value is `false`.
-* `generate_cover` whether to generate a cover image for this demo card by executing it. The default value is `true` when `cover` is not given otherwise `false`. Note that `execute` must also be `true` for this to take effect.
+* `generate_cover` whether to generate a cover image for this demo card by executing it. The default value is `true`. Note that `execute` must also be `true` for this to take effect.
 * `execute`: whether to execute the demo card when generating the notebook. The default value is `true`.
 
 An example of the front matter (note the leading `#`):

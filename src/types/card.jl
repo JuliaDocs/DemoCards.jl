@@ -110,7 +110,7 @@ function load_config(card::T, key; config=Dict()) where T <: AbstractDemoCard
         version = get(config, key, JULIA_COMPAT)
         return version isa VersionNumber ? version : VersionNumber(string(version))
     elseif key == "generate_cover"
-        return get(config, key, !haskey(config, "cover"))
+        return get(config, key, true)
     elseif key == "execute"
         return get(config, key, true)
     else
