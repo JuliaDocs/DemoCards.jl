@@ -55,6 +55,7 @@ Read the [Quick Start](https://democards.juliadocs.org/stable/quickstart/) for m
 | [AlgebraOfGraphics.jl](https://aog.makie.org/stable/gallery/) | [![][theme-bulmagrid-img]][theme-bulmagrid] |
 | [Augmentor.jl](https://evizero.github.io/Augmentor.jl/dev/operations/) | [![][theme-grid-img]][theme-grid] |
 | [Bokeh.jl](https://cjdoris.github.io/Bokeh.jl/dev/gallery/) | [![][theme-bokehlist-img]][theme-bokehlist] |
+| [Deneb.jl](https://brucala.github.io/Deneb.jl/dev/examples/) | [![][theme-transitiongrid-img]][theme-transitiongrid] |
 | [FractionalDiffEq.jl](https://scifracx.org/FractionalDiffEq.jl/dev/ChaosGallery/) | [![][theme-bulmagrid-img]][theme-bulmagrid] |
 | [LeetCode.jl](https://cn.julialang.org/LeetCode.jl/dev/) | [![][theme-none-img]][theme-none] |
 | [Images.jl](https://juliaimages.org/latest/examples/) | [![][theme-grid-img]][theme-grid] |
@@ -90,12 +91,14 @@ I'm not sure how broadly this package suits the need of others, but I'd like to 
 
 
 [theme-bulmagrid-img]: https://img.shields.io/badge/theme-bulmagrid-blue.svg
+[theme-transitiongrid-img]: https://img.shields.io/badge/theme-transitiongrid-blue.svg
 [theme-grid-img]: https://img.shields.io/badge/theme-grid-blue.svg
 [theme-list-img]: https://img.shields.io/badge/theme-list-blue.svg
 [theme-bokehlist-img]: https://img.shields.io/badge/theme-bokehlist-blue.svg
 [theme-none-img]: https://img.shields.io/badge/theme-none-blue.svg
 
 [theme-bulmagrid]: https://democards.juliadocs.org/stable/bulmagrid/
+[theme-transitiongrid]: https://democards.juliadocs.org/stable/transitiongrid/
 [theme-grid]: https://democards.juliadocs.org/stable/grid/
 [theme-list]: https://democards.juliadocs.org/stable/list/
 [theme-bokehlist]: https://democards.juliadocs.org/stable/bokehlist/
