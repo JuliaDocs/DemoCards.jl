@@ -9,9 +9,10 @@ grid_demopage, grid_cb, grid_assets = makedemos(joinpath("theme_gallery", "grid"
 list_demopage, list_cb, list_assets = makedemos(joinpath("theme_gallery", "list"))
 nocoverlist_demopage, nocoverlist_cb, nocoverlist_assets = makedemos(joinpath("theme_gallery", "nocoverlist"))
 bulmagrid_demopage, bulmagrid_cb, bulmagrid_assets = makedemos(joinpath("theme_gallery", "bulmagrid"))
+transitiongrid_demopage, transitiongrid_cb, transitiongrid_assets = makedemos(joinpath("theme_gallery", "transitiongrid"))
 bokehlist_demopage, bokehlist_cb, bokehlist_assets = makedemos(joinpath("theme_gallery", "bokehlist"))
 
-assets = collect(filter(x->!isnothing(x), Set([quickstart_assets, themeless_assets, grid_assets, list_assets, nocoverlist_assets, bulmagrid_assets, bokehlist_assets])))
+assets = collect(filter(x->!isnothing(x), Set([quickstart_assets, themeless_assets, grid_assets, list_assets, nocoverlist_assets, bulmagrid_assets, transitiongrid_assets, bokehlist_assets])))
 
 # 2. normal Documenter usage
 format = Documenter.HTML(edit_link = "master",
@@ -31,6 +32,7 @@ makedocs(format = format,
                themeless_demopage,
                grid_demopage,
                bulmagrid_demopage,
+               transitiongrid_demopage,
                list_demopage,
                nocoverlist_demopage,
                bokehlist_demopage,
@@ -43,6 +45,7 @@ makedocs(format = format,
 postprocess_cb()
 themeless_cb()
 bulmagrid_cb()
+transitiongrid_cb()
 bokehlist_cb()
 grid_cb()
 list_cb()
