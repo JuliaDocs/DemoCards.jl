@@ -1,7 +1,7 @@
 name = "DemoCards"
 uuid = "311a05b2-6137-4a5a-b473-18580a3d38b5"
 authors = ["Johnny Chen <johnnychen94@hotmail.com>"]
-version = "0.5.4"
+version = "0.5.5"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
